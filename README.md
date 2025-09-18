@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LabInvestSite 
 
-## Getting Started
+Um site institucional moderno para a LabInvest, desenvolvido com tecnologias web front-end.
 
-First, run the development server:
+## 🚀 Deploy
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+## 📋 Sobre o Projeto
+
+O Lab Invest é uma plataforma digital criada com o propósito de oferecer educação financeira acessível e orientação especializada gratuita para pessoas físicas e pequenos empreendedores. Seu principal objetivo é democratizar o acesso ao conhecimento financeiro, conectando usuários a profissionais voluntários das áreas de contabilidade, economia, administração e direito tributário. Através de um ambiente virtual seguro, o Lab Invest promove a interação entre usuários e especialistas, viabilizando atendimentos informativos e disponibilizando conteúdos educativos sobre temas como finanças pessoais, investimentos, economia doméstica e planejamento financeiro. 
+
+## 🛠️ Tecnologias Utilizadas
+
+- **React**  
+- **CSS** 
+- **Tailwind CSS**
+- **JavaScript** 
+- **FontAwesome** 
+
+## 📁 Estrutura do Projeto
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Como Executar
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Clone o repositório:
+```bash
+git clone 
+```
 
-## Learn More
+2. Navegue até o diretório do projeto:
+```bash
+cd 
+```
 
-To learn more about Next.js, take a look at the following resources:
+3. Abra o arquivo `index.html` em seu navegador 
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 👥 Contribuidores
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **HenriqueVidotto** - Henrique Vidotto
+- **joseroberto12** - José Roberto
+- ** ** - Gabriella Fernanda
+- ** ** - Gustavo Henrique de Oliveira Lima
+- **indexnetisback** - Guilherme Oto Venturelli
+- ** ** - Rodrigo Kauan da Silva Santos
 
-## Deploy on Vercel
+## 📄 Licença
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Este projeto está sob a licença MIT. 
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+---
+
+**Desenvolvido com ❤️ pela equipe**
+```
+
