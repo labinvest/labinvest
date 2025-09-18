@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "./componentes/navbar";
+import Card from "./componentes/card";
+import { faCoffee } from "@fortawesome/free-solid-svg-icons";
+import { library } from "@fortawesome/fontawesome-svg-core";
+
+library.add(faCoffee);
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,6 +35,13 @@ export default function RootLayout({
       >
 
         <NavBar/>
+        <div className="max-w-full mx-auto px-28">
+          <div className="flex justify-center gap-8">
+            <Card Title="Atendimento Personalizado" Paragraph="Soluções feitas sob medida para o que você realmente precisa." Icon="" />
+            <Card Title="Resultados Reais" Paragraph="Soluções feitas sob medida para o que você realmente precisa." Icon="" />
+            <Card Title="Confiança e Acessibilidade" Paragraph="Soluções feitas sob medida para o que você realmente precisa." Icon="" />
+          </div>
+        </div>
         {children}
       </body>
     </html>
