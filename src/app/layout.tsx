@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "./componentes/navbar";
 import Card from "./componentes/card";
+import Footer from "./componentes/footer";
 import { faCoffee } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
@@ -43,6 +44,8 @@ export default function RootLayout({
           </div>
         </div>
         {children}
+
+        <Footer></Footer>
       </body>
     </html>
   );
