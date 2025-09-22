@@ -43,8 +43,7 @@ cd
 - **joseroberto12** - José Roberto
 - ** ** - Gabriella Fernanda
 - ** ** - Gustavo Henrique de Oliveira Lima
-- **indexnetisback** - Guilherme Oto Venturelli
-- ** ** - Rodrigo Kauan da Silva Santos
+- **GuilhermeOto** - Guilherme Oto Venturelli
 
 ## 📄 Licença
 
