@@ -6,6 +6,7 @@ import Card from "./componentes/card";
 import Footer from "./componentes/footer";
 import { faCoffee } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
+import { ImgRedondaTelaInicial } from "./componentes/img_redonda_tela_inicial";
 
 library.add(faCoffee);
 
@@ -44,7 +45,7 @@ export default function RootLayout({
           </div>
         </div>
         {children}
-
+        <ImgRedondaTelaInicial/>
         <Footer />
       </body>
     </html>
