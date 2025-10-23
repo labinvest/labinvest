@@ -1,6 +1,6 @@
 'use client'
 import { useState } from "react"
-import { TestimonialCard} from "./testimonialCard"
+import { TestimonialCard} from "./CarouselCard"
 import { faCircleUser, faWheelchairMove, faWheelchair } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
