@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import NavBar from "../componentes/Navbar";
-import Card from "../componentes/Card";
-import Footer from "../componentes/Footer";
+
 import { ImgRedondaTelaInicial } from "../componentes/CardRedondo";
 import { TestimonialCarousel } from "../componentes/Carousel";
-import { Banner } from "../componentes/Banner";
+
 import PhotoUser from "../componentes/PhotoUser";
 import { faUserTie, faChartLine, faHandshake } from '@fortawesome/free-solid-svg-icons';
+import Card from "@/componentes/card";
+import NavBar from "@/componentes/navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
