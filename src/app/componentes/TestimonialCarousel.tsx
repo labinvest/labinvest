@@ -1,22 +1,24 @@
 'use client'
 import { useState } from "react"
 import { TestimonialCard} from "./testimonialCard"
+import { faCircleUser, faWheelchairMove, faWheelchair } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const testimonials = [
   {
-    Icon: "fas fa-user-circle",
+    Icon: faCircleUser,
     Paragraph: "Excelente serviço! A equipe foi muito atenciosa e o produto superou minhas expectativas.",
     Name: "Ana Silva",
     Location: "São Paulo, Brasil"
   },
   {
-    Icon: "fas fa-user-circle",
+    Icon: faCircleUser,
     Paragraph: "Muito satisfeito com a qualidade e rapidez. Recomendo para todos os meus amigos.",
     Name: "Carlos Pereira",
     Location: "Rio de Janeiro, Brasil"
   },
   {
-    Icon: "fas fa-user-circle",
+    Icon: faCircleUser,
     Paragraph: "Atendimento impecável e produto de alta qualidade. Voltarei a comprar com certeza.",
     Name: "Mariana Costa",
     Location: "Belo Horizonte, Brasil"
@@ -48,10 +50,10 @@ export function TestimonialCarousel() {
 
       <div className="flex justify-center gap-6 mt-4">
         <button onClick={prevSlide} className="bg-green-700 text-white rounded-full p-3 shadow-md hover:bg-green-800">
-          <i className="fas fa-chevron-left"></i>
+          <FontAwesomeIcon icon={faWheelchair} />
         </button>
         <button onClick={nextSlide} className="bg-green-700 text-white rounded-full p-3 shadow-md hover:bg-green-800">
-          <i className="fas fa-chevron-right"></i>
+          <FontAwesomeIcon icon={faWheelchairMove} />
         </button>
       </div>
     </section>

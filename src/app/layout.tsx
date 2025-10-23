@@ -7,8 +7,8 @@ import Footer from "./componentes/footer";
 import { ImgRedondaTelaInicial } from "./componentes/img_redonda_tela_inicial";
 import { TestimonialCarousel } from "./componentes/TestimonialCarousel";
 import { Banner } from "./componentes/banner";
-
 import PhotoUser from "./componentes/photo_user";
+import { faUserTie, faChartLine, faHandshake } from '@fortawesome/free-solid-svg-icons';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,17 +36,13 @@ export default function RootLayout({
         <NavBar />
         <div className="max-w-full mx-auto px-28">
           <div className="flex justify-center gap-8">
-            <Card Title="Atendimento Personalizado" Paragraph="Soluções feitas sob medida para o que você realmente precisa." Icon="" />
-            <Card Title="Resultados Reais" Paragraph="Soluções feitas sob medida para o que você realmente precisa." Icon="" />
-            <Card Title="Confiança e Acessibilidade" Paragraph="Soluções feitas sob medida para o que você realmente precisa." Icon="" />
+            <Card Title="Atendimento Personalizado" Paragraph="Soluções feitas sob medida para o que você realmente precisa." Icon={faUserTie} />
+            <Card Title="Resultados Reais" Paragraph="Soluções feitas sob medida para o que você realmente precisa." Icon={faChartLine} />
+            <Card Title="Confiança e Acessibilidade" Paragraph="Soluções feitas sob medida para o que você realmente precisa." Icon={faHandshake} />
           </div>
         </div>
-
-        
         <TestimonialCarousel />
         <Banner />
-        
-
         {children}
         <ImgRedondaTelaInicial />
         <PhotoUser width={100} height={100} />
