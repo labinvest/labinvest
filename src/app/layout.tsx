@@ -9,6 +9,7 @@ import { TestimonialCarousel } from "./componentes/TestimonialCarousel";
 import { Banner } from "./componentes/banner";
 import PhotoUser from "./componentes/photo_user";
 import { faUserTie, faChartLine, faHandshake } from '@fortawesome/free-solid-svg-icons';
+ 
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
