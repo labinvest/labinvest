@@ -4,11 +4,8 @@ import "./globals.css";
 import NavBar from "./componentes/navbar";
 import Card from "./componentes/card";
 import Footer from "./componentes/footer";
-import { faCoffee } from "@fortawesome/free-solid-svg-icons";
-import { library } from "@fortawesome/fontawesome-svg-core";
 import { ImgRedondaTelaInicial } from "./componentes/img_redonda_tela_inicial";
-
-library.add(faCoffee);
+import PhotoUser from "./componentes/photo_user";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,6 +43,7 @@ export default function RootLayout({
         </div>
         {children}
         <ImgRedondaTelaInicial/>
+        <PhotoUser width={100} height={100} />
         <Footer />
       </body>
     </html>
