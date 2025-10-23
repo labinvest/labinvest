@@ -1,6 +1,6 @@
 export default function Footer() {
     return (
-        <footer className="flex flex-col w-full bg-green-700 h-[50%] p-5 text-white items-center justify-around">
+        <footer className="flex flex-col w-full bg-green-700 h-[50%] p-5 text-white items-center justify-around ">
             <div className="flex items-center p-2">
                 <h1 className="text-white text-3xl font-bold mb-3 border-r-2 border-white p-5">Lab Invest</h1>
                 <div className="flex flex-col justify-center h-10 ml-5">

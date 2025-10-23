@@ -7,8 +7,11 @@ import { TestimonialCarousel } from "../componentes/Carousel";
 
 import PhotoUser from "../componentes/PhotoUser";
 import { faUserTie, faChartLine, faHandshake } from '@fortawesome/free-solid-svg-icons';
-import Card from "@/componentes/card";
-import NavBar from "@/componentes/navbar";
+import { Banner } from "../componentes/Banner";
+import Card from "../componentes/Card";
+import Footer from "../componentes/Footer";
+import NavBar from "../componentes/Navbar";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,19 +37,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <NavBar />
-        <div className="max-w-full mx-auto px-28">
-          <div className="flex justify-center gap-8">
-            <Card Title="Atendimento Personalizado" Paragraph="Soluções feitas sob medida para o que você realmente precisa." Icon={faUserTie} />
-            <Card Title="Resultados Reais" Paragraph="Soluções feitas sob medida para o que você realmente precisa." Icon={faChartLine} />
-            <Card Title="Confiança e Acessibilidade" Paragraph="Soluções feitas sob medida para o que você realmente precisa." Icon={faHandshake} />
-          </div>
-        </div>
-        <TestimonialCarousel />
-        <Banner />
         {children}
-        <ImgRedondaTelaInicial />
-        <PhotoUser width={100} height={100} />
+
+        <div className="">
         <Footer />
+        </div>
+        
       </body>
     </html>
   );
