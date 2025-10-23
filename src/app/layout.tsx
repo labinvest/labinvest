@@ -5,6 +5,9 @@ import NavBar from "./componentes/navbar";
 import Card from "./componentes/card";
 import Footer from "./componentes/footer";
 import { ImgRedondaTelaInicial } from "./componentes/img_redonda_tela_inicial";
+import { TestimonialCarousel } from "./componentes/TestimonialCarousel";
+import { Banner } from "./componentes/banner";
+
 import PhotoUser from "./componentes/photo_user";
 
 const geistSans = Geist({
@@ -29,11 +32,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-
-        <NavBar/>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <NavBar />
         <div className="max-w-full mx-auto px-28">
           <div className="flex justify-center gap-8">
             <Card Title="Atendimento Personalizado" Paragraph="Soluções feitas sob medida para o que você realmente precisa." Icon="" />
@@ -41,11 +41,18 @@ export default function RootLayout({
             <Card Title="Confiança e Acessibilidade" Paragraph="Soluções feitas sob medida para o que você realmente precisa." Icon="" />
           </div>
         </div>
+
+        
+        <TestimonialCarousel />
+        <Banner />
+        
+
         {children}
-        <ImgRedondaTelaInicial/>
+        <ImgRedondaTelaInicial />
         <PhotoUser width={100} height={100} />
         <Footer />
       </body>
     </html>
   );
 }
+
