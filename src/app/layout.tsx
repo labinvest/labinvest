@@ -39,7 +39,7 @@ export default function RootLayout({
         <NavBar />
         {children}
 
-        <div className="">
+        <div className="flex flex-col align-bottom">
         <Footer />
         </div>
         
