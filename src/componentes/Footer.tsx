@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 export default function Footer() {
     const pathname = usePathname();
     return (
-        !['/cadastro'].includes(pathname) && 
+        !['/'].includes(pathname) && 
         
             <footer className="flex flex-col w-full bg-green-700 h-[50%] p-5 text-white items-center justify-around">
                 <div className="flex items-center p-2">
