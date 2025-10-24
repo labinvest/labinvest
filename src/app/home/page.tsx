@@ -1,5 +1,7 @@
+'use client';
 import { Banner } from "@/componentes/Banner";
 import Card from "@/componentes/Card";
+import CardConsultor from "@/componentes/CardVoluntario";
 import { ImgRedondaTelaInicial } from "@/componentes/CardRedondo";
 import { TestimonialCarousel } from "@/componentes/Carousel";
 import PhotoUser from "@/componentes/PhotoUser";
