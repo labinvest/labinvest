@@ -1,10 +1,17 @@
-'use client'
-
+"use client"
+import { useRouter } from "next/navigation";
+import { use } from "react";
 import { usePathname } from "next/navigation";
+
+
+export default function NavBar(){
+
+    const router = useRouter();
+    return (<>
 
 const Bar = () => <header className="flex items-center justify-between px-24 py-6 max-w-full mx-auto">
         <div className="flex items-center space-x-1">
-            <button type="button" 
+            <button type="button"   onClick={() =>router.push("/home")}
                 className="flex items-center space-x-2 text-6xl font-extrabold select-none text-gray-500 transition duration-300 hover:scale-105">
                 <span className="text-gray-500">Lab</span>
                 <span className="text-green-700">Invest</span>
@@ -19,6 +26,10 @@ const Bar = () => <header className="flex items-center justify-between px-24 py-
             <a className="hover:text-gray-900 hover:scale-105 transition duration-300 hover:text-green-700"
                 href="../telaInicial/telainicial.html#services">
                 Serviços
+            </a>
+            <a className="hover:text-gray-900 hover:scale-105 transition duration-300 hover:text-green-700"
+               onClick={() =>router.push("/voluntario")}>
+                Voluntarios
             </a>
             <a className="hover:text-gray-900 hover:scale-105 transition duration-300 hover:text-green-700"
                 href="../perfil2/perfil-2.html">
