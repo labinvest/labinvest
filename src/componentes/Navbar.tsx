@@ -1,8 +1,8 @@
-export default function NavBar(){
-    return (<>
-    
+'use client'
 
-    <header className="flex items-center justify-between px-24 py-6 max-w-full mx-auto">
+import { usePathname } from "next/navigation";
+
+const Bar = () => <header className="flex items-center justify-between px-24 py-6 max-w-full mx-auto">
         <div className="flex items-center space-x-1">
             <button type="button" 
                 className="flex items-center space-x-2 text-6xl font-extrabold select-none text-gray-500 transition duration-300 hover:scale-105">
@@ -40,9 +40,12 @@ export default function NavBar(){
                 </div>
             </div>
         </div>
-    </header>
+    </header>;
 
-    
-    
-    </>)
+
+export default function NavBar(){
+    const pathname = usePathname();
+    return (
+        !['/cadastro'].includes(pathname) && <Bar />
+    );
 }
