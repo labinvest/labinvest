@@ -1,7 +1,7 @@
 'use client'
 import { useState } from "react"
 import { TestimonialCard} from "./CarouselCard"
-import { faCircleUser, faWheelchairMove, faWheelchair, faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons"
+import { faCircleUser, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const testimonials = [
