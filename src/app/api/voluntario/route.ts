@@ -4,49 +4,49 @@ const MOCK_VOLUNTARIOS = [
     { 
       id: 1, 
       nome: "Ana Beatriz", 
-      titulo: "Marketing Digital", 
-      especializacoes: ["SEO", "Mídias Sociais"], 
-      categoria: "Marketing", 
+      titulo: "Consultora Financeira", 
+      especializacoes: ["Planejamento Financeiro", "Investimentos"], 
+      categoria: "Finanças", 
       imagem_perfil: "" 
     },
     { 
       id: 2, 
       nome: "Carlos Silva", 
-      titulo: "Desenvolvedor Web", 
-      especializacoes: ["Frontend", "Backend"], 
-      categoria: "Desenvolvimento", 
+      titulo: "Coach Financeiro", 
+      especializacoes: ["Orçamento Pessoal", "Dívidas"], 
+      categoria: "Finanças", 
       imagem_perfil: ""
     },
     { 
       id: 3, 
       nome: "Mariana Souza", 
-      titulo: "Designer Gráfico", 
-      especializacoes: ["UI/UX", "Branding"], 
-      categoria: "Design", 
+      titulo: "Contadora", 
+      especializacoes: ["Impostos", "Auditoria"], 
+      categoria: "Finanças", 
       imagem_perfil: ""
     },
     { 
       id: 4, 
       nome: "Pedro Oliveira", 
-      titulo: "Analista de Dados", 
-      especializacoes: ["SQL", "Python"], 
-      categoria: "Dados", 
+      titulo: "Investidora", 
+      especializacoes: ["Ações", "Fundos Imobiliários"], 
+      categoria: "Finanças", 
       imagem_perfil: ""
     },
     { 
       id: 5, 
       nome: "Juliana Costa", 
-      titulo: "Especialista em Marketing", 
-      especializacoes: ["Content Marketing", "Email Marketing"], 
-      categoria: "Marketing", 
+      titulo: "Estudante de contabilidade", 
+      especializacoes: ["Excel", "Análise de dados"], 
+      categoria: "Finanças", 
       imagem_perfil: ""
     },
     { 
       id: 6, 
       nome: "Rafael Lima", 
-      titulo: "Engenheiro de Software", 
-      especializacoes: ["Java", "C#"], 
-      categoria: "Desenvolvimento", 
+      titulo: "Organizador de finanças pessoais", 
+      especializacoes: ["Orçamento familiar", "Planejamento de aposentadoria"], 
+      categoria: "Finanças", 
       imagem_perfil: ""
     },
 ];

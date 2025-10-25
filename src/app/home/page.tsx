@@ -2,13 +2,9 @@
 import { Banner } from "@/componentes/Banner";
 import Card from "@/componentes/Card";
 import { ImgRedondaTelaInicial } from "@/componentes/CardRedondo";
-import { TestimonialCarousel } from "@/componentes/Carousel";
-import PhotoUser from "@/componentes/PhotoUser";
-import {
-  faUserTie,
-  faChartLine,
-  faHandshake,
-} from "@fortawesome/free-solid-svg-icons";
+import { Carousel } from "@/componentes/Carousel";
+
+import { faUserTie, faChartLine, faHandshake } from "@fortawesome/free-solid-svg-icons";
 
 export default function Home() {
   return (
