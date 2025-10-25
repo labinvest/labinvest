@@ -1,27 +1,65 @@
-'use client';
+"use client";
 import { Banner } from "@/componentes/Banner";
 import Card from "@/componentes/Card";
-import CardConsultor from "@/componentes/CardVoluntario";
 import { ImgRedondaTelaInicial } from "@/componentes/CardRedondo";
 import { TestimonialCarousel } from "@/componentes/Carousel";
 import PhotoUser from "@/componentes/PhotoUser";
-import { faUserTie, faChartLine, faHandshake } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUserTie,
+  faChartLine,
+  faHandshake,
+} from "@fortawesome/free-solid-svg-icons";
 
-export default function Home(){
-    return (<>
-    
-     <div className="max-w-full mx-auto px-28">
-              <div className="flex justify-center gap-8">
-                <Card Title="Atendimento Personalizado" Paragraph="Soluções feitas sob medida para o que você realmente precisa." Icon={faUserTie} />
-                <Card Title="Resultados Reais" Paragraph="Soluções feitas sob medida para o que você realmente precisa." Icon={faChartLine} />
-                <Card Title="Confiança e Acessibilidade" Paragraph="Soluções feitas sob medida para o que você realmente precisa." Icon={faHandshake} />
-              </div>
-            </div>
-            <TestimonialCarousel />
-            <Banner />
+export default function Home() {
+  return (
+    <>
+      <Banner />
+      <div className="flex justify-center items-center mt-32 mb-12 gap-2">
+        <h2 className="text-3xl font-extrabold text-green-800">
+          Feedback de
+        </h2>
+        <h2 className="text-3xl font-extrabold text-white">
+          {" "}
+          alguns clientes
+        </h2>
+      </div>
+      <TestimonialCarousel />
 
-            <ImgRedondaTelaInicial />
-                    <PhotoUser width={100} height={100} />
-    
-    </>)
+      <div className="flex justify-center items-center mt-32 mb-12 gap-2">
+        <h2 className="text-3xl font-extrabold text-green-800">
+          Por que escolher
+        </h2>
+        <h2 className="text-3xl font-extrabold text-white">
+          {" "}
+          nossos serviços?
+        </h2>
+      </div>
+      <div className="max-w-full m-20">
+        <div className="flex justify-center gap-8 flex-wrap mb-18">
+          <Card
+            Title="Atendimento Personalizado"
+            Paragraph="Soluções feitas sob medida para o que você realmente precisa."
+            Icon={faUserTie}
+          />
+          <Card
+            Title="Resultados Reais"
+            Paragraph="Soluções feitas sob medida para o que você realmente precisa."
+            Icon={faChartLine}
+          />
+          <Card
+            Title="Confiança e Acessibilidade"
+            Paragraph="Soluções feitas sob medida para o que você realmente precisa."
+            Icon={faHandshake}
+          />
+        </div>
+      </div>
+
+      <div className="flex justify-center items-center mt-24 mb-12 gap-2">
+        <h2 className="text-3xl font-extrabold text-green-800">Nossos</h2>
+        <h2 className="text-3xl font-extrabold text-white">serviços</h2>
+      </div>
+      <ImgRedondaTelaInicial />
+      <PhotoUser width={100} height={100} />
+    </>
+  );
 }

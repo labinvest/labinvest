@@ -26,7 +26,7 @@ export function ImgRedondaTelaInicial() {
               height={160}
               className="w-40 h-40 rounded-full object-cover transition-transform duration-300 hover:scale-110 cursor-pointer"
             />
-            <p className="bg-white text-green-700 font-bold text-center mt-4 px-4 py-2 rounded-md">
+              <p className="text-green-700 font-bold text-center mt-6">
               Planejamento para Investimentos Iniciais.
             </p>
           </button>
