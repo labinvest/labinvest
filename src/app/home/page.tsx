@@ -3,7 +3,7 @@ import { Banner } from "@/componentes/Banner";
 import Card from "@/componentes/Card";
 import CardConsultor from "@/componentes/CardVoluntario";
 import { ImgRedondaTelaInicial } from "@/componentes/CardRedondo";
-import { TestimonialCarousel } from "@/componentes/Carousel";
+import { Carousel } from "@/componentes/Carousel";
 import PhotoUser from "@/componentes/PhotoUser";
 import { faUserTie, faChartLine, faHandshake } from "@fortawesome/free-solid-svg-icons";
 
@@ -17,7 +17,7 @@ export default function Home(){
                 <Card Title="Confiança e Acessibilidade" Paragraph="Soluções feitas sob medida para o que você realmente precisa." Icon={faHandshake} />
               </div>
             </div>
-            <TestimonialCarousel />
+            <Carousel />
             <Banner />
 
             <ImgRedondaTelaInicial />

@@ -2,13 +2,6 @@
   import { Geist, Geist_Mono } from "next/font/google";
   import "./globals.css";
 
-  import { ImgRedondaTelaInicial } from "../componentes/CardRedondo";
-  import { TestimonialCarousel } from "../componentes/Carousel";
-
-import PhotoUser from "../componentes/PhotoUser";
-import { faUserTie, faChartLine, faHandshake } from '@fortawesome/free-solid-svg-icons';
-import { Banner } from "../componentes/Banner";
-import Card from "../componentes/Card";
 import Footer from "../componentes/Footer";
 import NavBar from "../componentes/Navbar";
 
@@ -35,14 +28,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
         <NavBar />
-        {children}
+        <main className="flex-1">
+          {children}
+        </main>
 
-        <div className="flex flex-col align-bottom">
         <Footer />
-        </div>
-        
       </body>
     </html>
   );
