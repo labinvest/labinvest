@@ -21,7 +21,7 @@ function CardVoluntario({ voluntario }: Props) {
   return (
 
     <a onClick={() => router.push(`/voluntario/${voluntario.id}`)}
-      className="flex items-center p-4 bg-white rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
+    className="className=flex items-start h-full p-4 bg-white rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
 
       <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gray-100 flex items-center justify-center">
         <FontAwesomeIcon icon={faUser} className="text-gray-600 text-4xl" />

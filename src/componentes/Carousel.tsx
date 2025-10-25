@@ -1,7 +1,7 @@
 'use client'
 import { useState } from "react"
 import { TestimonialCard} from "./CarouselCard"
-import { faCircleUser, faWheelchairMove, faWheelchair } from "@fortawesome/free-solid-svg-icons"
+import { faCircleUser, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const testimonials = [
@@ -50,10 +50,10 @@ export function TestimonialCarousel() {
 
       <div className="flex justify-center gap-6 mt-4">
         <button onClick={prevSlide} className="bg-green-700 text-white rounded-full p-3 shadow-md hover:bg-green-800">
-          <FontAwesomeIcon icon={faWheelchair} />
+          <FontAwesomeIcon icon={faArrowLeft} />
         </button>
         <button onClick={nextSlide} className="bg-green-700 text-white rounded-full p-3 shadow-md hover:bg-green-800">
-          <FontAwesomeIcon icon={faWheelchairMove} />
+          <FontAwesomeIcon icon={faArrowRight} />
         </button>
       </div>
     </section>

@@ -26,7 +26,7 @@ export default function NavBar(){
                 Sobre nós
             </a>
             <a className="hover:text-gray-900 hover:scale-105 transition duration-300 hover:text-green-700"
-                href="../telaInicial/telainicial.html#services">
+                onClick={() =>router.push("/servicos")}>
                 Serviços
             </a>
             <a className="hover:text-gray-900 hover:scale-105 transition duration-300 hover:text-green-700"

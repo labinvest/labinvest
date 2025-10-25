@@ -1,10 +1,8 @@
 'use client';
 import { Banner } from "@/componentes/Banner";
 import Card from "@/componentes/Card";
-import CardConsultor from "@/componentes/CardVoluntario";
 import { ImgRedondaTelaInicial } from "@/componentes/CardRedondo";
 import { TestimonialCarousel } from "@/componentes/Carousel";
-import PhotoUser from "@/componentes/PhotoUser";
 import { faUserTie, faChartLine, faHandshake } from "@fortawesome/free-solid-svg-icons";
 
 export default function Home(){
@@ -18,10 +16,7 @@ export default function Home(){
               </div>
             </div>
             <TestimonialCarousel />
-            <Banner />
-
+            <Banner/>
             <ImgRedondaTelaInicial />
-                    <PhotoUser width={100} height={100} />
-    
     </>)
 }
