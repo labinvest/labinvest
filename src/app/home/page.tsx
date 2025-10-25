@@ -3,7 +3,6 @@ import { Banner } from "@/componentes/Banner";
 import Card from "@/componentes/Card";
 import { ImgRedondaTelaInicial } from "@/componentes/CardRedondo";
 import { Carousel } from "@/componentes/Carousel";
-
 import { faUserTie, faChartLine, faHandshake } from "@fortawesome/free-solid-svg-icons";
 
 export default function Home() {
@@ -19,7 +18,7 @@ export default function Home() {
           alguns clientes
         </h2>
       </div>
-      <TestimonialCarousel />
+      <Carousel />
 
       <div className="flex justify-center items-center mt-32 mb-12 gap-2">
         <h2 className="text-3xl font-extrabold text-green-800">
@@ -55,7 +54,6 @@ export default function Home() {
         <h2 className="text-3xl font-extrabold text-white">serviços</h2>
       </div>
       <ImgRedondaTelaInicial />
-      <PhotoUser width={100} height={100} />
     </>
   );
 }
