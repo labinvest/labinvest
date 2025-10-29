@@ -11,6 +11,7 @@ export default function AuthForm() {
   const [step, setStep] = useState<"first" | "finished">("first");
   const [open, setOpen] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [loginError, setLoginError] = useState("");
 
   const schema = mode === "login" ? loginSchema : registerSchema;
 
@@ -21,13 +22,13 @@ export default function AuthForm() {
         : { nome: "", email: "", senha: "", confirmarSenha: "" },
     validationSchema: schema,
     onSubmit: (v) => {
-      console.log("Dados enviados:", JSON.stringify(v, null, 2));
-      if (
-        mode === "login" &&
-        v.username === "admin" &&
-        v.password === "admin123"
-      ) {
-        router.push("/home");
+      if (mode === "login") {
+        if (v.username === "admin" && v.password === "admin123") {
+          setLoginError("");
+          router.push("/home");
+        } else {
+          setLoginError("Usuário ou senha incorretos!");
+        }
       } else {
         setStep("finished");
       }
@@ -40,7 +41,7 @@ export default function AuthForm() {
     label: string,
     placeholder: string
   ) => (
-    <div className="text-left w-full">
+    <div className="text-left w-full font-sans">
       <label
         htmlFor={name}
         className="block text-sm font-medium text-gray-700 mb-1"
@@ -54,10 +55,10 @@ export default function AuthForm() {
         value={(formik.values as any)[name]}
         onChange={formik.handleChange}
         placeholder={placeholder}
-        className="w-full p-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-green-700 text-gray-800"
+        className="w-full p-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-green-700 text-gray-800 font-sans"
       />
       {formik.errors[name as keyof typeof formik.errors] && (
-        <p className="text-red-500 text-sm mt-1">
+        <p className="text-red-500 text-sm mt-1 font-sans">
           {formik.errors[name as keyof typeof formik.errors]}
         </p>
       )}
@@ -65,16 +66,18 @@ export default function AuthForm() {
   );
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 font-sans">
       <div className="flex flex-col items-center text-center px-6 py-12 bg-white rounded-lg shadow-lg">
-        <h1 className="text-5xl font-bold text-gray-600">
+        <h1 className="text-5xl font-bold text-gray-600 font-sans">
           Lab<span className="text-green-700">Invest</span>
         </h1>
-        <p className="text-sm text-gray-500 font-bold mt-2">
+        <p className="text-sm text-gray-500 font-extrabold mt-2 font-sans">
           Simples, claro e eficiente.
         </p>
-        <p className="text-sm text-black mt-2">Bem-vindo ao Lab Invest</p>
-        <h1 className="text-sm text-red-600 font-semibold mt-4">
+        <p className="text-sm text-black mt-2 font-sans">
+          Bem-vindo ao Lab Invest
+        </p>
+        <h1 className="text-sm text-pink-600 font-semibold mt-4 font-sans">
           Usuário: admin | Senha: admin123
         </h1>
 
@@ -83,17 +86,17 @@ export default function AuthForm() {
             setMode(mode === "login" ? "register" : "login");
             setStep("first");
             formik.resetForm();
+            setLoginError("");
           }}
-          className="relative w-60 h-10 bg-gray-300 rounded-full mt-6"
+          className="relative w-60 h-10 bg-gray-300 rounded-full mt-6 font-sans"
         >
-          <span className="absolute inset-0 flex items-center justify-between px-6 text-base text-gray-700 z-0">
+          <span className="absolute inset-0 flex items-center justify-between px-6 text-base text-gray-700 z-0 font-sans">
             <span>Login</span>
             <span>Registrar</span>
           </span>
           <span
-            className={`absolute top-0 left-0 w-1/2 h-full bg-green-700 rounded-full flex items-center justify-center transition ${
-              mode === "login" ? "" : "translate-x-full"
-            }`}
+            className={`absolute top-0 left-0 w-1/2 h-full bg-green-700 rounded-full flex items-center justify-center transition font-sans ${mode === "login" ? "" : "translate-x-full"
+              }`}
           >
             <span className="text-white font-semibold">
               {mode === "login" ? "Login" : "Registrar"}
@@ -104,7 +107,7 @@ export default function AuthForm() {
         {mode === "login" && (
           <form
             onSubmit={formik.handleSubmit}
-            className="mt-12 w-[400px] space-y-4"
+            className="mt-12 w-[400px] space-y-4 font-sans"
           >
             {input(
               "username",
@@ -113,16 +116,23 @@ export default function AuthForm() {
               "Digite seu nome de usuário"
             )}
             {input("password", "password", "Senha", "Digite sua senha")}
+
+            {loginError && (
+              <p className="text-red-600 text-sm mb-2 font-semibold font-sans">
+                {loginError}
+              </p>
+            )}
+
             <button
               type="submit"
-              className="w-full p-2 bg-green-700 text-white rounded-lg hover:bg-green-800"
+              className="w-full p-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-sans"
             >
               Entrar
             </button>
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="text-sm text-green-700 hover:underline text-left"
+              className="text-sm text-green-700 hover:underline text-left font-sans"
             >
               Esqueci minha senha
             </button>
@@ -132,7 +142,7 @@ export default function AuthForm() {
         {mode === "register" && step === "first" && (
           <form
             onSubmit={formik.handleSubmit}
-            className="mt-12 w-[400px] space-y-4"
+            className="mt-12 w-[400px] space-y-4 font-sans"
           >
             {input("nome", "text", "Nome completo", "Digite seu nome")}
             {input("email", "email", "Email", "Digite seu email")}
@@ -145,7 +155,7 @@ export default function AuthForm() {
             )}
             <button
               type="submit"
-              className="w-full p-2 bg-green-700 text-white rounded-lg hover:bg-green-800"
+              className="w-full p-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-sans"
             >
               Registrar
             </button>
@@ -153,16 +163,19 @@ export default function AuthForm() {
         )}
 
         {mode === "register" && step === "finished" && (
-          <div className="mt-12 bg-green-100 border border-green-400 text-green-700 px-4 py-6 rounded-lg shadow-lg w-[400px]">
-            <h2 className="text-lg font-bold">Registro Concluído!</h2>
-            <p className="mt-2 text-sm">Cadastro finalizado com sucesso.</p>
+          <div className="mt-12 bg-green-100 border border-green-400 text-green-700 px-4 py-6 rounded-lg shadow-lg w-[400px] font-sans">
+            <h2 className="text-lg font-bold font-sans">Registro Concluído!</h2>
+            <p className="mt-2 text-sm font-sans">
+              Cadastro finalizado com sucesso.
+            </p>
             <button
               onClick={() => {
                 setMode("login");
                 setStep("first");
                 formik.resetForm();
+                setLoginError("");
               }}
-              className="mt-4 w-full p-2 bg-green-700 text-white rounded-lg hover:bg-green-800"
+              className="mt-4 w-full p-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-sans"
             >
               Voltar ao Login
             </button>
@@ -170,28 +183,29 @@ export default function AuthForm() {
         )}
 
         {open && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50 font-sans">
+
             <div className="bg-white p-6 rounded-lg shadow-lg w-[400px] text-center">
-              <h2 className="text-green-700 font-semibold text-lg mb-4">
+              <h2 className="text-green-700 font-semibold text-lg mb-4 font-sans">
                 Recuperação de Senha
               </h2>
               <input
                 type="email"
                 placeholder="Seu e-mail"
-                className="w-full p-3 border rounded-lg mb-4 text-gray-800"
+                className="w-full p-3 border rounded-lg mb-4 text-gray-800 font-sans"
               />
               <button
                 onClick={() => {
                   setEmailSent(true);
                   setOpen(false);
                 }}
-                className="w-full p-2 bg-green-700 text-white rounded-lg hover:bg-green-800"
+                className="w-full p-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-sans"
               >
                 Enviar link
               </button>
               <button
                 onClick={() => setOpen(false)}
-                className="mt-4 text-sm text-gray-500 hover:underline"
+                className="mt-4 text-sm text-gray-500 hover:underline font-sans"
               >
                 Cancelar
               </button>
@@ -200,12 +214,14 @@ export default function AuthForm() {
         )}
 
         {emailSent && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 font-sans">
             <div className="bg-white p-6 rounded-lg shadow-lg w-[400px] text-center">
-              <h2 className="text-green-700 font-semibold text-lg mb-4">
+              <h2 className="text-green-700 font-semibold text-lg mb-4 font-sans">
                 E-mail enviado!
               </h2>
-              <p className="text-gray-600">Verifique sua caixa de entrada.</p>
+              <p className="text-gray-600 font-sans">
+                Verifique sua caixa de entrada.
+              </p>
             </div>
           </div>
         )}

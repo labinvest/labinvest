@@ -33,6 +33,11 @@ export default function PerfilVoluntario() {
           >
             Mensagem
           </button>
+          <button
+            className="bg-green-700 text-white text-sm font-semibold rounded-full px-6 py-2 hover:bg-green-800 transition w-fit self-start sm:self-auto"
+          >
+            Solicitar Agendamento
+          </button>
         </div>
 
        

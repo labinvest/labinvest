@@ -1,6 +1,6 @@
 'use client'
 import { useState } from "react"
-import { TestimonialCard} from "./CarouselCard"
+import { TestimonialCard } from "./CarouselCard"
 import { faCircleUser, faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -39,25 +39,35 @@ export function Carousel() {
   }
 
   return (
-    <section className=" mx-auto bg-white rounded-lg shadow-lg p-6 mt-6">
-      <div className="relative overflow-hidden">
-        <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${index * 100}%)` }}>
+    <section className="mx-auto bg-white rounded-lg shadow-lg p-4 mt-6 max-w-3xl">
+      <div className="relative overflow-hidden h-[300px]">
+        <div
+          className="flex transition-transform duration-500 ease-in-out h-full"
+          style={{ transform: `translateX(-${index * 100}%)` }}
+        >
           {testimonials.map((item, i) => (
-            <div key={i} className="flex-shrink-0 w-full px-4">
+            <div key={i} className="flex-shrink-0 w-full h-full px-4">
               <TestimonialCard {...item} />
             </div>
           ))}
         </div>
       </div>
 
-      <div className="flex justify-center gap-6 mt-4">
-        <button onClick={prevSlide} className="bg-green-700 text-white rounded-full p-3 shadow-md hover:bg-green-800">
+      <div className="flex justify-center gap-4 mt-4">
+        <button
+          onClick={prevSlide}
+          className="bg-green-700 text-white rounded-full p-2 shadow-md hover:bg-green-800"
+        >
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
-        <button onClick={nextSlide} className="bg-green-700 text-white rounded-full p-3 shadow-md hover:bg-green-800">
+        <button
+          onClick={nextSlide}
+          className="bg-green-700 text-white rounded-full p-2 shadow-md hover:bg-green-800"
+        >
           <FontAwesomeIcon icon={faArrowRight} />
         </button>
       </div>
     </section>
+
   )
 }

@@ -9,23 +9,21 @@ export default function Home() {
   return (
     <>
       <Banner />
-      <div className="flex justify-center items-center mt-32 mb-12 gap-2">
-        <h2 className="text-3xl font-extrabold text-green-800">
-          Feedback de
+      <div className="flex justify-center items-center  mb-12 gap-2">
+        <h2 className="text-3xl font-extrabold text-grey-800">
+          Feedback de alguns
         </h2>
-        <h2 className="text-3xl font-extrabold text-white">
-          {" "}
-          alguns clientes
+        <h2 className="text-3xl font-extrabold text-green-700">
+          clientes:
         </h2>
       </div>
       <Carousel />
 
-      <div className="flex justify-center items-center mt-32 mb-12 gap-2">
-        <h2 className="text-3xl font-extrabold text-green-800">
+      <div className="flex justify-center items-center mt-10 mb-12 gap-2">
+        <h2 className="text-3xl font-extrabold text-grey-800">
           Por que escolher
         </h2>
-        <h2 className="text-3xl font-extrabold text-white">
-          {" "}
+        <h2 className="text-3xl font-extrabold text-green-700">
           nossos serviços?
         </h2>
       </div>
@@ -50,8 +48,8 @@ export default function Home() {
       </div>
 
       <div className="flex justify-center items-center mt-24 mb-12 gap-2">
-        <h2 className="text-3xl font-extrabold text-green-800">Nossos</h2>
-        <h2 className="text-3xl font-extrabold text-white">serviços</h2>
+        <h2 className="text-3xl font-extrabold text-gray-800">Nossos</h2>
+        <h2 className="text-3xl font-extrabold text-green-700">serviços:</h2>
       </div>
       <ImgRedondaTelaInicial />
     </>
