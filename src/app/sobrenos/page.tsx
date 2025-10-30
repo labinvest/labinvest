@@ -69,7 +69,6 @@ export default function SobreNos() {
               </p>
             </div>
 
-            {/* Nossos Valores */}
             <div className="bg-purple-50 rounded-2xl shadow-lg p-8 text-center">
               <div className="bg-purple-700 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FontAwesomeIcon icon={faAward} className="text-white text-2xl" />
