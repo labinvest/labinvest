@@ -10,7 +10,6 @@ export default function AuthForm() {
   const [mode, setMode] = useState<"login" | "register">("login");
   const [step, setStep] = useState<"first" | "finished">("first");
   const [open, setOpen] = useState(false);
-  const [emailSent, setEmailSent] = useState(false);
   const [loginError, setLoginError] = useState("");
 
   const schema = mode === "login" ? loginSchema : registerSchema;
@@ -95,8 +94,9 @@ export default function AuthForm() {
             <span>Registrar</span>
           </span>
           <span
-            className={`absolute top-0 left-0 w-1/2 h-full bg-green-700 rounded-full flex items-center justify-center transition font-sans ${mode === "login" ? "" : "translate-x-full"
-              }`}
+            className={`absolute top-0 left-0 w-1/2 h-full bg-green-700 rounded-full flex items-center justify-center transition font-sans ${
+              mode === "login" ? "" : "translate-x-full"
+            }`}
           >
             <span className="text-white font-semibold">
               {mode === "login" ? "Login" : "Registrar"}
@@ -184,7 +184,6 @@ export default function AuthForm() {
 
         {open && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50 font-sans">
-
             <div className="bg-white p-6 rounded-lg shadow-lg w-[400px] text-center">
               <h2 className="text-green-700 font-semibold text-lg mb-4 font-sans">
                 Recuperação de Senha
@@ -195,10 +194,7 @@ export default function AuthForm() {
                 className="w-full p-3 border rounded-lg mb-4 text-gray-800 font-sans"
               />
               <button
-                onClick={() => {
-                  setEmailSent(true);
-                  setOpen(false);
-                }}
+                onClick={() => setOpen(false)}
                 className="w-full p-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-sans"
               >
                 Enviar link
@@ -209,19 +205,6 @@ export default function AuthForm() {
               >
                 Cancelar
               </button>
-            </div>
-          </div>
-        )}
-
-        {emailSent && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 font-sans">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-[400px] text-center">
-              <h2 className="text-green-700 font-semibold text-lg mb-4 font-sans">
-                E-mail enviado!
-              </h2>
-              <p className="text-gray-600 font-sans">
-                Verifique sua caixa de entrada.
-              </p>
             </div>
           </div>
         )}

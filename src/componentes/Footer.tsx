@@ -1,8 +1,10 @@
 'use client'
 
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Footer() {
+    const router = useRouter();
     const pathname = usePathname();
     return (
         !['/'].includes(pathname) && 
@@ -20,14 +22,15 @@ export default function Footer() {
                 <div className="p-3">
                     <input type="text" className="bg-transparent rounded-full border border-white py-[2px] px-[10px]"
                         placeholder="Digite seu email" />
-                    <button className="bg-[#B2B3CF] rounded-full px-[10px] py-[3px]">Inscrever</button>
+                    <button className="bg-[#B2B3CF] rounded-full px-[10px] py-[3px] cursor-pointer" onClick={() => (window.location.href = "https://pt.wikipedia.org/wiki/Esquema_em_pir%C3%A2mide#:~:text=O%20site%20do%20FBI%20afirma,para%20comercializar%20um%20determinado%20produto.")}>Inscrever</button>
                 </div>
-                <div className="flex justify-between w-[40%] p-2">
+                <div className="flex justify-between w-[40%] p-2 cursor-pointer">
                     <p className="px-5">Carreira</p>
                     <p>Politica de Privacidade</p>
                     <p>Termos & Condições</p>
+                    <p onClick={() => router.push('/faq')}>FAQ</p>
                 </div>
-                <p>© 2021 Lab Invest Inc. </p>
+                <p>© 2025 Lab Invest Inc. </p>
             </footer>
         
     );

@@ -1,5 +1,10 @@
 import Image from "next/image";
+import React from "react";
+import { useRouter } from "next/navigation";
+
 export function ImgRedondaTelaInicial() {
+  const router = useRouter();
+
   return (
     <section className="gap-12 max-w-full mx-auto px-28">
       <div className="flex justify-center gap-8">
@@ -10,11 +15,12 @@ export function ImgRedondaTelaInicial() {
               alt="Imagem Redonda"
               width={160}
               height={160}
+              onClick={() => ("/servicos")}
               className="w-40 h-40 rounded-full object-cover transition-transform duration-300 hover:scale-110 cursor-pointer"
             />
           </button>
           <p className="text-green-700 font-bold text-center mt-4 px-4 py-2 rounded-md">
-            Renegociação e Organização de Dívidas.
+            Nosso serviços.
           </p>
         </div>
         <div className="text-white p-6 h-[350px] w-[300px] flex flex-col justify-start items-center">
@@ -24,10 +30,11 @@ export function ImgRedondaTelaInicial() {
               alt="Imagem Redonda"
               width={160}
               height={160}
+              onClick={() => router.push("/voluntarios")}
               className="w-40 h-40 rounded-full object-cover transition-transform duration-300 hover:scale-110 cursor-pointer"
             />
               <p className="text-green-700 font-bold text-center mt-6">
-              Planejamento para Investimentos Iniciais.
+              Nossos Voluntários.
             </p>
           </button>
         </div>
@@ -38,11 +45,12 @@ export function ImgRedondaTelaInicial() {
               alt="Imagem Redonda"
               width={160}
               height={160}
+              onClick={() => router.push("/noticias")}
               className="w-40 h-40 rounded-full object-cover transition-transform duration-300 hover:scale-110 cursor-pointer"
             />
           </button>
           <p className="text-green-700 font-bold text-center mt-6">
-            Renegociação e Organização de Dívidas.
+             Nossas Notícias.
           </p>
         </div>
       </div>

@@ -4,7 +4,6 @@ import "./globals.css";
 import Footer from "../componentes/Footer";
 import NavBar from "../componentes/Navbar";
 
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -26,16 +25,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
+    <html lang="pt-BR" style={{ colorScheme: "light" }}>
+      <head>
+        <meta name="color-scheme" content="light" />
+        <style>{`
+          html, body { 
+            background-color: white !important; 
+            color: black !important;
+          }
+        `}</style>
+      </head>
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <NavBar />
-        <main className="flex-1">
-          {children}
-        </main>
-
+        <main className="flex-1">{children}</main>
         <Footer />
       </body>
     </html>
   );
 }
-

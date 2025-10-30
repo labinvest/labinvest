@@ -15,9 +15,9 @@ function ServicoPage() {
             </h2>
             <p className="text-gray-700 leading-relaxed">
               A consultoria para controle de finanças é um serviço especializado que
-              auxilia indivíduos e empresas a <strong className="font-bold text-gray-900">administrarem seus recursos financeiros</strong>
+              auxilia indivíduos e empresas a <strong className="font-bold text-gray-900"> administrarem seus recursos financeiros</strong>
               de forma eficaz. O objetivo principal é evitar desperdícios, aumentar a
-              rentabilidade e garantir a saúde financeira no curto, médio e longo prazo.
+              rentabilidade e ajudar a saúde financeira no curto, médio e longo prazo.
             </p>
           </section>
 

@@ -48,9 +48,11 @@ export default function NavBar() {
             </div>
 
             <nav className="hidden md:flex space-x-10 text-base font-semibold text-gray-600">
+                <a className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/home")} >Home</a>
                 <a className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/servicos")}>Serviços</a>
-                <a className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/voluntario")}>Voluntarios</a>
-                <a className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/perfil")}>Meu Perfil</a>
+                <a className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/sobrenos")}>Sobre nós</a>
+                <a className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/voluntario")}>Voluntários</a>
+                <a className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/newsletter")}>Notícias</a>
             </nav>
 
             <div className="relative items-center ml-4 hidden md:flex">
@@ -60,14 +62,19 @@ export default function NavBar() {
                         aria-label="User profile"
                         aria-expanded={profileOpen}
                         onClick={() => setProfileOpen((s) => !s)}
-                        className="bg-gradient-to-r from-green-500 to-green-700 text-white rounded-full p-2 shadow-lg hover:scale-105 transition focus:outline-none"
+                        className="bg-gradient-to-r from-green-500 to-green-700 text-white rounded-full p-2 shadow-lg hover:scale-105 transition focus:outline-none cursor-pointer"
                     >
                         <FontAwesomeIcon icon={faUser} />
                     </button>
 
                     {profileOpen && (
                         <div id="profileDropdown" className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg p-2 w-40 z-50">
-                            <a onClick={() => router.push("/")} className="block px-4 py-2 text-green-700 hover:bg-gray-100 rounded cursor-pointer">Entrar</a>
+                            <a onClick={() => router.push("/")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Entrar</a>
+                            <a onClick={() => router.push("/perfil")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Meu Perfil</a>
+                            <a onClick={() => router.push("/editar_perfil")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Editar Perfil</a>        
+                            <a onClick={() => router.push("/agendamento")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Meus Agendamentos</a>
+                            <a onClick={() => router.push("/dados_pessoais")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Meus Dados</a>
+                            <a onClick={() => router.push("/")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Sair</a>
                         </div>
                     )}
                 </div>
@@ -78,8 +85,6 @@ export default function NavBar() {
                     <nav className="flex flex-col p-4 space-y-2 text-gray-700">
                         <button onClick={() => router.push("/servicos")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Serviços</button>
                         <button onClick={() => router.push("/voluntario")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Voluntarios</button>
-                        <button onClick={() => router.push("/perfil")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Meu Perfil</button>
-                        <button onClick={() => router.push("/")} className="text-left px-3 py-2 rounded hover:bg-gray-100 text-green-700 cursor-pointer">Entrar</button>
                     </nav>
                 </div>
             )}
