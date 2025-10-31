@@ -52,7 +52,7 @@ export default function NavBar() {
                 <a className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/servicos")}>Serviços</a>
                 <a className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/sobrenos")}>Sobre nós</a>
                 <a className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/voluntario")}>Voluntários</a>
-                <a className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/newsletter")}>Notícias</a>
+                <a className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/noticias")}>Notícias</a>
             </nav>
 
             <div className="relative items-center ml-4 hidden md:flex">
