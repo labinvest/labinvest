@@ -1,38 +1,15 @@
 "use client";
 import React from "react";
+import CarouselNoticias from "@/componentes/CarouselNoticias";
 
 const postagens = [
-  {
-    autor: "Ana Souza",
-    data: "30 de Outubro de 2025",
-    conteudo:
-      "Hoje tivemos uma experiência incrível ajudando famílias com orientações sobre orçamento doméstico.",
-    imagem: "/images/post1.jpg",
-    destaque: true,
-  },
   {
     autor: "Carlos Lima",
     data: "28 de Outubro de 2025",
     conteudo:
       "Participei da ação no bairro Jardim Europa. A receptividade das pessoas foi maravilhosa.",
-    imagem: "/images/post2.jpg",
-    destaque: false,
-  },
-  {
-    autor: "Juliana Ribeiro",
-    data: "25 de Outubro de 2025",
-    conteudo:
-      "Organizamos uma roda de conversa sobre educação financeira para jovens. Foi um sucesso!",
-    imagem: "/images/post3.jpg",
-    destaque: false,
-  },
-  {
-    autor: "Marcos Silva",
-    data: "22 de Outubro de 2025",
-    conteudo:
-      "Distribuímos kits de higiene e conversamos com moradores sobre planejamento financeiro.",
-    imagem: "/images/post4.jpg",
-    destaque: false,
+    imagem: "/images/Image6.png",
+    destaque: true,
   },
 ];
 
@@ -41,16 +18,8 @@ export default function PostagensVoluntarios() {
   const outros = postagens.filter((p) => !p.destaque);
 
   return (
-    <section className="max-w-7xl mx-auto px-6 py-16">
-      <div className="mb-12">
-        <h2 className="text-3xl font-extrabold text-gray-800 mb-2">
-          Postagens dos <span className="text-green-700">voluntários</span>
-        </h2>
-        <p className="text-gray-600">
-          Veja os relatos e experiências compartilhadas por quem faz a diferença.
-        </p>
-      </div>
-
+    <section className="max-w-7xl mx-auto px-6 py-1">
+      
       {destaque && (
         <div className="mb-16">
           <div className="relative rounded-xl overflow-hidden shadow-lg">
@@ -59,14 +28,27 @@ export default function PostagensVoluntarios() {
               alt="Post em destaque"
               className="w-full h-96 object-cover"
             />
-            <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-end p-6">
-              <h3 className="text-white text-2xl font-bold mb-2">{destaque.autor}</h3>
-              <p className="text-white text-sm mb-1">{destaque.data}</p>
+            <div className="absolute inset-0 flex flex-col justify-end p-6">
+              <h3 className="text-white text-3xl font-bold mb-2">{destaque.autor}</h3>
+              <p className="text-white text-2xl mb-1">{destaque.data}</p>
               <p className="text-white text-lg">{destaque.conteudo}</p>
             </div>
           </div>
         </div>
       )}
+
+      <div className="mb-1">
+        <h2 className="text-3xl font-extrabold text-gray-800 mb-2">
+          Postagens dos <span className="text-green-700">voluntários</span>
+        </h2>
+        <p className="text-gray-600">
+          Veja os relatos e experiências compartilhadas por quem faz a diferença.
+        </p>
+      </div>  
+
+      <div className="mb-1">
+        <CarouselNoticias />
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {outros.map((post, index) => (
