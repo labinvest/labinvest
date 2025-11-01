@@ -18,7 +18,7 @@ export default function NavBar() {
     if (['/'].includes(pathname)) return null;
 
     return (
-        <header className="relative flex items-center justify-between py-6 max-w-full mx-6">
+        <header className="relative flex items-center justify-between py-6 max-w-full mx-16">
             <div className="flex items-center justify-start cursor-pointer">
                 <button
                     type="button"

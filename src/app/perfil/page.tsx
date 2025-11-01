@@ -15,10 +15,10 @@ export default function Perfil() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-2xl shadow-lg p-8 mb-8">
+        <div className="rounded-2xl shadow-lg p-8 mb-8">
           <div className="flex flex-col md:flex-row items-center gap-8">
 
-            <div className="w-32 h-32 bg-green-700 rounded-full flex items-center justify-center text-white text-5xl shadow-xl">
+            <div className="w-32 h-32 bg-white-700 rounded-full flex items-center justify-center text-white text-5xl shadow-xl">
               <img src="/images/easter.jpg" alt="Nome Icon" className="w-40 h-40" />
             </div>
 
