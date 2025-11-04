@@ -1,5 +1,6 @@
-import { Carousel } from "@/componentes/Carousel";
-
+import React from "react";
+import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const postagens = [
   {
@@ -33,8 +34,8 @@ export default function PerfilVoluntario() {
         <div className=" shadow-xl p-6 bg-white rounded-2xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
 
           <div className="flex items-center gap-6">
-            <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center shadow-inner">
-              <i className="fas fa-user-circle text-green-700 text-6xl"></i>
+            <div className="w-24 h-24 rounded-full flex items-center justify-center">
+              <FontAwesomeIcon icon={faUserCircle} className="text-green-700 text-8xl" />
             </div>
 
             <div className="flex flex-col text-left">
@@ -91,11 +92,6 @@ export default function PerfilVoluntario() {
             </div>
 
           </div>
-        </div>
-
-
-        <div className="m-4">
-          <Carousel />
         </div>
 
         <div className="rounded-2xl p-8 bg-white shadow-lg mt-8">

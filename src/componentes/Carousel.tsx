@@ -1,70 +1,60 @@
-'use client';
-import { useState } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
 import { TestimonialCard } from './CarouselCard';
-import { faCircleUser, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSmile, faStar, faHeart } from '@fortawesome/free-solid-svg-icons';
 
 const testimonials = [
   {
-    Icon: faCircleUser,
-    Paragraph: 'Excelente serviço! A equipe foi muito atenciosa e o produto superou minhas expectativas.',
-    Name: 'Ana Silva',
-    Location: 'São Paulo, Brasil',
+    Icon: faSmile,
+    Paragraph: 'Excelente atendimento e suporte rápido!',
+    Name: 'João Silva',
+    Location: 'São Paulo, SP',
   },
   {
-    Icon: faCircleUser,
-    Paragraph: 'Muito satisfeito com a qualidade e rapidez. Recomendo para todos os meus amigos.',
-    Name: 'Carlos Pereira',
-    Location: 'Rio de Janeiro, Brasil',
+    Icon: faStar,
+    Paragraph: 'Produto de alta qualidade, recomendo muito.',
+    Name: 'Maria Oliveira',
+    Location: 'Rio de Janeiro, RJ',
   },
   {
-    Icon: faCircleUser,
-    Paragraph: 'Atendimento impecável e produto de alta qualidade. Voltarei a comprar com certeza.',
-    Name: 'Mariana Costa',
-    Location: 'Belo Horizonte, Brasil',
+    Icon: faHeart,
+    Paragraph: 'Fiquei encantado com a experiência!',
+    Name: 'Carlos Mendes',
+    Location: 'Belo Horizonte, MG',
   },
+  {
+    Icon: faStar,
+    Paragraph: 'Atendimento impecável e soluções rápidas',
+    Name: 'Fernanda Costa',
+    Location: 'Curitiba, PR',
+  },
+  {
+    Icon: faSmile,
+    Paragraph: 'Equipe muito profissional e dedicada',
+    Name: 'Rafael Lima',
+    Location: 'Porto Alegre, RS',
+  }
+
 ];
 
-export function Carousel() {
-  const [index, setIndex] = useState(0);
-
-  const prevSlide = () => {
-    setIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
-  };
-
-  const nextSlide = () => {
-    setIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
-  };
-
+export function TestimonialCarousel() {
   return (
-    <section className="mx-auto bg-white rounded-xl shadow-md p-6 mt-6 max-w-xl">
-      <div className="relative overflow-hidden h-[220px]">
-        <div
-          className="flex transition-transform duration-500 ease-in-out h-full"
-          style={{ transform: `translateX(-${index * 100}%)` }}
-        >
-          {testimonials.map((item, i) => (
-            <div key={i} className="flex-shrink-0 w-full h-full px-2">
-              <TestimonialCard {...item} />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="flex justify-center gap-3 mt-4">
-        <button
-          onClick={prevSlide}
-          className="bg-gray-200 text-gray-700 rounded-full p-2 hover:bg-gray-300 transition"
-        >
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </button>
-        <button
-          onClick={nextSlide}
-          className="bg-gray-200 text-gray-700 rounded-full p-2 hover:bg-gray-300 transition"
-        >
-          <FontAwesomeIcon icon={faChevronRight} />
-        </button>
-      </div>
-    </section>
+    <Swiper
+      spaceBetween={20}
+      slidesPerView={1}
+      breakpoints={{
+        640: { slidesPerView: 1 },
+        768: { slidesPerView: 2 },
+        1024: { slidesPerView: 3 },
+      }}
+      loop={true}
+      autoplay={{ delay: 3000 }}
+    >
+      {testimonials.map((testimonial, index) => (
+        <SwiperSlide key={index}>
+          <TestimonialCard {...testimonial} />
+        </SwiperSlide>
+      ))}
+    </Swiper>
   );
 }
