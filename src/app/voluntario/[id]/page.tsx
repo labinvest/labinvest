@@ -1,6 +1,8 @@
+"use client";
 import React from "react";
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useRouter } from "next/navigation";
 
 const postagens = [
   {
@@ -23,14 +25,12 @@ const postagens = [
   },
 ];
 
-
 export default function PerfilVoluntario() {
+  const router = useRouter();
+  
   return (
     <div className="flex flex-col items-center w-full bg-gray-50 min-h-screen py-6">
-
       <div className="w-full max-w-5xl space-y-8 mx-auto px-4">
-
-
         <div className=" shadow-xl p-6 bg-white rounded-2xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
 
           <div className="flex items-center gap-6">
@@ -53,12 +53,12 @@ export default function PerfilVoluntario() {
           </div>
 
           <button
-            className="bg-green-700 text-white text-sm font-semibold rounded-full px-6 py-2 hover:bg-green-800 transition w-fit self-start sm:self-auto"
+            className="bg-green-700 text-white text-sm font-semibold rounded-full px-6 py-2 hover:bg-green-800 transition w-fit self-start sm:self-auto cursor-pointer"
           >
             Mensagem
           </button>
-          <button
-            className="bg-green-700 text-white text-sm font-semibold rounded-full px-6 py-2 hover:bg-green-800 transition w-fit self-start sm:self-auto"
+          <button onClick={() => router.push("/agendamento/solicitar")}
+            className="bg-green-700 text-white text-sm font-semibold rounded-full px-6 py-2 hover:bg-green-800 transition w-fit self-start sm:self-auto cursor-pointer"
           >
             Solicitar Agendamento
           </button>

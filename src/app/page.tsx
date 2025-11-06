@@ -26,6 +26,8 @@ export default function LoginPage() {
         : { nome: "", email: "", senha: "", confirmarSenha: "" },
     validationSchema: schema,
     onSubmit: (v) => {
+
+      console.log("Valores do formulário:", v);
       if (mode === "login") {
         if (v.username === "admin" && v.password === "admin123") {
           setLoginError("");
@@ -91,8 +93,8 @@ export default function LoginPage() {
                   onSubmit={handleSubmit}
                   className="mt-12 w-[400px] space-y-4 font-sans"
                 >
-                  <TextField label="Nome de usuário" variant="outlined" size='small' margin='normal' fullWidth error={!!errors.username} helperText={errors.username} />
-                  <TextField label="Senha" variant="outlined" type="password" size='small' margin='normal' fullWidth error={!!errors.password} helperText={errors.password} />
+                  <TextField label="Nome de usuário"  onBlur={formik.handleBlur} onChange={handleChange}  id='username' variant="outlined" size='small' margin='normal' fullWidth error={formik.touched.username && !!errors.username} helperText={formik.touched.username && errors.username} />
+                  <TextField label="Senha" id='password'  onBlur={formik.handleBlur} onChange={handleChange}  variant="outlined" type="password" size='small' margin='normal' fullWidth error={ formik.touched.password && !!errors.password } helperText={ formik.touched.password && errors.password} />
 
                   {loginError && (
                     <p className="text-red-600 text-sm mb-2 font-semibold font-sans">
@@ -105,7 +107,6 @@ export default function LoginPage() {
                     color='success'
                     variant='contained'
                     fullWidth
-                    
                   >
                     Entrar
                   </Button>
@@ -127,9 +128,9 @@ export default function LoginPage() {
                   onSubmit={formik.handleSubmit}
                   className="mt-12 w-[400px] space-y-4 font-sans"
                 >
-                  <TextField label="Nome completo" variant="outlined" size='small' margin='normal' fullWidth error={!!errors.nome} helperText={errors.nome} />
-                  <TextField label="Email" variant="outlined" size='small' margin='normal' fullWidth error={!!errors.email} helperText={errors.email} />
-                  <TextField label="Senha" variant="outlined" type="password" size='small' margin='normal' fullWidth error={!!errors.senha} helperText={errors.senha} />
+                  <TextField label="Nome completo" variant="outlined" size='small' margin='normal' fullWidth error={formik.touched.nome && !!errors.nome} helperText={formik.touched.nome && errors.nome} />
+                  <TextField label="Email" variant="outlined" size='small' margin='normal' fullWidth error={formik.touched.email && !!errors.email} helperText={formik.touched.email && errors.email} />
+                  <TextField label="Senha" variant="outlined" type="password" size='small' margin='normal' fullWidth error={formik.touched.senha && !!errors.senha} helperText={formik.touched.senha && errors.senha} />
                   <TextField
                     label="Confirmar senha"
                     variant="outlined"
@@ -137,8 +138,8 @@ export default function LoginPage() {
                     size='small'
                     margin='normal'
                     fullWidth
-                    error={!!errors.confirmarSenha}
-                    helperText={errors.confirmarSenha}
+                    error={formik.touched.confirmarSenha && !!errors.confirmarSenha}
+                    helperText={formik.touched.confirmarSenha && errors.confirmarSenha}
                   />
                   <Button
                     type="submit"
