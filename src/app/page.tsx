@@ -1,15 +1,211 @@
-import AuthForm from '@/componentes/authForm'
+"use client";
+import { registerSchema } from '@/schemas/authSchemas';
+import { loginSchema } from '@/schemas/LoginSchemas';
+import Button from '@mui/material/Button';
+import FormControl from '@mui/material/FormControl';
+import TextField from '@mui/material/TextField';
+import { useFormik } from 'formik';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function LoginPage() {
+
+  const router = useRouter();
+  const [mode, setMode] = useState<"login" | "register">("login");
+  const [step, setStep] = useState<"first" | "finished">("first");
+
+  const [open, setOpen] = useState(false);
+  const [loginError, setLoginError] = useState("");
+
+  const schema = mode === "login" ? loginSchema : registerSchema;
+
+  const formik = useFormik({
+    initialValues:
+      mode === "login"
+        ? { username: "", password: "" }
+        : { nome: "", email: "", senha: "", confirmarSenha: "" },
+    validationSchema: schema,
+    onSubmit: (v) => {
+      if (mode === "login") {
+        if (v.username === "admin" && v.password === "admin123") {
+          setLoginError("");
+          router.push("/home");
+        } else {
+          setLoginError("Usuário ou senha incorretos!");
+        }
+      } else {
+        setStep("finished");
+      }
+    },
+
+
+  });
+
+   const { handleSubmit, values, handleChange, errors} = formik;
+
+
+
   return (
     <main className="bg-gray-100 min-h-screen font-[Montserrat]">
       <div className="flex w-full h-screen">
-
-    
         <div className="w-full flex items-center justify-center p-8">
-          <AuthForm />
+          <div className="min-h-screen flex items-center justify-center bg-gray-100 font-sans">
+            <div className="flex flex-col items-center text-center px-6 py-12 bg-white rounded-lg shadow-lg">
+              <h1 className="text-5xl font-bold text-gray-600 font-sans">
+                Lab<span className="text-green-700">Invest</span>
+              </h1>
+              <p className="text-sm text-gray-500 font-extrabold mt-2 font-sans">
+                Simples, claro e eficiente.
+              </p>
+              <p className="text-sm text-black mt-2 font-sans">
+                Bem-vindo ao Lab Invest
+              </p>
+              <h1 className="text-sm text-pink-600 font-semibold mt-4 font-sans">
+                Usuário: admin | Senha: admin123
+              </h1>
+              <button
+                onClick={() => {
+                  setMode(mode === "login" ? "register" : "login");
+                  setStep("first");
+                  formik.resetForm();
+                  setLoginError("");
+                }}
+                className="relative w-60 h-10 bg-gray-300 rounded-full mt-6 font-sans"
+              >
+                <span className="absolute inset-0 flex items-center justify-between px-6 text-base text-gray-700 z-0 font-sans">
+                  <span>Login</span>
+                  <span>Registrar</span>
+                </span>
+                <span
+                  className={`absolute top-0 left-0 w-1/2 h-full bg-green-700 rounded-full flex items-center justify-center transition font-sans ${mode === "login" ? "" : "translate-x-full"
+                    }`}
+                >
+                  <span className="text-white font-semibold">
+                    {mode === "login" ? "Login" : "Registrar"}
+                  </span>
+                </span>
+              </button>
+
+              {mode === "login" && (
+                <form
+                  onSubmit={handleSubmit}
+                  className="mt-12 w-[400px] space-y-4 font-sans"
+                >
+                  <TextField label="Nome de usuário" variant="outlined" size='small' margin='normal' fullWidth error={!!errors.username} helperText={errors.username} />
+                  <TextField label="Senha" variant="outlined" type="password" size='small' margin='normal' fullWidth error={!!errors.password} helperText={errors.password} />
+
+                  {loginError && (
+                    <p className="text-red-600 text-sm mb-2 font-semibold font-sans">
+                      {loginError}
+                    </p>
+                  )}
+                  <div className='flex flex-col gap-4'>
+                  <Button
+                    type="submit"
+                    color='success'
+                    variant='contained'
+                    fullWidth
+                    
+                  >
+                    Entrar
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => setOpen(true)}
+                    color='success'
+                    variant='text'
+                    fullWidth
+                  >
+                    Esqueci minha senha
+                  </Button>
+                  </div>
+                </form>
+              )}
+
+              {mode === "register" && step === "first" && (
+                <form
+                  onSubmit={formik.handleSubmit}
+                  className="mt-12 w-[400px] space-y-4 font-sans"
+                >
+                  <TextField label="Nome completo" variant="outlined" size='small' margin='normal' fullWidth error={!!errors.nome} helperText={errors.nome} />
+                  <TextField label="Email" variant="outlined" size='small' margin='normal' fullWidth error={!!errors.email} helperText={errors.email} />
+                  <TextField label="Senha" variant="outlined" type="password" size='small' margin='normal' fullWidth error={!!errors.senha} helperText={errors.senha} />
+                  <TextField
+                    label="Confirmar senha"
+                    variant="outlined"
+                    type="password"
+                    size='small'
+                    margin='normal'
+                    fullWidth
+                    error={!!errors.confirmarSenha}
+                    helperText={errors.confirmarSenha}
+                  />
+                  <Button
+                    type="submit"
+                    color='success'
+                    variant='contained'
+                    fullWidth
+                    
+                  >
+                    Registrar
+                  </Button>
+                </form>
+              )}
+
+              {mode === "register" && step === "finished" && (
+                <div className="mt-12 bg-green-100 border border-green-400 text-green-700 px-4 py-6 rounded-lg shadow-lg w-[400px] font-sans">
+                  <h2 className="text-lg font-bold font-sans">Registro Concluído!</h2>
+                  <p className="mt-2 text-sm font-sans">
+                    Cadastro finalizado com sucesso.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setMode("login");
+                      setStep("first");
+                      formik.resetForm();
+                      setLoginError("");
+                    }}
+                    className="mt-4 w-full p-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-sans"
+                  >
+                    Voltar ao Login
+                  </button>
+                </div>
+              )}
+
+              {open && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50 font-sans">
+                  <div className="bg-white p-6 rounded-lg shadow-lg w-[400px] text-center">
+                    <h2 className="text-green-700 font-semibold text-lg mb-4 font-sans">
+                      Recuperação de Senha
+                    </h2>
+                    <TextField
+                      label="Digite seu email"
+                      variant="outlined"
+                      size='small'
+                      margin='normal'
+                      fullWidth
+                    />
+                    <Button
+                      onClick={() => setOpen(false)}
+                      color="success"
+                    >
+                      Enviar link
+                    </Button>
+                    <Button
+                      onClick={() => setOpen(false)}
+                      className="mt-4 text-sm text-gray-500 hover:underline font-sans"
+                    >
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </main>
   )
 }
+
+
