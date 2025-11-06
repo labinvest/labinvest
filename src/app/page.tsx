@@ -77,7 +77,7 @@ export default function LoginPage() {
                   <span>Registrar</span>
                 </span>
                 <span
-                  className={`absolute top-0 left-0 w-1/2 h-full bg-green-700 rounded-full flex items-center justify-center transition font-sans ${mode === "login" ? "" : "translate-x-full"
+                  className={`absolute top-0 left-0 w-1/2 h-full bg-green-700 rounded-full flex items-center justify-center transition duration-700 font-sans ${mode === "login" ? "" : "translate-x-full"
                     }`}
                 >
                   <span className="text-white font-semibold">
@@ -185,10 +185,7 @@ export default function LoginPage() {
                       margin='normal'
                       fullWidth
                     />
-                    <Button
-                      onClick={() => setOpen(false)}
-                      color="success"
-                    >
+                    <Button onClick={() => setOpen(false)} color="success">
                       Enviar link
                     </Button>
                     <Button
