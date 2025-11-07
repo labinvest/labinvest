@@ -63,7 +63,7 @@ export default function EditarPerfil() {
 
     const salvarAlteracoes = () => {
 
-        localStorage.setItem("perfil", JSON.stringify(perfil));
+
         localStorage.setItem("objetivos", JSON.stringify(objetivos));
         localStorage.setItem("motivacoes", JSON.stringify(motivacoes));
         localStorage.setItem("desafios", JSON.stringify(desafios));
