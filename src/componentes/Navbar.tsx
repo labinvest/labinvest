@@ -71,7 +71,7 @@ export default function NavBar() {
                         <div id="profileDropdown" className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg p-2 w-40 z-50">
                             <a onClick={() => router.push("/")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Entrar</a>
                             <a onClick={() => router.push("/perfil")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Meu Perfil</a>
-                            <a onClick={() => router.push("/editar_perfil")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Editar Perfil</a>        
+                            <a onClick={() => router.push("/perfil/editar/1")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Editar Perfil</a>
                             <a onClick={() => router.push("/agendamento")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Meus Agendamentos</a>
                             <a onClick={() => router.push("/dados_pessoais")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Meus Dados</a>
                             <a onClick={() => router.push("/")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Sair</a>
