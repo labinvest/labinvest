@@ -10,7 +10,6 @@ import {
   faClock,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import Router from "next/router";
 
 const agendamentos = [
   {

@@ -3,6 +3,7 @@ import React from "react";
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useRouter } from "next/navigation";
+import Button from '@mui/material/Button';
 
 const postagens = [
   {
@@ -27,7 +28,7 @@ const postagens = [
 
 export default function PerfilVoluntario() {
   const router = useRouter();
-  
+
   return (
     <div className="flex flex-col items-center w-full bg-gray-50 min-h-screen py-6">
       <div className="w-full max-w-5xl space-y-8 mx-auto px-4">
@@ -52,16 +53,26 @@ export default function PerfilVoluntario() {
             </div>
           </div>
 
-          <button
-            className="bg-green-700 text-white text-sm font-semibold rounded-full px-6 py-2 hover:bg-green-800 transition w-fit self-start sm:self-auto cursor-pointer"
-          >
-            Mensagem
-          </button>
-          <button onClick={() => router.push("/agendamento/solicitar")}
-            className="bg-green-700 text-white text-sm font-semibold rounded-full px-6 py-2 hover:bg-green-800 transition w-fit self-start sm:self-auto cursor-pointer"
-          >
-            Solicitar Agendamento
-          </button>
+          <div className="flex gap-4 mt-25">
+            <Button
+              variant="contained"
+              color="success"
+              size="small"
+              sx={{ borderRadius: '999px', textTransform: 'none', fontWeight: 600 }}
+            >
+              Mensagem
+            </Button>
+
+            <Button
+              variant="contained"
+              color="success"
+              size="small"
+              onClick={() => router.push("/agendamento/solicitar")}
+              sx={{ borderRadius: '999px', textTransform: 'none', fontWeight: 600 }}
+            >
+              Solicitar Agendamento
+            </Button>
+          </div>
         </div>
         <div className="rounded-2xl p-8 bg-white shadow-lg">
           <h1 className="text-2xl font-semibold text-center text-gray-800 mb-6">
