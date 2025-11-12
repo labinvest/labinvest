@@ -225,7 +225,7 @@ export default function SobreNos() {
               Agendar Consulta
             </button>
             <button 
-              onClick={() => router.push("/cadastroVoluntario")}
+              onClick={() => router.push("/voluntario/cadastro")}
               className="bg-green-700 text-white font-bold py-3 px-8 rounded-lg hover:bg-green-700 hover:text-white transition duration-300 cursor-pointer"
             >
               Seja um Voluntário
