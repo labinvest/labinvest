@@ -1,6 +1,7 @@
 "use client"
 import CardVoluntario from "@/componentes/CardVoluntario";
 import FiltroVoluntario from "@/componentes/FiltroVoluntario"
+import { Pagination } from "@mui/material";
 import { useEffect, useState } from "react";
 
 interface Voluntario {
@@ -46,15 +47,16 @@ export default function Voluntario() {
           />
         </div>
 
-        <div className="flex-1">
+        <div className="flex-1 col ">
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
             {voluntarios.map((voluntario) => (
               <CardVoluntario key={voluntario.id} voluntario={voluntario} />
             ))}
+            
           </div>
-
+              <Pagination count={10} className="mt-6" />
         </div>
       </div>
     </main>
