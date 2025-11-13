@@ -3,6 +3,9 @@ import React, { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
+import '@fortawesome/fontawesome-svg-core/styles.css';
+import { config } from '@fortawesome/fontawesome-svg-core';
+config.autoAddCss = false;
 
 export default function NavBar() {
     const pathname = usePathname();
@@ -18,12 +21,12 @@ export default function NavBar() {
     if (['/'].includes(pathname)) return null;
 
     return (
-        <header className="relative flex items-center justify-between py-6 max-w-full mx-16">
+        <header className="relative flex items-center justify-between py-4 md:py-6 px-4 md:px-8 lg:px-16 max-w-full">
             <div className="flex items-center justify-start cursor-pointer">
                 <button
                     type="button"
                     onClick={() => router.push("/home")}
-                    className="flex space-x-2 text-3xl md:text-6xl font-extrabold select-none transition duration-300 hover:scale-105"
+                    className="flex space-x-2 text-2xl md:text-4xl lg:text-6xl font-extrabold select-none transition duration-300 hover:scale-105"
                 >
                     <span className="text-gray-500">Lab</span>
                     <span className="text-green-700">Invest</span>
@@ -81,10 +84,17 @@ export default function NavBar() {
             </div>
 
             {menuOpen && (
-                <div className="absolute top-full left-0 right-0 bg-white shadow-md rounded-b-md md:hidden z-40">
+                <div className="absolute top-full left-0 right-0 bg-white shadow-md rounded-b-md md:hidden z-40 mx-4">
                     <nav className="flex flex-col p-4 space-y-2 text-gray-700">
+                        <button onClick={() => router.push("/home")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Home</button>
                         <button onClick={() => router.push("/servicos")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Serviços</button>
-                        <button onClick={() => router.push("/voluntario")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Voluntarios</button>
+                        <button onClick={() => router.push("/sobrenos")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Sobre nós</button>
+                        <button onClick={() => router.push("/voluntario")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Voluntários</button>
+                        <button onClick={() => router.push("/postagens")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Notícias</button>
+                        <hr className="my-2" />
+                        <button onClick={() => router.push("/perfil")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Meu Perfil</button>
+                        <button onClick={() => router.push("/agendamento")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Meus Agendamentos</button>
+                        <button onClick={() => router.push("/")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer text-red-600">Sair</button>
                     </nav>
                 </div>
             )}

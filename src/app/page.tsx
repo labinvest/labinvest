@@ -49,20 +49,20 @@ export default function LoginPage() {
 
   return (
     <main className="bg-gray-100 min-h-screen font-[Montserrat]">
-      <div className="flex w-full h-screen">
-        <div className="w-full flex items-center justify-center p-8">
-          <div className="min-h-screen flex items-center justify-center bg-gray-100 font-sans">
-            <div className="flex flex-col items-center text-center px-6 py-12 bg-white rounded-lg shadow-lg">
-              <h1 className="text-5xl font-bold text-gray-600 font-sans">
+      <div className="flex w-full min-h-screen">
+        <div className="w-full flex items-center justify-center p-4 md:p-8">
+          <div className="min-h-screen flex items-center justify-center bg-gray-100 font-sans px-4">
+            <div className="flex flex-col items-center text-center px-4 sm:px-6 py-8 sm:py-12 bg-white rounded-lg shadow-lg w-full max-w-md">
+              <h1 className="text-3xl sm:text-5xl font-bold text-gray-600 font-sans">
                 Lab<span className="text-green-700">Invest</span>
               </h1>
-              <p className="text-sm text-gray-500 font-extrabold mt-2 font-sans">
+              <p className="text-xs sm:text-sm text-gray-500 font-extrabold mt-2 font-sans">
                 Simples, claro e eficiente.
               </p>
-              <p className="text-sm text-black mt-2 font-sans">
+              <p className="text-xs sm:text-sm text-black mt-2 font-sans">
                 Bem-vindo ao Lab Invest
               </p>
-              <h1 className="text-sm text-pink-600 font-semibold mt-4 font-sans">
+              <h1 className="text-xs sm:text-sm text-pink-600 font-semibold mt-4 font-sans">
                 Usuário: admin | Senha: admin123
               </h1>
               <button
@@ -72,7 +72,7 @@ export default function LoginPage() {
                   formik.resetForm();
                   setLoginError("");
                 }}
-                className="relative w-60 h-10 bg-gray-300 rounded-full mt-6 font-sans"
+                className="relative w-full max-w-60 h-10 bg-gray-300 rounded-full mt-6 font-sans"
               >
                 <span className="absolute inset-0 flex items-center justify-between px-6 text-base text-gray-700 z-0 font-sans">
                   <span>Login</span>
@@ -91,7 +91,7 @@ export default function LoginPage() {
               {mode === "login" && (
                 <form
                   onSubmit={handleSubmit}
-                  className="mt-12 w-[400px] space-y-4 font-sans"
+                  className="mt-8 sm:mt-12 w-full max-w-[400px] space-y-4 font-sans px-4 sm:px-0"
                 >
                   <TextField label="Nome de usuário"  onBlur={formik.handleBlur} onChange={handleChange}  id='username' variant="outlined" size='small' margin='normal' fullWidth error={formik.touched.username && !!errors.username} helperText={formik.touched.username && errors.username} />
                   <TextField label="Senha" id='password'  onBlur={formik.handleBlur} onChange={handleChange}  variant="outlined" type="password" size='small' margin='normal' fullWidth error={ formik.touched.password && !!errors.password } helperText={ formik.touched.password && errors.password} />

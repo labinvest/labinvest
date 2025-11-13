@@ -27,6 +27,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" style={{ colorScheme: "light" }}>
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="color-scheme" content="light" />
         <style>{`
           html, body { 
@@ -35,7 +36,7 @@ export default function RootLayout({
           }
         `}</style>
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} flex flex-col min-h-screen`}>
         <NavBar />
         <main className="flex-1">{children}</main>
         <Footer />

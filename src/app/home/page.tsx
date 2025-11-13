@@ -22,15 +22,15 @@ export default function Home() {
   return (
     <>
 
-      <section className="max-w-7xl mx-auto px-6 py-1 shadow 2xl">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-1 shadow 2xl">
         <Banner />
 
-        <section className="max-w-7xl mx-auto px-6 py-1">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-800 leading-tight">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-1">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-800 leading-tight px-4">
               Feedback de alguns <span className="text-green-700">clientes</span>
             </h2>
-            <p className="text-gray-600 mt-4 text-base sm:text-lg max-w-2xl mx-auto">
+            <p className="text-gray-600 mt-4 text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
               Veja o que nossos clientes dizem sobre a experiência com a Lab Invest.
             </p>
           </div>
@@ -38,13 +38,13 @@ export default function Home() {
           <TestimonialCarousel />
         </section>
      
-      <section className="max-w-7xl mx-auto px-6 py-16">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-16">
 
-        <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-800 leading-tight">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-800 leading-tight px-4">
             Por que escolher <span className="text-green-700">nossos serviços?</span>
           </h2>
-          <p className="text-gray-600 mt-4 text-base sm:text-lg max-w-2xl mx-auto">
+          <p className="text-gray-600 mt-4 text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
             Descubra os diferenciais que fazem da Lab Invest a parceira ideal para sua jornada financeira.
           </p>
         </div>
@@ -68,13 +68,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-gradient-to-t from-green-50 to-white py-16 px-8">
-        <div className="max-w-6xl mx-auto px-4 py-12">
+      <section className="bg-gradient-to-t from-green-50 to-white py-8 sm:py-16 px-4 sm:px-8">
+        <div className="max-w-6xl mx-auto px-4 py-8 sm:py-12">
           <div className="text-center mb-8">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-800 leading-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-800 leading-tight px-4">
               Como <span className="text-green-700">funciona?</span>
             </h2>
-            <p className="text-gray-600 mt-4 text-base sm:text-lg max-w-2xl mx-auto">
+            <p className="text-gray-600 mt-4 text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
               Entenda o passo a passo para transformar sua vida financeira com a Lab Invest.
             </p>
           </div>
@@ -119,31 +119,31 @@ export default function Home() {
         </div>
       </section >
 
-      <section className="gray-50 py-16 px-8">
+      <section className="bg-gray-50 py-8 sm:py-16 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="flex justify-center items-center mb-4 gap-2">
-              <h2 className="text-3xl font-extrabold text-gray-800">Acessos</h2>
-              <h2 className="text-3xl font-extrabold text-green-700">
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="flex justify-center items-center mb-4 gap-2 flex-wrap px-4">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-800">Acessos</h2>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-green-700">
                 rápidos:
               </h2>
             </div>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-gray-600 max-w-2xl mx-auto px-4 text-sm sm:text-base">
               Navegue facilmente pelos nossos serviços. Escolha a opção que
               melhor atende suas necessidades.
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 mb-8">
             <ImgRedondaTelaInicial />
           </div>
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-8 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          <div>
-            <h2 className="text-3xl font-extrabold text-gray-800 mb-6">
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
+          <div className="px-4">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-800 mb-6">
               Por que contar com <span className="text-green-700">especialistas?</span>
             </h2>
             <div className="space-y-4">
@@ -195,23 +195,23 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 px-8 text-center">
+      <section className="py-8 sm:py-16 px-4 sm:px-8 text-center">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl font-extrabold mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-4 px-4">
             Pronto para repaginar seus gastos?
           </h2>
-          <p className="text-xl mb-8">
+          <p className="text-lg sm:text-xl mb-8 px-4">
             Agende sua primeira consulta hoje mesmo!
           </p>
-          <button onClick={() => router.push("/agendamento")} className="bg-green-700 text-white font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition duration-300 cursor-pointer">
+          <button onClick={() => router.push("/agendamento")} className="bg-green-700 text-white font-bold py-3 px-6 sm:px-8 rounded-lg hover:bg-green-800 transition duration-300 cursor-pointer">
             Agendar Consulta!
           </button>
         </div>
       </section>
-      <section className="max-w-6xl mx-auto px-8 py-16">
-        <div className="flex justify-center items-center mb-12 gap-2">
-          <h2 className="text-3xl font-extrabold text-gray-800">Perguntas</h2>
-          <h2 className="text-3xl font-extrabold text-green-700">frequentes</h2>
+      <section className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16">
+        <div className="flex justify-center items-center mb-8 sm:mb-12 gap-2 flex-wrap px-4">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-800">Perguntas</h2>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-green-700">frequentes</h2>
         </div>
 
         <div className="space-y-6">

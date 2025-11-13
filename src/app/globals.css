@@ -45,7 +45,16 @@
 
 body {
   width: 100%;
+  overflow-x: hidden; /* Evita scroll horizontal em mobile */
+  min-height: 100vh;
+}
 
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 :root {
