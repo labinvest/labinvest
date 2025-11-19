@@ -12,7 +12,12 @@ export default function NavBar() {
     const router = useRouter();
     const [menuOpen, setMenuOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
+    const [perfil, setPerfil] = useState<string | null>(null);
 
+    useEffect(() => {
+        const perfil = localStorage.getItem("perfil");
+        setPerfil(perfil);
+    }, []);
     useEffect(() => {
         setMenuOpen(false);
         setProfileOpen(false);
@@ -70,7 +75,7 @@ export default function NavBar() {
                         <FontAwesomeIcon icon={faUser} />
                     </button>
 
-                    {profileOpen && (
+                    {profileOpen && ( 
                         <div id="profileDropdown" className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg p-2 w-40 z-50">
                             <a onClick={() => router.push("/")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Entrar</a>
                             <a onClick={() => router.push("/perfil")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Meu Perfil</a>

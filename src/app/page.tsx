@@ -31,8 +31,13 @@ export default function LoginPage() {
       if (mode === "login") {
         if (v.username === "admin" && v.password === "admin123") {
           setLoginError("");
+          localStorage.setItem("perfil", "voluntario");
           router.push("/home");
-        } else {
+        } else if (v.username === "user" && v.password === "user123") {
+          setLoginError("");
+          localStorage.setItem("perfil", "usuario");
+          router.push("/home");
+        }else{
           setLoginError("Usuário ou senha incorretos!");
         }
       } else {

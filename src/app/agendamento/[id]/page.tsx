@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
+import { useState, useEffect, use } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCalendarAlt,
@@ -10,38 +11,54 @@ import {
   faClock,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
+import Button from "@mui/material/Button";
 
-const agendamentos = [
-  {
-    id: 1,
-    titulo: "Consulta médica",
-    data: "2025-11-05",
-    hora: "14:30",
-    tipo: "Saúde",
-    status: "Confirmado",
-    local: "Clínica Vida Saudável",
-    profissional: "Dra. Ana Paula",
-    observacoes: "Levar exames anteriores e lista de medicamentos.",
-  },
-  {
-    id: 2,
-    titulo: "Reunião com cliente",
-    data: "2025-11-07",
-    hora: "10:00",
-    tipo: "Trabalho",
-    status: "Pendente",
-    local: "Escritório Central",
-    profissional: "Sr. João Silva",
-    observacoes: "Apresentar proposta comercial.",
-  },
-];
+
 
 export default function AgendamentoDetalhado() {
   const router = useRouter();
   const params = useParams();
   const id = Number(params.id);
+  const [perfil, setPerfil] = useState<string | null>(null);
 
-  const agendamento = agendamentos.find((item) => item.id === id);
+  useEffect(() => {
+    const perfilStorage = localStorage.getItem("perfil");
+    setPerfil(perfilStorage);
+  }, []);
+
+  const [agendamento,setAgendamento ] =  useState<any>(); 
+
+
+  useEffect(() => {
+    
+    fetch(`/api/agendamento/${id}`, {
+      method: "GET"
+    }).then((async (response) => { 
+      const data = await response.json();
+      setAgendamento(data);
+        }));
+  }, [id]);
+
+
+  const handleAceitar = () => {
+    console.log(`Agendamento ${id} aceito pelo voluntário`);
+    alert("Agendamento aceito com sucesso!");
+    router.back();
+  };
+
+  const handleRecusar = () => {
+    console.log(`Agendamento ${id} recusado pelo voluntário`);
+    alert("Agendamento recusado.");
+    router.back();
+  };
+
+  const handleCancelar = () => {
+    console.log(`Agendamento ${id} cancelado pelo usuário`);
+    if (confirm("Tem certeza que deseja cancelar este agendamento?")) {
+      alert("Agendamento cancelado com sucesso!");
+      router.back();
+    }
+  };
 
   if (!agendamento) {
     return (
@@ -109,6 +126,47 @@ export default function AgendamentoDetalhado() {
           <h2 className="text-lg font-semibold text-gray-800 mt-4 mb-2">Observações</h2>
           <p className="text-gray-700">{agendamento.observacoes}</p>
         </div>
+
+        {/* Botões de ação baseados no perfil */}
+        {perfil === "voluntario" && (
+          <div className="flex gap-4 mt-6 pt-6 border-t">
+            <Button
+              variant="contained"
+              color="success"
+              size="large"
+              fullWidth
+              onClick={handleAceitar}
+              sx={{ textTransform: "none", fontWeight: "bold" }}
+            >
+              Aceitar Agendamento
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              size="large"
+              fullWidth
+              onClick={handleRecusar}
+              sx={{ textTransform: "none", fontWeight: "bold" }}
+            >
+              Recusar Agendamento
+            </Button>
+          </div>
+        )}
+
+        {perfil === "usuario" && (
+          <div className="flex gap-4 mt-6 pt-6 border-t">
+            <Button
+              variant="contained"
+              color="error"
+              size="large"
+              fullWidth
+              onClick={handleCancelar}
+              sx={{ textTransform: "none", fontWeight: "bold" }}
+            >
+              Cancelar Agendamento
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
