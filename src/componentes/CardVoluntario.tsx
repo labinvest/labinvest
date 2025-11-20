@@ -19,10 +19,11 @@ function CardVoluntario({ voluntario }: Props) {
   const router = useRouter();
   return (
 
-    <a onClick={() => router.push(`/voluntario/${voluntario.id}`)}
-    className="className=flex items-start h-full p-4 bg-white rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
+    <button onClick={() => router.push(`/voluntario/${voluntario.id}`)}
+    aria-label={`Ver perfil de ${voluntario.nome}, ${voluntario.titulo || 'voluntário'}`}
+    className="className=flex items-start h-full p-4 bg-white rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer w-full text-left">
 
-      <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gray-100 flex items-center justify-center">
+      <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gray-100 flex items-center justify-center" aria-hidden="true">
         <FontAwesomeIcon icon={faUser} className="text-gray-600 text-4xl" />
       </div>
       
@@ -41,7 +42,7 @@ function CardVoluntario({ voluntario }: Props) {
           ))}
         </div>
       </div>
-    </a>
+    </button>
   );
 }
 

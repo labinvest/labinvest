@@ -14,9 +14,11 @@ function FiltrosVoluntario({ opcoes, categoriaAtiva, onCategoriaChange }: Props)
       <h4 className="text-xl font-bold text-gray-900 mb-5">
         Categorias
       </h4>
-      <nav className="flex flex-col space-y-3">
+      <nav className="flex flex-col space-y-3" aria-label="Filtros de categoria">
         <button
           onClick={() => onCategoriaChange('todas')}
+          aria-label="Filtrar por todas as categorias"
+          aria-pressed={categoriaAtiva === 'todas'}
           className={`
             text-left text-lg transition-colors
             ${
@@ -33,6 +35,8 @@ function FiltrosVoluntario({ opcoes, categoriaAtiva, onCategoriaChange }: Props)
           <button
             key={opcao}
             onClick={() => onCategoriaChange(opcao)}
+            aria-label={`Filtrar por categoria ${opcao}`}
+            aria-pressed={categoriaAtiva === opcao}
             className={`
               text-left text-lg transition-colors
               ${
