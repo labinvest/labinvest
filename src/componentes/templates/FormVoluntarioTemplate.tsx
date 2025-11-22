@@ -3,12 +3,12 @@
 import { useFormik } from 'formik';
 import { useEffect } from 'react';
 import { TextField, Button, Typography } from '@mui/material';
-import CheckboxCertificado from './CheckboxCertificado';
-import UploadImagem from './UploadImagem';
-import ProfissoesFinanceiras from './ProfissioesVoluntarios';
+import CheckboxCertificado from '../CheckboxCertificado';
+import UploadImagem from '../UploadImagem';
+import ProfissoesFinanceiras from '../ProfissioesVoluntarios';
 import { validationSchema } from '@/schemas/validationSchema';
 
-export default function CadastroVoluntarioFormComponent() {
+export default function FormVoluntarioTemplate() {
 
     const formik = useFormik({
         initialValues: {

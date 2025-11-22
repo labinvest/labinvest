@@ -59,6 +59,7 @@ export default function PerfilVoluntario() {
               color="success"
               size="small"
               sx={{ borderRadius: '999px', textTransform: 'none', fontWeight: 600 }}
+              onClick={() => router.push("/chat/1")}
             >
               Mensagem
             </Button>

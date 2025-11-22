@@ -60,6 +60,26 @@ export default function AgendamentoDetalhado() {
     }
   };
 
+  const handleExcluir = async () => {
+    if (confirm("Tem certeza que deseja excluir este agendamento? Esta ação não pode ser desfeita.")) {
+      try {
+        const response = await fetch(`/api/agendamento/${id}`, {
+          method: 'DELETE'
+        });
+
+        if (response.ok) {
+          alert("Agendamento excluído com sucesso!");
+          router.push('/agendamento');
+        } else {
+          alert("Erro ao excluir agendamento.");
+        }
+      } catch (error) {
+        console.error("Erro ao excluir agendamento:", error);
+        alert("Erro ao excluir agendamento.");
+      }
+    }
+  };
+
   if (!agendamento) {
     return (
       <div className="max-w-3xl mx-auto py-10 px-4">
@@ -127,8 +147,13 @@ export default function AgendamentoDetalhado() {
           <p className="text-gray-700">{agendamento.observacoes}</p>
         </div>
 
+        {/* Debug info */}
+        <div className="text-xs text-gray-400">
+          Perfil: {perfil} | Status: "{agendamento.status}"
+        </div>
+
         {/* Botões de ação baseados no perfil */}
-        {perfil === "voluntario" && (
+        {perfil === "voluntario" && agendamento.status !== "Cancelado" && agendamento.status !== "Confirmado" && (
           <div className="flex gap-4 mt-6 pt-6 border-t">
             <Button
               variant="contained"
@@ -153,7 +178,7 @@ export default function AgendamentoDetalhado() {
           </div>
         )}
 
-        {perfil === "usuario" && (
+        {perfil === "usuario" && agendamento.status !== "Cancelado" && (
           <div className="flex gap-4 mt-6 pt-6 border-t">
             <Button
               variant="contained"
@@ -164,6 +189,21 @@ export default function AgendamentoDetalhado() {
               sx={{ textTransform: "none", fontWeight: "bold" }}
             >
               Cancelar Agendamento
+            </Button>
+          </div>
+        )}
+
+        {(perfil === "usuario" || perfil === "voluntario") && agendamento.status === "Cancelado" && (
+          <div className="flex gap-4 mt-6 pt-6 border-t">
+            <Button
+              variant="contained"
+              color="error"
+              size="large"
+              fullWidth
+              onClick={handleExcluir}
+              sx={{ textTransform: "none", fontWeight: "bold", bgcolor: "#b91c1c", "&:hover": { bgcolor: "#991b1b" } }}
+            >
+              Excluir Agendamento
             </Button>
           </div>
         )}

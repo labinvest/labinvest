@@ -85,3 +85,9 @@ export function PATCH(request: Request,{ params }: any) {
     MOCK_AGENDAMENTOS[agendamentoIndex] = { ...MOCK_AGENDAMENTOS[agendamentoIndex], ...updatedData };
     return NextResponse.json(MOCK_AGENDAMENTOS[agendamentoIndex], { status: 200 });
 }
+
+export function DELETE(request: Request,{ params }: any) {
+    const id = Number(params.id);
+   
+    return NextResponse.json({ message: "Agendamento deletado com sucesso" }, { status: 200 });
+}

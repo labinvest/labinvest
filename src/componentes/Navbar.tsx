@@ -80,8 +80,12 @@ export default function NavBar() {
                             <a onClick={() => router.push("/")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Entrar</a>
                             <a onClick={() => router.push("/perfil")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Meu Perfil</a>
                             <a onClick={() => router.push("/perfil/editar/1")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Editar Perfil</a>
+                            <a onClick={() => router.push("/cliente/1/alterar")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Alterar Perfil cliente</a>
+                            <a onClick={() => router.push("/cliente/cadastro")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Criar Conta</a>
+                            <a onClick={() => router.push("/voluntario/cadastro")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Ser Voluntario</a>
                             <a onClick={() => router.push("/agendamento")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Meus Agendamentos</a>
                             <a onClick={() => router.push("/dados_pessoais")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Meus Dados</a>
+                            <a onClick={() => router.push("/chat")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Minhas Mensagens</a>
                             <a onClick={() => router.push("/")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Sair</a>
                         </div>
                     )}
@@ -98,6 +102,7 @@ export default function NavBar() {
                         <button onClick={() => router.push("/postagens")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Notícias</button>
                         <hr className="my-2" />
                         <button onClick={() => router.push("/perfil")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Meu Perfil</button>
+                         <button onClick={() => router.push("/chat")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Minhas Mensagens</button>
                         <button onClick={() => router.push("/agendamento")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Meus Agendamentos</button>
                         <button onClick={() => router.push("/")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer text-red-600">Sair</button>
                     </nav>
