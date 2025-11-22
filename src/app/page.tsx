@@ -77,6 +77,7 @@ export default function LoginPage() {
                   formik.resetForm();
                   setLoginError("");
                 }}
+                aria-label={`Alternar para modo ${mode === "login" ? "registrar" : "login"}`}
                 className="relative w-full max-w-60 h-10 bg-gray-300 rounded-full mt-6 font-sans"
               >
                 <span className="absolute inset-0 flex items-center justify-between px-6 text-base text-gray-700 z-0 font-sans">
@@ -102,7 +103,7 @@ export default function LoginPage() {
                   <TextField label="Senha" id='password'  onBlur={formik.handleBlur} onChange={handleChange}  variant="outlined" type="password" size='small' margin='normal' fullWidth error={ formik.touched.password && !!errors.password } helperText={ formik.touched.password && errors.password} />
 
                   {loginError && (
-                    <p className="text-red-600 text-sm mb-2 font-semibold font-sans">
+                    <p role="alert" aria-live="assertive" className="text-red-600 text-sm mb-2 font-semibold font-sans">
                       {loginError}
                     </p>
                   )}
@@ -112,6 +113,7 @@ export default function LoginPage() {
                     color='success'
                     variant='contained'
                     fullWidth
+                    aria-label="Entrar na conta"
                   >
                     Entrar
                   </Button>
@@ -121,6 +123,7 @@ export default function LoginPage() {
                     color='success'
                     variant='text'
                     fullWidth
+                    aria-label="Abrir modal de recuperação de senha"
                   >
                     Esqueci minha senha
                   </Button>
@@ -132,12 +135,15 @@ export default function LoginPage() {
                 <form
                   onSubmit={formik.handleSubmit}
                   className="mt-12 w-[400px] space-y-4 font-sans"
+                  aria-label="Formulário de registro"
                 >
-                  <TextField label="Nome completo" variant="outlined" size='small' margin='normal' fullWidth error={formik.touched.nome && !!errors.nome} helperText={formik.touched.nome && errors.nome} />
-                  <TextField label="Email" variant="outlined" size='small' margin='normal' fullWidth error={formik.touched.email && !!errors.email} helperText={formik.touched.email && errors.email} />
-                  <TextField label="Senha" variant="outlined" type="password" size='small' margin='normal' fullWidth error={formik.touched.senha && !!errors.senha} helperText={formik.touched.senha && errors.senha} />
+                  <TextField label="Nome completo" id="nome" name="nome" variant="outlined" size='small' margin='normal' fullWidth error={formik.touched.nome && !!errors.nome} helperText={formik.touched.nome && errors.nome} />
+                  <TextField label="Email" id="email" name="email" type="email" variant="outlined" size='small' margin='normal' fullWidth error={formik.touched.email && !!errors.email} helperText={formik.touched.email && errors.email} />
+                  <TextField label="Senha" id="senha" name="senha" variant="outlined" type="password" size='small' margin='normal' fullWidth error={formik.touched.senha && !!errors.senha} helperText={formik.touched.senha && errors.senha} />
                   <TextField
                     label="Confirmar senha"
+                    id="confirmarSenha"
+                    name="confirmarSenha"
                     variant="outlined"
                     type="password"
                     size='small'
@@ -151,7 +157,7 @@ export default function LoginPage() {
                     color='success'
                     variant='contained'
                     fullWidth
-                    
+                    aria-label="Criar nova conta"
                   >
                     Registrar
                   </Button>
@@ -159,7 +165,7 @@ export default function LoginPage() {
               )}
 
               {mode === "register" && step === "finished" && (
-                <div className="mt-12 bg-green-100 border border-green-400 text-green-700 px-4 py-6 rounded-lg shadow-lg w-[400px] font-sans">
+                <div role="status" aria-live="polite" className="mt-12 bg-green-100 border border-green-400 text-green-700 px-4 py-6 rounded-lg shadow-lg w-[400px] font-sans">
                   <h2 className="text-lg font-bold font-sans">Registro Concluído!</h2>
                   <p className="mt-2 text-sm font-sans">
                     Cadastro finalizado com sucesso.
@@ -171,6 +177,7 @@ export default function LoginPage() {
                       formik.resetForm();
                       setLoginError("");
                     }}
+                    aria-label="Voltar para a tela de login"
                     className="mt-4 w-full p-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-sans"
                   >
                     Voltar ao Login
@@ -179,23 +186,28 @@ export default function LoginPage() {
               )}
 
               {open && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50 font-sans">
+                <div role="dialog" aria-modal="true" aria-labelledby="password-recovery-title" className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50 font-sans">
                   <div className="bg-white p-6 rounded-lg shadow-lg w-[400px] text-center">
-                    <h2 className="text-green-700 font-semibold text-lg mb-4 font-sans">
+                    <h2 id="password-recovery-title" className="text-green-700 font-semibold text-lg mb-4 font-sans">
                       Recuperação de Senha
                     </h2>
                     <TextField
                       label="Digite seu email"
+                      id="recovery-email"
+                      name="recovery-email"
+                      type="email"
                       variant="outlined"
                       size='small'
                       margin='normal'
                       fullWidth
+                      autoFocus
                     />
-                    <Button onClick={() => setOpen(false)} color="success">
+                    <Button onClick={() => setOpen(false)} color="success" aria-label="Enviar link de recuperação de senha">
                       Enviar link
                     </Button>
                     <Button
                       onClick={() => setOpen(false)}
+                      aria-label="Fechar modal de recuperação de senha"
                       className="mt-4 text-sm text-gray-500 hover:underline font-sans"
                     >
                       Cancelar

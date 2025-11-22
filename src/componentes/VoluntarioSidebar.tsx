@@ -37,6 +37,7 @@ function VoluntarioSidebar() {
       </div>
       <button
         onClick={handleVerMais}
+        aria-label="Ver todos os especialistas disponíveis"
         className="text-blue-600 font-semibold hover:underline mt-4"
       >
         Ver mais

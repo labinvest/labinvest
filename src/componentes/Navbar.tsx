@@ -31,6 +31,7 @@ export default function NavBar() {
                 <button
                     type="button"
                     onClick={() => router.push("/home")}
+                    aria-label="Ir para página inicial do LabInvest"
                     className="flex space-x-2 text-2xl md:text-4xl lg:text-6xl font-extrabold select-none transition duration-300 hover:scale-105"
                 >
                     <span className="text-gray-500">Lab</span>
@@ -55,38 +56,39 @@ export default function NavBar() {
                 </button>
             </div>
 
-            <nav className="hidden md:flex space-x-10 text-base font-semibold text-gray-600">
-                <a className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/home")} >Home</a>
-                <a className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/servicos")}>Serviços</a>
-                <a className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/sobrenos")}>Sobre nós</a>
-                <a className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/voluntario")}>Voluntários</a>
-                <a className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/postagens")}>Notícias</a>
+            <nav className="hidden md:flex space-x-10 text-base font-semibold text-gray-600" aria-label="Menu principal">
+                <button className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/home")} aria-label="Ir para Home">Home</button>
+                <button className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/servicos")} aria-label="Ir para Serviços">Serviços</button>
+                <button className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/sobrenos")} aria-label="Ir para Sobre nós">Sobre nós</button>
+                <button className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/voluntario")} aria-label="Ir para Voluntários">Voluntários</button>
+                <button className="transition duration-300 hover:text-green-700 cursor-pointer" onClick={() => router.push("/postagens")} aria-label="Ir para Notícias">Notícias</button>
             </nav>
 
             <div className="relative items-center ml-4 hidden md:flex">
                 <div className="relative">
                     <button
                         id="profileButton"
-                        aria-label="User profile"
+                        aria-label="Menu do perfil do usuário"
                         aria-expanded={profileOpen}
+                        aria-haspopup="menu"
                         onClick={() => setProfileOpen((s) => !s)}
                         className="bg-gradient-to-r from-green-500 to-green-700 text-white rounded-full p-2 shadow-lg hover:scale-105 transition focus:outline-none cursor-pointer"
                     >
-                        <FontAwesomeIcon icon={faUser} />
+                        <FontAwesomeIcon icon={faUser} aria-hidden="true" />
                     </button>
 
                     {profileOpen && ( 
-                        <div id="profileDropdown" className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg p-2 w-40 z-50">
-                            <a onClick={() => router.push("/")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Entrar</a>
-                            <a onClick={() => router.push("/perfil")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Meu Perfil</a>
-                            <a onClick={() => router.push("/perfil/editar/1")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Editar Perfil</a>
+                        <div id="profileDropdown" role="menu" aria-labelledby="profileButton" className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg p-2 w-40 z-50">
+                            <button role="menuitem" onClick={() => router.push("/")} className="w-full text-left block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Entrar</button>
+                            <button role="menuitem" onClick={() => router.push("/perfil")} className="w-full text-left block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Meu Perfil</button>
+                            <button role="menuitem" onClick={() => router.push("/perfil/editar/1")} className="w-full text-left block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Editar Perfil</button>
                             <a onClick={() => router.push("/cliente/1/alterar")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Alterar Perfil cliente</a>
                             <a onClick={() => router.push("/cliente/cadastro")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Criar Conta</a>
                             <a onClick={() => router.push("/voluntario/cadastro")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Ser Voluntario</a>
-                            <a onClick={() => router.push("/agendamento")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Meus Agendamentos</a>
-                            <a onClick={() => router.push("/dados_pessoais")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Meus Dados</a>
+                            <button role="menuitem" onClick={() => router.push("/agendamento")} className="w-full text-left block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Meus Agendamentos</button>
+                            <button role="menuitem" onClick={() => router.push("/dados_pessoais")} className="w-full text-left block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Meus Dados</button>
                             <a onClick={() => router.push("/chat")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Minhas Mensagens</a>
-                            <a onClick={() => router.push("/")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Sair</a>
+                            <button role="menuitem" onClick={() => router.push("/")} className="w-full text-left block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Sair</button>
                         </div>
                     )}
                 </div>
@@ -94,15 +96,14 @@ export default function NavBar() {
 
             {menuOpen && (
                 <div className="absolute top-full left-0 right-0 bg-white shadow-md rounded-b-md md:hidden z-40 mx-4">
-                    <nav className="flex flex-col p-4 space-y-2 text-gray-700">
-                        <button onClick={() => router.push("/home")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Home</button>
-                        <button onClick={() => router.push("/servicos")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Serviços</button>
-                        <button onClick={() => router.push("/sobrenos")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Sobre nós</button>
-                        <button onClick={() => router.push("/voluntario")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Voluntários</button>
-                        <button onClick={() => router.push("/postagens")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Notícias</button>
+                    <nav className="flex flex-col p-4 space-y-2 text-gray-700" aria-label="Menu de navegação mobile">
+                        <button onClick={() => router.push("/home")} aria-label="Ir para Home" className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Home</button>
+                        <button onClick={() => router.push("/servicos")} aria-label="Ir para Serviços" className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Serviços</button>
+                        <button onClick={() => router.push("/sobrenos")} aria-label="Ir para Sobre nós" className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Sobre nós</button>
+                        <button onClick={() => router.push("/voluntario")} aria-label="Ir para Voluntários" className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Voluntários</button>
+                        <button onClick={() => router.push("/postagens")} aria-label="Ir para Notícias" className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Notícias</button>
                         <hr className="my-2" />
                         <button onClick={() => router.push("/perfil")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Meu Perfil</button>
-                         <button onClick={() => router.push("/chat")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Minhas Mensagens</button>
                         <button onClick={() => router.push("/agendamento")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Meus Agendamentos</button>
                         <button onClick={() => router.push("/")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer text-red-600">Sair</button>
                     </nav>
