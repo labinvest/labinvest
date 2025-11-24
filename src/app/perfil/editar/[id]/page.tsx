@@ -2,9 +2,6 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-    faUser,
-    faEnvelope,
-    faPhone,
     faBriefcase,
     faBullseye,
     faLightbulb,
@@ -34,7 +31,7 @@ export default function EditarPerfil() {
 
 
 
-    const [objetivos, setObjetivos] = useState([
+    const [objetivos] = useState([
         "Organizar os gastos mensais",
         "Quitar dívidas pequenas e equilibrar o fluxo de caixa",
         "Aprender a controlar as finanças do negócio",
@@ -42,14 +39,14 @@ export default function EditarPerfil() {
         "Começar a investir com segurança",
     ]);
 
-    const [motivacoes, setMotivacoes] = useState([
+    const [motivacoes] = useState([
         "Ter mais tranquilidade e segurança",
         "Parar de depender do limite do banco",
         "Fazer o dinheiro render melhor",
         "Crescer o negócio de forma mais planejada",
     ]);
 
-    const [desafios, setDesafios] = useState([
+    const [desafios] = useState([
         "Falta de tempo e rotina corrida",
         "Medo de termos técnicos",
         "Dificuldade em manter constância no controle financeiro",
@@ -173,7 +170,7 @@ export default function EditarPerfil() {
 
                 {mensagemSalva && (
                     <div className="mt-4 text-green-700 font-medium text-sm text-right">
-                        ✅ Alterações salvas com sucesso!
+                        Alterações salvas com sucesso!
                     </div>
                 )}
 

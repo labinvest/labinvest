@@ -1,26 +1,62 @@
 "use client"
 import React, { useEffect, useState } from "react";
+import { usePerfil } from "../context/PerfilContext";
 import { useRouter, usePathname } from "next/navigation";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import '@fortawesome/fontawesome-svg-core/styles.css';
-import { config } from '@fortawesome/fontawesome-svg-core';
-config.autoAddCss = false;
+import {
+    IconButton,
+    Menu,
+    MenuItem,
+    ListItemIcon,
+    Avatar,
+    Divider,
+    Typography,
+    Box,
+    List,
+    ListItemButton,
+    ListItemAvatar,
+    ListItemText,
+    Button,
+} from "@mui/material";
+import PersonIcon from "@mui/icons-material/Person";
+import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
+import LogoutIcon from "@mui/icons-material/Logout";
+import SwitchAccountIcon from "@mui/icons-material/SwitchAccount";
+import ChatIcon from "@mui/icons-material/Chat";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import SettingsIcon from "@mui/icons-material/Settings";
+import ArticleIcon from "@mui/icons-material/Article";
+import EditIcon from "@mui/icons-material/Edit";
+import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 
 export default function NavBar() {
     const pathname = usePathname();
     const router = useRouter();
     const [menuOpen, setMenuOpen] = useState(false);
-    const [profileOpen, setProfileOpen] = useState(false);
-    const [perfil, setPerfil] = useState<string | null>(null);
-
-    useEffect(() => {
-        const perfil = localStorage.getItem("perfil");
-        setPerfil(perfil);
-    }, []);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const { perfil, setPerfil } = usePerfil();
+    const iconColor = 'success.main';
+    const getUserId = () => {
+        try {
+            if (typeof window === 'undefined') return '1';
+            const perfilAtivo = localStorage.getItem('perfilAtivo');
+            if (perfilAtivo) return perfilAtivo;
+            const stored = localStorage.getItem('user') || localStorage.getItem('usuario') || localStorage.getItem('perfilId');
+            if (stored) {
+                try {
+                    const parsed = JSON.parse(stored);
+                    if (parsed && (parsed.id || parsed._id)) return parsed.id || parsed._id;
+                } catch (e) {
+                    return stored;
+                }
+            }
+            return '1';
+        } catch (e) {
+            return '1';
+        }
+    };
     useEffect(() => {
         setMenuOpen(false);
-        setProfileOpen(false);
+        setAnchorEl(null);
     }, [pathname]);
 
     if (['/'].includes(pathname)) return null;
@@ -65,32 +101,200 @@ export default function NavBar() {
             </nav>
 
             <div className="relative items-center ml-4 hidden md:flex">
-                <div className="relative">
-                    <button
-                        id="profileButton"
-                        aria-label="Menu do perfil do usuário"
-                        aria-expanded={profileOpen}
-                        aria-haspopup="menu"
-                        onClick={() => setProfileOpen((s) => !s)}
-                        className="bg-gradient-to-r from-green-500 to-green-700 text-white rounded-full p-2 shadow-lg hover:scale-105 transition focus:outline-none cursor-pointer"
-                    >
-                        <FontAwesomeIcon icon={faUser} aria-hidden="true" />
-                    </button>
+                <div>
+                    <div className="flex items-center space-x-3">
+                        <div className="text-sm text-gray-600">{perfil ? (perfil === "cliente" ? "Cliente" : "Voluntário") : "Convidado"}</div>
+                        <IconButton
+                            onClick={(e) => setAnchorEl(e.currentTarget)}
+                            size="small"
+                            aria-controls={Boolean(anchorEl) ? 'profile-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={Boolean(anchorEl)}
+                            sx={{ p: 0, bgcolor: 'transparent' }}
+                        >
+                            <Avatar sx={{ width: 36, height: 36, bgcolor: 'success.main' }}>
+                                {perfil === "voluntario" ? <VolunteerActivismIcon fontSize="small" sx={{ color: '#fff' }} /> : <PersonIcon fontSize="small" sx={{ color: '#fff' }} />}
+                            </Avatar>
+                        </IconButton>
+                    </div>
 
-                    {profileOpen && ( 
-                        <div id="profileDropdown" role="menu" aria-labelledby="profileButton" className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg p-2 w-40 z-50">
-                            <button role="menuitem" onClick={() => router.push("/")} className="w-full text-left block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Entrar</button>
-                            <button role="menuitem" onClick={() => router.push("/perfil")} className="w-full text-left block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Meu Perfil</button>
-                            <button role="menuitem" onClick={() => router.push("/perfil/editar/1")} className="w-full text-left block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Editar Perfil</button>
-                            <a onClick={() => router.push("/cliente/1/alterar")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Alterar Perfil cliente</a>
-                            <a onClick={() => router.push("/cliente/cadastro")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Criar Conta</a>
-                            <a onClick={() => router.push("/voluntario/cadastro")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Ser Voluntario</a>
-                            <button role="menuitem" onClick={() => router.push("/agendamento")} className="w-full text-left block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Meus Agendamentos</button>
-                            <button role="menuitem" onClick={() => router.push("/dados_pessoais")} className="w-full text-left block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Meus Dados</button>
-                            <a onClick={() => router.push("/chat")} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Minhas Mensagens</a>
-                            <button role="menuitem" onClick={() => router.push("/")} className="w-full text-left block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">Sair</button>
-                        </div>
-                    )}
+                    <Menu
+                        id="profile-menu"
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={() => setAnchorEl(null)}
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                        PaperProps={{ sx: { minWidth: 260, borderRadius: 2, overflow: 'visible', boxShadow: '0 10px 30px rgba(0,0,0,0.12)' } }}
+                    >
+                        <Box sx={{ p: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
+                            <Avatar sx={{ width: 56, height: 56, bgcolor: 'success.main' }}>
+                                {perfil === 'voluntario' ? <VolunteerActivismIcon sx={{ color: '#fff' }} /> : <PersonIcon sx={{ color: '#fff' }} />}
+                            </Avatar>
+                            <Box>
+                                <Typography variant="subtitle1">{perfil ? (perfil === 'cliente' ? 'Cliente' : 'Voluntário') : 'Convidado'}</Typography>
+                            </Box>
+                        </Box>
+
+                        <Divider />
+
+                        <List dense disablePadding>
+                                {/* Cliente menu */}
+                                {perfil === 'cliente' && (
+                                    <>
+                                        <ListItemButton onClick={() => { router.push('/perfil'); setAnchorEl(null); }}>
+                                            <ListItemAvatar>
+                                                <Avatar sx={{ bgcolor: 'transparent' }}>
+                                                    <PersonIcon sx={{ color: iconColor }} />
+                                                </Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText primary="Meu Perfil" secondary="Atualize seus dados" />
+                                        </ListItemButton>
+
+                                        <ListItemButton onClick={() => { router.push(`/cliente/${getUserId()}/alterar`); setAnchorEl(null); }}>
+                                            <ListItemAvatar>
+                                                <Avatar sx={{ bgcolor: 'transparent' }}>
+                                                    <EditIcon sx={{ color: iconColor }} />
+                                                </Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText primary="Editar Dados" secondary="Alterar suas informações" />
+                                        </ListItemButton>
+
+                                        <ListItemButton onClick={() => { router.push('/agendamento'); setAnchorEl(null); }}>
+                                            <ListItemAvatar>
+                                                <Avatar sx={{ bgcolor: 'transparent' }}>
+                                                    <CalendarTodayIcon sx={{ color: iconColor }} />
+                                                </Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText primary="Agendamentos" secondary="Ver compromissos" />
+                                        </ListItemButton>
+
+                                        <ListItemButton onClick={() => { router.push('/agendamento/solicitar'); setAnchorEl(null); }}>
+                                            <ListItemAvatar>
+                                                <Avatar sx={{ bgcolor: 'transparent' }}>
+                                                    <EventAvailableIcon sx={{ color: iconColor }} />
+                                                </Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText primary="Solicitar Atendimento" secondary="Agendar novo serviço" />
+                                        </ListItemButton>
+
+                                        <ListItemButton onClick={() => { router.push('/chat'); setAnchorEl(null); }}>
+                                            <ListItemAvatar>
+                                                <Avatar sx={{ bgcolor: 'transparent' }}>
+                                                    <ChatIcon sx={{ color: iconColor }} />
+                                                </Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText primary="Mensagens" secondary="Converse com usuários" />
+                                        </ListItemButton>
+
+                                        <ListItemButton onClick={() => { router.push('/postagens'); setAnchorEl(null); }}>
+                                            <ListItemAvatar>
+                                                <Avatar sx={{ bgcolor: 'transparent' }}>
+                                                    <ArticleIcon sx={{ color: iconColor }} />
+                                                </Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText primary="Notícias" secondary="Ver publicações" />
+                                        </ListItemButton>
+                                    </>
+                                )}
+
+                                {/* Voluntário menu */}
+                                {perfil === 'voluntario' && (
+                                    <>
+                                        <ListItemButton onClick={() => { router.push('/voluntario'); setAnchorEl(null); }}>
+                                            <ListItemAvatar>
+                                                <Avatar sx={{ bgcolor: 'transparent' }}>
+                                                    <VolunteerActivismIcon sx={{ color: iconColor }} />
+                                                </Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText primary="Painel Voluntário" secondary="Acessar área do voluntário" />
+                                        </ListItemButton>
+
+                                        <ListItemButton onClick={() => { router.push(`/voluntario/editar/${getUserId()}`); setAnchorEl(null); }}>
+                                            <ListItemAvatar>
+                                                <Avatar sx={{ bgcolor: 'transparent' }}>
+                                                    <SettingsIcon sx={{ color: iconColor }} />
+                                                </Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText primary="Editar Perfil" secondary="Atualize suas informações" />
+                                        </ListItemButton>
+
+                                        <ListItemButton onClick={() => { router.push('/agendamento'); setAnchorEl(null); }}>
+                                            <ListItemAvatar>
+                                                <Avatar sx={{ bgcolor: 'transparent' }}>
+                                                    <CalendarTodayIcon sx={{ color: iconColor }} />
+                                                </Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText primary="Atendimentos" secondary="Ver agendamentos recebidos" />
+                                        </ListItemButton>
+
+                                        <ListItemButton onClick={() => { router.push('/chat'); setAnchorEl(null); }}>
+                                            <ListItemAvatar>
+                                                <Avatar sx={{ bgcolor: 'transparent' }}>
+                                                    <ChatIcon sx={{ color: iconColor }} />
+                                                </Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText primary="Mensagens" secondary="Converse com usuários" />
+                                        </ListItemButton>
+
+                                        <ListItemButton onClick={() => { router.push('/postagens'); setAnchorEl(null); }}>
+                                            <ListItemAvatar>
+                                                <Avatar sx={{ bgcolor: 'transparent' }}>
+                                                    <ArticleIcon sx={{ color: iconColor }} />
+                                                </Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText primary="Notícias" secondary="Ver publicações" />
+                                        </ListItemButton>
+                                    </>
+                                )}
+                        </List>
+
+                        <Divider />
+
+                        <Box sx={{ p: 1, display: 'flex', gap: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
+                            {perfil ? (
+                                <>
+                                    <Button
+                                        variant="outlined"
+                                        startIcon={<SwitchAccountIcon sx={{ color: 'success.main' }} />}
+                                        onClick={() => {
+                                            const next = perfil === 'cliente' ? 'voluntario' : 'cliente';
+                                            setPerfil(next);
+                                            
+                                            if (next === 'voluntario') router.push('/voluntario');
+                                            else router.push('/perfil');
+                                            setAnchorEl(null);
+                                        }}
+                                        size="small"
+                                        sx={{ minWidth: 140, textTransform: 'none' }}
+                                    >
+                                        Trocar Perfil
+                                    </Button>
+
+                                    <Button
+                                        variant="contained"
+                                        color="error"
+                                        startIcon={<LogoutIcon sx={{ color: '#fff' }} />}
+                                        onClick={() => { setPerfil(null); router.push('/'); setAnchorEl(null); }}
+                                        size="small"
+                                        sx={{ minWidth: 90, textTransform: 'none' }}
+                                    >
+                                        Sair
+                                    </Button>
+                                </>
+                            ) : (
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => { router.push('/cliente/cadastro'); setAnchorEl(null); }}
+                                    size="small"
+                                    sx={{ minWidth: 140, textTransform: 'none' }}
+                                >
+                                    Criar Conta
+                                </Button>
+                            )}
+                        </Box>
+                    </Menu>
                 </div>
             </div>
 
@@ -103,8 +307,27 @@ export default function NavBar() {
                         <button onClick={() => router.push("/voluntario")} aria-label="Ir para Voluntários" className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Voluntários</button>
                         <button onClick={() => router.push("/postagens")} aria-label="Ir para Notícias" className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Notícias</button>
                         <hr className="my-2" />
-                        <button onClick={() => router.push("/perfil")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Meu Perfil</button>
-                        <button onClick={() => router.push("/agendamento")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Meus Agendamentos</button>
+                        {perfil === 'cliente' && (
+                            <>
+                                <button onClick={() => router.push('/perfil')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Meu Perfil</button>
+                                <button onClick={() => router.push(`/cliente/${getUserId()}/alterar`)} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Editar Dados</button>
+                                <button onClick={() => router.push('/agendamento')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Meus Agendamentos</button>
+                                <button onClick={() => router.push('/agendamento/solicitar')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Solicitar Atendimento</button>
+                                <button onClick={() => router.push('/chat')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Mensagens</button>
+                                <button onClick={() => router.push('/postagens')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Notícias</button>
+                            </>
+                        )}
+
+                        {perfil === 'voluntario' && (
+                            <>
+                                <button onClick={() => router.push('/voluntario')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Painel Voluntário</button>
+                                <button onClick={() => router.push(`/voluntario/editar/${getUserId()}`)} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Editar Perfil</button>
+                                <button onClick={() => router.push('/agendamento')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Atendimentos</button>
+                                <button onClick={() => router.push('/chat')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Mensagens</button>
+                                <button onClick={() => router.push('/postagens')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Notícias</button>
+                            </>
+                        )}
+
                         <button onClick={() => router.push("/")} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer text-red-600">Sair</button>
                     </nav>
                 </div>
