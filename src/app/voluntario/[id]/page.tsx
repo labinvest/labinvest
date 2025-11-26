@@ -1,11 +1,25 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useRouter } from "next/navigation";
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import Card from '@mui/material/Card';
+import CardMedia from '@mui/material/CardMedia';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import PublishIcon from '@mui/icons-material/Publish';
+import ClearIcon from '@mui/icons-material/Clear';
 
-const postagens = [
+const defaultPostagens = [
   {
     id: 1,
     autor: "Carlos Lima",
@@ -28,6 +42,67 @@ const postagens = [
 
 export default function PerfilVoluntario() {
   const router = useRouter();
+
+  const [postagens, setPostagens] = useState<any[]>([]);
+  const [title, setTitle] = useState("");
+  const [categoria, setCategoria] = useState("");
+  const [conteudo, setConteudo] = useState("");
+  const [imagemData, setImagemData] = useState<string | null>(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('postagens');
+      if (stored) setPostagens(JSON.parse(stored));
+      else setPostagens(defaultPostagens);
+    } catch (e) {
+      setPostagens(defaultPostagens);
+    }
+  }, []);
+
+  const saveToStorage = (items: any[]) => {
+    try {
+      localStorage.setItem('postagens', JSON.stringify(items));
+    } catch (e) {
+      console.error('Erro salvando postagens', e);
+    }
+  };
+
+  const handleImage = (file?: File) => {
+    if (!file) return setImagemData(null);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImagemData(String(reader.result));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSubmit = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!title && !conteudo) return;
+    const novo = {
+      id: Date.now(),
+      autor: "Carlos Lima",
+      data: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }),
+      conteudo,
+      imagem: imagemData,
+      categoria: categoria || 'Geral',
+    };
+    const updated = [novo, ...postagens];
+    setPostagens(updated);
+    saveToStorage(updated);
+    // limpar
+    setTitle("");
+    setCategoria("");
+    setConteudo("");
+    setImagemData(null);
+    setOpenSnackbar(true);
+  };
+
+  const handleFileChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    const file = evt.target.files && evt.target.files[0];
+    if (file) handleImage(file);
+  };
 
   return (
     <div className="flex flex-col items-center w-full bg-gray-50 min-h-screen py-6">
@@ -107,36 +182,110 @@ export default function PerfilVoluntario() {
         </div>
 
         <div className="rounded-2xl p-8 bg-white shadow-lg mt-8">
-          <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-            Postagens Recentes
-          </h2>
+          <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">Crie uma postagem</h2>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <TextField
+                label="Título"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                fullWidth
+                InputLabelProps={{ sx: { '&.Mui-focused': { color: 'success.main' } } }}
+                sx={{ '& .MuiOutlinedInput-root': { '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'success.main' } } }}
+              />
+              <FormControl fullWidth>
+                <InputLabel id="cat-label" sx={{ '&.Mui-focused': { color: 'success.main' } }}>Categoria</InputLabel>
+                <Select
+                  labelId="cat-label"
+                  value={categoria}
+                  label="Categoria"
+                  onChange={(e) => setCategoria(String(e.target.value))}
+                  sx={{ '& .MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' }, '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'success.main' } }}
+                >
+                  <MenuItem value="Ação Comunitária">Ação Comunitária</MenuItem>
+                  <MenuItem value="Educação Financeira">Educação Financeira</MenuItem>
+                  <MenuItem value="Capacitação">Capacitação</MenuItem>
+                  <MenuItem value="Geral">Geral</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+
+            <TextField label="Conteúdo" color="success" value={conteudo} onChange={(e) => setConteudo(e.target.value)} fullWidth multiline minRows={4} />
+
+            <div className="flex flex-col sm:flex-row items-center gap-4 p-2 ">
+              <input
+                accept="image/*"
+                style={{ display: 'none' }}
+                id="file-input"
+                type="file"
+                onChange={handleFileChange}
+              />
+              <label htmlFor="file-input">
+                <Button
+                  component="span"
+                  variant="outlined"
+                  color="success"
+                  startIcon={<PhotoCamera />}
+                  sx={{ textTransform: 'none', borderRadius: 2 }}
+                >
+                  {imagemData ? 'Imagem anexada' : 'Anexar imagem'}
+                </Button>
+              </label>
+
+              <div className="flex gap-2 ml-auto">
+                <Button
+                  variant="contained"
+                  color="success"
+                  type="submit"
+                  startIcon={<PublishIcon />}
+                  sx={{ textTransform: 'none', fontWeight: 600 }}
+                >
+                  Postar
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  startIcon={<ClearIcon />}
+                  onClick={() => { setTitle(''); setCategoria(''); setConteudo(''); setImagemData(null); }}
+                  sx={{ textTransform: 'none' }}
+                >
+                  Limpar
+                </Button>
+              </div>
+            </div>
+
+            {imagemData && (
+              <Card className="max-w-md">
+                <CardMedia component="img" height="200" image={imagemData} alt="Preview da imagem" />
+                <CardContent>
+                  <Typography variant="body2" color="text.secondary">Pré-visualização da imagem anexada</Typography>
+                </CardContent>
+              </Card>
+            )}
+          </form>
+
+          <h2 className="text-2xl font-semibold text-center text-gray-800 my-6">Postagens Recentes</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {postagens.map((post) => (
-              <div
-                key={post.id}
-                className="flex flex-col bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition p-4"
-              >
-                <img
-                  src={post.imagem}
-                  alt={`Imagem de ${post.autor}`}
-                  className="w-full h-64 object-cover rounded-lg mb-4"
-                />
+              <div key={post.id} className="flex flex-col bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition p-4">
+                {post.imagem && (
+                  <img src={post.imagem} alt={`Imagem de ${post.autor}`} className="w-full h-64 object-cover rounded-lg mb-4" />
+                )}
                 <div className="space-y-2 text-left">
-                  <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                    {post.categoria}
-                  </span>
+                  <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">{post.categoria}</span>
                   <h4 className="text-xl font-semibold text-gray-900">{post.autor}</h4>
                   <p className="text-sm text-gray-500">{post.data}</p>
-                  <p className="text-gray-700 text-base leading-relaxed">
-                    {post.conteudo.length > 160
-                      ? post.conteudo.slice(0, 160) + "..."
-                      : post.conteudo}
-                  </p>
+                  <p className="text-gray-700 text-base leading-relaxed">{post.conteudo && (post.conteudo.length > 160 ? post.conteudo.slice(0, 160) + "..." : post.conteudo)}</p>
                 </div>
               </div>
             ))}
           </div>
+
+          <Snackbar open={openSnackbar} autoHideDuration={3000} onClose={() => setOpenSnackbar(false)}>
+            <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>Postagem criada com sucesso.</Alert>
+          </Snackbar>
 
         </div>
 

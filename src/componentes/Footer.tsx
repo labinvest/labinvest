@@ -22,7 +22,7 @@ export default function Footer() {
                 <div className="flex flex-col sm:flex-row gap-2 p-3 items-center">
                     <input type="text" className="bg-transparent rounded-full border border-white py-1 md:py-[2px] px-3 md:px-[10px] w-full sm:w-auto"
                         placeholder="Digite seu email" />
-                    <button className="bg-[#B2B3CF] rounded-full px-4 md:px-[10px] py-2 md:py-[3px] cursor-pointer hover:bg-[#9a9bb8] transition w-full sm:w-auto" onClick={() => (window.location.href = "https://pt.wikipedia.org/wiki/Esquema_em_pir%C3%A2mide#:~:text=O%20site%20do%20FBI%20afirma,para%20comercializar%20um%20determinado%20produto.")}>Inscrever</button>
+                    <button className="bg-[#B2B3CF] rounded-full px-4 md:px-[10px] py-2 md:py-[3px] cursor-pointer hover:bg-[#9a9bb8] transition w-full sm:w-auto" onClick={() => (window.location.href = "")}>Inscrever</button>
                 </div>
                 <div className="flex flex-col md:flex-row justify-center md:justify-between w-full md:w-[80%] lg:w-[60%] p-2 gap-3 md:gap-0 text-center md:text-left text-sm cursor-pointer">
                     <p className="hover:underline">Carreira</p>

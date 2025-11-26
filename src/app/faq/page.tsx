@@ -1,12 +1,23 @@
 "use client";
+import React, { useState } from 'react';
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { 
-  faUser,
-  faEnvelope,
-  faCommentDots,
-} from "@fortawesome/free-solid-svg-icons";
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import PersonIcon from '@mui/icons-material/Person';
+import EmailIcon from '@mui/icons-material/Email';
+import CommentIcon from '@mui/icons-material/Comment';
 
 export default function FAQ() {
   const validationSchema = Yup.object({
@@ -14,6 +25,10 @@ export default function FAQ() {
     email: Yup.string().email("Email inválido").required("Email é obrigatório"),
     mensagem: Yup.string().required("Mensagem é obrigatória")
   });
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [submittedData, setSubmittedData] = useState<any | null>(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -23,16 +38,41 @@ export default function FAQ() {
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log("Dados do formulário:", values);
-      alert("Mensagem enviada! Verifique o console.");
-      formik.resetForm();
+      // abrir modal de confirmação com os dados
+      setSubmittedData(values);
+      setOpenDialog(true);
     }
   });
 
   const faqs = [
     {
-    }
+      pergunta: "Como me inscrevo?",
+      resposta: "Você pode se inscrever clicando no botão de cadastro no topo da página e seguindo os passos.",
+    },
+    {
+      pergunta: "Qual o prazo para resposta?",
+      resposta: "Normalmente respondemos em até 48 horas úteis.",
+    },
+    {
+      pergunta: "Posso alterar meus dados depois de enviado?",
+      resposta: "Sim, entre em contato com o suporte e solicite a alteração dos seus dados.",
+    },
   ];
+
+  const handleConfirmSend = () => {
+    if (!submittedData) return;
+    // aqui você enviaria para a API. Por enquanto apenas log e feedback.
+    console.log('Enviando mensagem:', submittedData);
+    setOpenDialog(false);
+    formik.resetForm();
+    setSubmittedData(null);
+    setOpenSnackbar(true);
+  };
+
+  const handleCancelSend = () => {
+    setOpenDialog(false);
+    setSubmittedData(null);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -71,73 +111,118 @@ export default function FAQ() {
 
           <form onSubmit={formik.handleSubmit} className="space-y-4">
             
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <FontAwesomeIcon icon={faUser} className="mr-2 text-green-700" />
-                Nome
-              </label>
-              <input
-                type="text"
-                name="nome"
-                value={formik.values.nome}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                placeholder="Seu nome"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700"
-              />
-              {formik.touched.nome && formik.errors.nome && (
-                <p className="text-red-500 text-sm mt-1">{formik.errors.nome}</p>
-              )}
-            </div>
+            
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <FontAwesomeIcon icon={faEnvelope} className="mr-2 text-green-700" />
-                Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={formik.values.email}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                placeholder="seu@email.com"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700"
-              />
-              {formik.touched.email && formik.errors.email && (
-                <p className="text-red-500 text-sm mt-1">{formik.errors.email}</p>
-              )}
-            </div>
+              <div>
+                <TextField
+                  name="nome"
+                  label="Nome"
+                  value={formik.values.nome}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  placeholder="Seu nome"
+                  fullWidth
+                  size="small"
+                  color="success"
+                  error={!!(formik.touched.nome && formik.errors.nome)}
+                  helperText={formik.touched.nome && formik.errors.nome ? String(formik.errors.nome) : ''}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PersonIcon color="success" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <FontAwesomeIcon icon={faCommentDots} className="mr-2 text-green-700" />
-                Mensagem
-              </label>
-              <textarea
-                name="mensagem"
-                value={formik.values.mensagem}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                placeholder="Digite sua dúvida..."
-                rows={5}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700"
-              />
-              {formik.touched.mensagem && formik.errors.mensagem && (
-                <p className="text-red-500 text-sm mt-1">{formik.errors.mensagem}</p>
-              )}
-            </div>
+              <div>
+                <TextField
+                  name="email"
+                  label="Email"
+                  type="email"
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  placeholder="seu@email.com"
+                  fullWidth
+                  size="small"
+                  color="success"
+                  error={!!(formik.touched.email && formik.errors.email)}
+                  helperText={formik.touched.email && formik.errors.email ? String(formik.errors.email) : ''}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <EmailIcon color="success" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </div>
 
-            <button
-              type="submit"
-              className="w-full py-3 bg-green-700 text-white rounded-lg font-semibold hover:bg-green-800 transition"
-            >
-              Enviar Mensagem
-            </button>
-          </form>
+              <div>
+                <TextField
+                  name="mensagem"
+                  label="Mensagem"
+                  value={formik.values.mensagem}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  placeholder="Digite sua dúvida..."
+                  fullWidth
+                  size="small"
+                  color="success"
+                  multiline
+                  rows={5}
+                  error={!!(formik.touched.mensagem && formik.errors.mensagem)}
+                  helperText={formik.touched.mensagem && formik.errors.mensagem ? String(formik.errors.mensagem) : ''}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <CommentIcon color="success" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </div>
+              <Button
+                type="submit"
+                variant="contained"
+                color="success"
+                fullWidth
+                size="large"
+              >
+                Enviar
+              </Button>
+            </form>
+
+            <Dialog open={openDialog} onClose={handleCancelSend}>
+              <DialogTitle>Confirmar envio</DialogTitle>
+              <DialogContent>
+                  <Typography variant="body2" color="text.secondary">
+                    Confirma o envio da seguinte mensagem?
+                  </Typography>
+                {submittedData && (
+                  <div className="mt-4">
+                    <p><strong>Nome:</strong> {submittedData.nome}</p>
+                    <p><strong>Email:</strong> {submittedData.email}</p>
+                    <p><strong>Mensagem:</strong></p>
+                    <p className="whitespace-pre-wrap">{submittedData.mensagem}</p>
+                  </div>
+                )}
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleCancelSend}>Cancelar</Button>
+                <Button onClick={handleConfirmSend} variant="contained" color="success">Confirmar</Button>
+              </DialogActions>
+            </Dialog>
+
+            <Snackbar open={openSnackbar} autoHideDuration={3000} onClose={() => setOpenSnackbar(false)}>
+              <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
+                Mensagem enviada com sucesso.
+              </Alert>
+            </Snackbar>
+          </div>
+          </div>
         </div>
-
-      </div>
-    </div>
   );
 }

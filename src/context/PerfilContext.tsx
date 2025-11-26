@@ -22,8 +22,12 @@ export const PerfilProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   useEffect(() => {
     try {
       const stored = localStorage.getItem("perfil") || localStorage.getItem("perfilAtivo");
+      
       if (stored === "cliente" || stored === "voluntario") {
         setPerfilState(stored as PerfilType);
+      } else if (stored === "usuario") {
+       
+        setPerfilState('cliente');
       }
     } catch (e) {
       

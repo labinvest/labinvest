@@ -1,0 +1,221 @@
+[
+  {
+    "id": 1,
+    "nome": "Ana Beatriz",
+    "titulo": "Consultora Financeira",
+    "especializacoes": [
+      "Planejamento Financeiro",
+      "Investimentos"
+    ],
+    "categoria": "Finanças",
+    "imagem_perfil": ""
+  },
+  {
+    "id": 2,
+    "nome": "Carlos Silva",
+    "titulo": "Coach Financeiro",
+    "especializacoes": [
+      "Orçamento Pessoal",
+      "Dívidas"
+    ],
+    "categoria": "Finanças",
+    "imagem_perfil": ""
+  },
+  {
+    "id": 3,
+    "nome": "Mariana Souza",
+    "titulo": "Contadora",
+    "especializacoes": [
+      "Impostos",
+      "Auditoria"
+    ],
+    "categoria": "Finanças",
+    "imagem_perfil": ""
+  },
+  {
+    "id": 4,
+    "nome": "Pedro Oliveira",
+    "titulo": "Investidora",
+    "especializacoes": [
+      "Ações",
+      "Fundos Imobiliários"
+    ],
+    "categoria": "Finanças",
+    "imagem_perfil": ""
+  },
+  {
+    "id": 5,
+    "nome": "Juliana Costa",
+    "titulo": "Estudante de contabilidade",
+    "especializacoes": [
+      "Excel",
+      "Análise de dados"
+    ],
+    "categoria": "Finanças",
+    "imagem_perfil": ""
+  },
+  {
+    "id": 6,
+    "nome": "Rafael Lima",
+    "titulo": "Organizador de finanças pessoais",
+    "especializacoes": [
+      "Orçamento familiar",
+      "Planejamento de aposentadoria"
+    ],
+    "categoria": "Finanças",
+    "imagem_perfil": ""
+  },
+  {
+    "id": 7,
+    "nome": "José",
+    "sobrenome": "Campos",
+    "email": "jose3roberto2@gmail.com",
+    "telefone": "(11)9339-0239",
+    "cpf": "579.797.838-59",
+    "cnpj": "",
+    "profissao": "Planejador financeiro (CFP)",
+    "curso": "adm",
+    "instituicao": "uniso",
+    "anoConclusao": 2025,
+    "areaInteresse": "adm",
+    "certificados": [
+      "CEA"
+    ]
+  },
+  {
+    "id": 8,
+    "nome": "José",
+    "sobrenome": "Campos",
+    "email": "jose3roberto2@gmail.com",
+    "telefone": "(15)99836-9428",
+    "cpf": "579.797.838-59",
+    "cnpj": "",
+    "profissao": "Analista de investimentos (CNPI)",
+    "curso": "Bosta",
+    "instituicao": "uniso",
+    "anoConclusao": 2025,
+    "areaInteresse": "administrar",
+    "certificados": [
+      "CPA-10"
+    ]
+  },
+  {
+    "id": 9,
+    "nome": "José",
+    "sobrenome": "Campos",
+    "email": "jose3roberto2@gmail.com",
+    "telefone": "(15)99836-9428",
+    "cpf": "579.797.838-59",
+    "cnpj": "",
+    "profissao": "Analista de investimentos (CNPI)",
+    "curso": "Bosta",
+    "instituicao": "uniso",
+    "anoConclusao": 2025,
+    "areaInteresse": "administrar",
+    "certificados": [
+      "CPA-10"
+    ]
+  },
+  {
+    "id": 10,
+    "nome": "José",
+    "sobrenome": "Campos",
+    "email": "jose3roberto2@gmail.com",
+    "telefone": "(15)99836-9428",
+    "cpf": "579.797.838-59",
+    "cnpj": "",
+    "profissao": "Analista de investimentos (CNPI)",
+    "curso": "Bosta",
+    "instituicao": "uniso",
+    "anoConclusao": 2025,
+    "areaInteresse": "administrar",
+    "certificados": [
+      "CPA-10"
+    ]
+  },
+  {
+    "id": 11,
+    "nome": "José",
+    "sobrenome": "Campos",
+    "email": "jose3roberto2@gmail.com",
+    "telefone": "(15)99836-9428",
+    "cpf": "579.797.838-59",
+    "cnpj": "",
+    "profissao": "Analista de investimentos (CNPI)",
+    "curso": "Bosta",
+    "instituicao": "uniso",
+    "anoConclusao": 2025,
+    "areaInteresse": "administrar",
+    "certificados": [
+      "CPA-10"
+    ]
+  },
+  {
+    "id": 12,
+    "nome": "José",
+    "sobrenome": "Campos",
+    "email": "jose3roberto2@gmail.com",
+    "telefone": "(15)99836-9428",
+    "cpf": "579.797.838-59",
+    "cnpj": "",
+    "profissao": "Analista de investimentos (CNPI)",
+    "curso": "Bosta",
+    "instituicao": "uniso",
+    "anoConclusao": 2025,
+    "areaInteresse": "administrar",
+    "certificados": [
+      "CPA-10"
+    ]
+  },
+  {
+    "id": 13,
+    "nome": "José",
+    "sobrenome": "Campos",
+    "email": "jose3roberto2@gmail.com",
+    "telefone": "(15)99836-9428",
+    "cpf": "579.797.838-59",
+    "cnpj": "",
+    "profissao": "Analista de investimentos (CNPI)",
+    "curso": "Bosta",
+    "instituicao": "uniso",
+    "anoConclusao": 2025,
+    "areaInteresse": "administrar",
+    "certificados": [
+      "CPA-10"
+    ]
+  },
+  {
+    "id": 14,
+    "nome": "José",
+    "sobrenome": "Campos",
+    "email": "jose3roberto2@gmail.com",
+    "telefone": "(15)99836-9428",
+    "cpf": "579.797.838-59",
+    "cnpj": "",
+    "profissao": "Analista de investimentos (CNPI)",
+    "curso": "Bosta",
+    "instituicao": "uniso",
+    "anoConclusao": 2025,
+    "areaInteresse": "administrar",
+    "certificados": [
+      "CPA-10"
+    ]
+  },
+  {
+    "id": 15,
+    "nome": "José",
+    "sobrenome": "Campos",
+    "email": "jose3roberto2@gmail.com",
+    "telefone": "(15)99836-9428",
+    "cpf": "579.797.838-59",
+    "cnpj": "",
+    "profissao": "Controller",
+    "curso": "adm",
+    "instituicao": "uniso",
+    "anoConclusao": 2025,
+    "areaInteresse": "Vaso",
+    "certificados": [
+      "CPA-10"
+    ]
+  }
+]

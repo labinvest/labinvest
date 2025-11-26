@@ -18,15 +18,16 @@ import {
     Button,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SwitchAccountIcon from "@mui/icons-material/SwitchAccount";
 import ChatIcon from "@mui/icons-material/Chat";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ArticleIcon from "@mui/icons-material/Article";
 import EditIcon from "@mui/icons-material/Edit";
-import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 
 export default function NavBar() {
     const pathname = usePathname();
@@ -145,37 +146,28 @@ export default function NavBar() {
                                         <ListItemButton onClick={() => { router.push('/perfil'); setAnchorEl(null); }}>
                                             <ListItemAvatar>
                                                 <Avatar sx={{ bgcolor: 'transparent' }}>
-                                                    <PersonIcon sx={{ color: iconColor }} />
+                                                    <AccountCircleIcon sx={{ color: iconColor }} />
                                                 </Avatar>
                                             </ListItemAvatar>
                                             <ListItemText primary="Meu Perfil" secondary="Atualize seus dados" />
                                         </ListItemButton>
 
-                                        <ListItemButton onClick={() => { router.push(`/cliente/${getUserId()}/alterar`); setAnchorEl(null); }}>
+                                        <ListItemButton onClick={() => { router.push(`/cliente/cadastro`); setAnchorEl(null); }}>
                                             <ListItemAvatar>
                                                 <Avatar sx={{ bgcolor: 'transparent' }}>
                                                     <EditIcon sx={{ color: iconColor }} />
                                                 </Avatar>
                                             </ListItemAvatar>
-                                            <ListItemText primary="Editar Dados" secondary="Alterar suas informações" />
+                                            <ListItemText primary="Alterar Perfil" secondary="Alterar Dados no Sistema" />
                                         </ListItemButton>
 
                                         <ListItemButton onClick={() => { router.push('/agendamento'); setAnchorEl(null); }}>
                                             <ListItemAvatar>
                                                 <Avatar sx={{ bgcolor: 'transparent' }}>
-                                                    <CalendarTodayIcon sx={{ color: iconColor }} />
-                                                </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText primary="Agendamentos" secondary="Ver compromissos" />
-                                        </ListItemButton>
-
-                                        <ListItemButton onClick={() => { router.push('/agendamento/solicitar'); setAnchorEl(null); }}>
-                                            <ListItemAvatar>
-                                                <Avatar sx={{ bgcolor: 'transparent' }}>
                                                     <EventAvailableIcon sx={{ color: iconColor }} />
                                                 </Avatar>
                                             </ListItemAvatar>
-                                            <ListItemText primary="Solicitar Atendimento" secondary="Agendar novo serviço" />
+                                            <ListItemText primary="Agendamentos" secondary="Ver compromissos" />
                                         </ListItemButton>
 
                                         <ListItemButton onClick={() => { router.push('/chat'); setAnchorEl(null); }}>
@@ -187,14 +179,7 @@ export default function NavBar() {
                                             <ListItemText primary="Mensagens" secondary="Converse com usuários" />
                                         </ListItemButton>
 
-                                        <ListItemButton onClick={() => { router.push('/postagens'); setAnchorEl(null); }}>
-                                            <ListItemAvatar>
-                                                <Avatar sx={{ bgcolor: 'transparent' }}>
-                                                    <ArticleIcon sx={{ color: iconColor }} />
-                                                </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText primary="Notícias" secondary="Ver publicações" />
-                                        </ListItemButton>
+        
                                     </>
                                 )}
 
@@ -210,10 +195,19 @@ export default function NavBar() {
                                             <ListItemText primary="Painel Voluntário" secondary="Acessar área do voluntário" />
                                         </ListItemButton>
 
-                                        <ListItemButton onClick={() => { router.push(`/voluntario/editar/${getUserId()}`); setAnchorEl(null); }}>
+                                        <ListItemButton onClick={() => { router.push(`/voluntario/[id]`); setAnchorEl(null); }}>
                                             <ListItemAvatar>
                                                 <Avatar sx={{ bgcolor: 'transparent' }}>
-                                                    <SettingsIcon sx={{ color: iconColor }} />
+                                                    <ManageAccountsIcon sx={{ color: iconColor }} />
+                                                </Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText primary="Meu Perfil" secondary="Acessar meu perfil" />
+                                        </ListItemButton>
+                                        
+                                        <ListItemButton onClick={() => { router.push(`/voluntario/editar`); setAnchorEl(null); }}>
+                                            <ListItemAvatar>
+                                                <Avatar sx={{ bgcolor: 'transparent' }}>
+                                                    <EditIcon sx={{ color: iconColor }} />
                                                 </Avatar>
                                             </ListItemAvatar>
                                             <ListItemText primary="Editar Perfil" secondary="Atualize suas informações" />
@@ -222,7 +216,7 @@ export default function NavBar() {
                                         <ListItemButton onClick={() => { router.push('/agendamento'); setAnchorEl(null); }}>
                                             <ListItemAvatar>
                                                 <Avatar sx={{ bgcolor: 'transparent' }}>
-                                                    <CalendarTodayIcon sx={{ color: iconColor }} />
+                                                    <EventAvailableIcon sx={{ color: iconColor }} />
                                                 </Avatar>
                                             </ListItemAvatar>
                                             <ListItemText primary="Atendimentos" secondary="Ver agendamentos recebidos" />
@@ -235,15 +229,6 @@ export default function NavBar() {
                                                 </Avatar>
                                             </ListItemAvatar>
                                             <ListItemText primary="Mensagens" secondary="Converse com usuários" />
-                                        </ListItemButton>
-
-                                        <ListItemButton onClick={() => { router.push('/postagens'); setAnchorEl(null); }}>
-                                            <ListItemAvatar>
-                                                <Avatar sx={{ bgcolor: 'transparent' }}>
-                                                    <ArticleIcon sx={{ color: iconColor }} />
-                                                </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText primary="Notícias" secondary="Ver publicações" />
                                         </ListItemButton>
                                     </>
                                 )}
@@ -286,7 +271,7 @@ export default function NavBar() {
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    onClick={() => { router.push('/cliente/cadastro'); setAnchorEl(null); }}
+                                    onClick={() => { router.push('/'); setAnchorEl(null); }}
                                     size="small"
                                     sx={{ minWidth: 140, textTransform: 'none' }}
                                 >

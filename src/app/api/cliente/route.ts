@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { unmaskCPF, unmaskTelephone, unmaskCEP } from '@/utils/masks';
 
 interface Cliente {
     id: string;
@@ -122,9 +123,17 @@ export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
 
+        // Remove máscaras dos dados
+        const clienteData = {
+            ...body,
+            cpf: unmaskCPF(body.cpf),
+            telefone: unmaskTelephone(body.telefone),
+            cep: unmaskCEP(body.cep)
+        };
+
         // Validar se já existe cliente com mesmo email ou CPF
-        const emailExiste = MOCK_CLIENTES.some(c => c.email === body.email);
-        const cpfExiste = MOCK_CLIENTES.some(c => c.cpf === body.cpf);
+        const emailExiste = MOCK_CLIENTES.some(c => c.email === clienteData.email);
+        const cpfExiste = MOCK_CLIENTES.some(c => c.cpf === clienteData.cpf);
 
         if (emailExiste) {
             return NextResponse.json(
@@ -143,7 +152,7 @@ export async function POST(request: NextRequest) {
         // Criar novo cliente
         const novoCliente: Cliente = {
             id: String(MOCK_CLIENTES.length + 1),
-            ...body,
+            ...clienteData,
             dataCadastro: new Date().toISOString()
         };
 

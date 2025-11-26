@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import fs from 'fs/promises';
+import path from 'path';
 
 const MOCK_VOLUNTARIOS = [
     { 
@@ -51,6 +53,39 @@ const MOCK_VOLUNTARIOS = [
     },
 ];
 
-export function GET() {
+export async function GET() {
+
+    
     return NextResponse.json(MOCK_VOLUNTARIOS, { status: 200 });
+  
+}
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+
+    const dataDir = path.join(process.cwd(), 'src', 'data');
+    const filePath = path.join(dataDir, 'voluntarios.json');
+
+    await fs.mkdir(dataDir, { recursive: true });
+
+    let existing = [];
+    try {
+      const content = await fs.readFile(filePath, 'utf-8');
+      existing = JSON.parse(content);
+    } catch (e) {
+      existing = MOCK_VOLUNTARIOS.slice();
+    }
+
+    const newId = existing.length ? Math.max(...existing.map((v: any) => v.id || 0)) + 1 : 1;
+    const novo = { id: newId, ...body };
+    existing.push(novo);
+
+    await fs.writeFile(filePath, JSON.stringify(existing, null, 2), 'utf-8');
+
+    return NextResponse.json(novo, { status: 201 });
+  } catch (err) {
+    console.error('Erro ao salvar voluntário:', err);
+    return NextResponse.json({ error: 'Erro ao salvar voluntário' }, { status: 500 });
+  }
 }
