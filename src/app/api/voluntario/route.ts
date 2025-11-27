@@ -1,6 +1,20 @@
+/**
+ * /api/voluntario
+ * 
+ * Métodos HTTP
+ * - GET: consulta todos os voluntários
+ * - POST: inserção de novo voluntário
+ * 
+ * HTTP status code:
+ * - 200 sucesso
+ * - 201 created
+ * - 400 bad request
+ */
+
 import { NextResponse } from "next/server";
 
-const MOCK_VOLUNTARIOS = [
+export function GET() {
+  return NextResponse.json([
     { 
       id: 1, 
       nome: "Ana Beatriz", 
@@ -24,33 +38,13 @@ const MOCK_VOLUNTARIOS = [
       especializacoes: ["Impostos", "Auditoria"], 
       categoria: "Finanças", 
       imagem_perfil: ""
-    },
-    { 
-      id: 4, 
-      nome: "Pedro Oliveira", 
-      titulo: "Investidora", 
-      especializacoes: ["Ações", "Fundos Imobiliários"], 
-      categoria: "Finanças", 
-      imagem_perfil: ""
-    },
-    { 
-      id: 5, 
-      nome: "Juliana Costa", 
-      titulo: "Estudante de contabilidade", 
-      especializacoes: ["Excel", "Análise de dados"], 
-      categoria: "Finanças", 
-      imagem_perfil: ""
-    },
-    { 
-      id: 6, 
-      nome: "Rafael Lima", 
-      titulo: "Organizador de finanças pessoais", 
-      especializacoes: ["Orçamento familiar", "Planejamento de aposentadoria"], 
-      categoria: "Finanças", 
-      imagem_perfil: ""
-    },
-];
+    }
+  ], { status: 200 });
+}
 
-export async function GET() {
-    return NextResponse.json(MOCK_VOLUNTARIOS, { status: 200 });
+export function POST(request: any) {
+  return NextResponse.json({
+    id: 7,
+    message: "Voluntário cadastrado com sucesso"
+  }, { status: 201 });
 }

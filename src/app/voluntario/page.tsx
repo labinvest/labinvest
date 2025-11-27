@@ -15,7 +15,7 @@ interface Voluntario {
 
 export default function Voluntario() {
 
-  const categorias = ["Marketing", "Desenvolvimento", "Design", "Dados"];
+  const categorias = ["Emprestimos", "Investimento", "Finanças"];
   const categoriaAtiva = "todas";
   const handleCategoriaChange = () => { };
 
