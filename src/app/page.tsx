@@ -7,7 +7,7 @@ import TextField from '@mui/material/TextField';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { usePerfil } from '@/context/PerfilContext';
+
 
 export default function LoginPage() {
 
@@ -19,7 +19,7 @@ export default function LoginPage() {
   const [loginError, setLoginError] = useState("");
 
   const schema = mode === "login" ? loginSchema : registerSchema;
-  const { setPerfil } = usePerfil();
+
 
   const formik = useFormik({
     initialValues:
@@ -33,18 +33,18 @@ export default function LoginPage() {
       if (mode === "login") {
         if (v.username === "admin" && v.password === "admin123") {
           setLoginError("");
-          try { setPerfil('voluntario'); localStorage.setItem('perfil', 'voluntario'); } catch (e) {}
+           localStorage.setItem('perfil', 'voluntario'); 
           router.push("/home");
         } else if (v.username === "user" && v.password === "user123") {
           setLoginError("");
-          try { setPerfil('cliente'); localStorage.setItem('perfil', 'cliente'); } catch (e) {}
+         localStorage.setItem('perfil', 'cliente'); 
           router.push("/home");
         } else {
           setLoginError("Usuário ou senha incorretos!");
         }
       } else {
         // registro: marcar como cliente por padrão
-        try { setPerfil('cliente'); localStorage.setItem('perfil', 'cliente'); } catch (e) {}
+       localStorage.setItem('perfil', 'cliente'); 
         setStep("finished");
       }
     },

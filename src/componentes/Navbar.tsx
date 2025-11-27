@@ -1,7 +1,8 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import { usePerfil } from "../context/PerfilContext";
+
 import { useRouter, usePathname } from "next/navigation";
+import AddIcon from '@mui/icons-material/Add';
 import {
     IconButton,
     Menu,
@@ -34,31 +35,18 @@ export default function NavBar() {
     const router = useRouter();
     const [menuOpen, setMenuOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const { perfil, setPerfil } = usePerfil();
+    const [perfil, setPerfil] = useState<string | null>(null);
     const iconColor = 'success.main';
-    const getUserId = () => {
-        try {
-            if (typeof window === 'undefined') return '1';
-            const perfilAtivo = localStorage.getItem('perfilAtivo');
-            if (perfilAtivo) return perfilAtivo;
-            const stored = localStorage.getItem('user') || localStorage.getItem('usuario') || localStorage.getItem('perfilId');
-            if (stored) {
-                try {
-                    const parsed = JSON.parse(stored);
-                    if (parsed && (parsed.id || parsed._id)) return parsed.id || parsed._id;
-                } catch (e) {
-                    return stored;
-                }
-            }
-            return '1';
-        } catch (e) {
-            return '1';
-        }
-    };
+    
+    
     useEffect(() => {
         setMenuOpen(false);
         setAnchorEl(null);
+        
+        setPerfil(localStorage.getItem("perfil"));
     }, [pathname]);
+
+
 
     if (['/'].includes(pathname)) return null;
 
@@ -183,7 +171,7 @@ export default function NavBar() {
                                     </>
                                 )}
 
-                                {/* Voluntário menu */}
+                               
                                 {perfil === 'voluntario' && (
                                     <>
                                         <ListItemButton onClick={() => { router.push('/voluntario'); setAnchorEl(null); }}>
@@ -229,6 +217,14 @@ export default function NavBar() {
                                                 </Avatar>
                                             </ListItemAvatar>
                                             <ListItemText primary="Mensagens" secondary="Converse com usuários" />
+                                        </ListItemButton>
+                                        <ListItemButton onClick={() => { router.push('/postagens/criar'); setAnchorEl(null); }}>
+                                            <ListItemAvatar>
+                                                <Avatar sx={{ bgcolor: 'transparent' }}>
+                                                    <AddIcon sx={{ color: iconColor }} />
+                                                </Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText primary="Criar Postagem" secondary="Crie uma nova postagem" />
                                         </ListItemButton>
                                     </>
                                 )}
@@ -295,7 +291,7 @@ export default function NavBar() {
                         {perfil === 'cliente' && (
                             <>
                                 <button onClick={() => router.push('/perfil')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Meu Perfil</button>
-                                <button onClick={() => router.push(`/cliente/${getUserId()}/alterar`)} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Editar Dados</button>
+                                <button onClick={() => router.push(`/cliente/1/alterar`)} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Editar Dados</button>
                                 <button onClick={() => router.push('/agendamento')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Meus Agendamentos</button>
                                 <button onClick={() => router.push('/agendamento/solicitar')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Solicitar Atendimento</button>
                                 <button onClick={() => router.push('/chat')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Mensagens</button>
@@ -306,7 +302,7 @@ export default function NavBar() {
                         {perfil === 'voluntario' && (
                             <>
                                 <button onClick={() => router.push('/voluntario')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Painel Voluntário</button>
-                                <button onClick={() => router.push(`/voluntario/editar/${getUserId()}`)} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Editar Perfil</button>
+                                <button onClick={() => router.push(`/voluntario/editar/1`)} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Editar Perfil</button>
                                 <button onClick={() => router.push('/agendamento')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Atendimentos</button>
                                 <button onClick={() => router.push('/chat')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Mensagens</button>
                                 <button onClick={() => router.push('/postagens')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Notícias</button>
