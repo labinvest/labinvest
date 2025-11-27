@@ -12,6 +12,7 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "@mui/material/Button";
+import SuccessModal from "@/componentes/Modal";
 
 
 
@@ -20,6 +21,8 @@ export default function AgendamentoDetalhado() {
   const params = useParams();
   const id = Number(params.id);
   const [perfil, setPerfil] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalConfig, setModalConfig] = useState({ title: '', message: '' });
 
   useEffect(() => {
     const perfilStorage = localStorage.getItem("perfil");
@@ -42,21 +45,21 @@ export default function AgendamentoDetalhado() {
 
   const handleAceitar = () => {
     console.log(`Agendamento ${id} aceito pelo voluntário`);
-    alert("Agendamento aceito com sucesso!");
-    router.back();
+    setModalConfig({ title: 'Sucesso!', message: 'Agendamento aceito com sucesso!' });
+    setModalOpen(true);
   };
 
   const handleRecusar = () => {
     console.log(`Agendamento ${id} recusado pelo voluntário`);
-    alert("Agendamento recusado.");
-    router.back();
+    setModalConfig({ title: 'Aviso', message: 'Agendamento recusado.' });
+    setModalOpen(true);
   };
 
   const handleCancelar = () => {
     console.log(`Agendamento ${id} cancelado pelo usuário`);
     if (confirm("Tem certeza que deseja cancelar este agendamento?")) {
-      alert("Agendamento cancelado com sucesso!");
-      router.back();
+      setModalConfig({ title: 'Sucesso!', message: 'Agendamento cancelado com sucesso!' });
+      setModalOpen(true);
     }
   };
 
@@ -68,14 +71,16 @@ export default function AgendamentoDetalhado() {
         });
 
         if (response.ok) {
-          alert("Agendamento excluído com sucesso!");
-          router.push('/agendamento');
+          setModalConfig({ title: 'Sucesso!', message: 'Agendamento excluído com sucesso!' });
+          setModalOpen(true);
         } else {
-          alert("Erro ao excluir agendamento.");
+          setModalConfig({ title: 'Erro', message: 'Erro ao excluir agendamento.' });
+          setModalOpen(true);
         }
       } catch (error) {
         console.error("Erro ao excluir agendamento:", error);
-        alert("Erro ao excluir agendamento.");
+        setModalConfig({ title: 'Erro', message: 'Erro ao excluir agendamento.' });
+        setModalOpen(true);
       }
     }
   };
@@ -208,6 +213,18 @@ export default function AgendamentoDetalhado() {
           </div>
         )}
       </div>
+      
+      <SuccessModal
+        open={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          if (modalConfig.title === 'Sucesso!') {
+            router.back();
+          }
+        }}
+        title={modalConfig.title}
+        message={modalConfig.message}
+      />
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { faArrowLeft, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
+import SuccessModal from "@/componentes/Modal";
 
 interface Mensagem {
     id: number;
@@ -20,6 +21,8 @@ export default function ChatConversa() {
     const [novaMensagem, setNovaMensagem] = useState("");
     const [perfil, setPerfil] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalConfig, setModalConfig] = useState({ title: '', message: '' });
     const router = useRouter();
     const params = useParams();
     const conversaId = Number(params.id);
@@ -69,7 +72,8 @@ export default function ChatConversa() {
             }
         } catch (err) {
             console.error("Erro ao enviar mensagem:", err);
-            alert("Erro ao enviar mensagem. Tente novamente.");
+            setModalConfig({ title: 'Erro', message: 'Erro ao enviar mensagem. Tente novamente.' });
+            setModalOpen(true);
         } finally {
             setLoading(false);
         }
@@ -183,6 +187,13 @@ export default function ChatConversa() {
                     <FontAwesomeIcon icon={faPaperPlane} />
                 </Button>
             </Box>
+            
+            <SuccessModal
+                open={modalOpen}
+                onClose={() => setModalOpen(false)}
+                title={modalConfig.title}
+                message={modalConfig.message}
+            />
         </div>
     );
 }

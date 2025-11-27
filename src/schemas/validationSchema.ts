@@ -1,12 +1,28 @@
 import * as Yup from 'yup';
+import { cpf, cnpj } from 'cpf-cnpj-validator';
 
 export const validationSchema = Yup.object({
       nome: Yup.string().min(3, 'Mínimo 3 caracteres').required('Obrigatório'),
       sobrenome: Yup.string().min(3, 'Mínimo 3 caracteres').required('Obrigatório'),
       email: Yup.string().email('Email inválido').required('Obrigatório'),
-      telefone: Yup.string().required('Obrigatório').matches(/^\(\d{2}\)\s?\d{4,5}-\d{4}$/, 'Telefone inválido (ex: (11) 98765-4321)'),
-      cpf: Yup.string().required('Obrigatório').matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, 'CPF inválido (formato: XXX.XXX.XXX-XX)'),
-      cnpj: Yup.string().matches(/^\d{2}\.\d{3}\.\d{3}\/0001-\d{2}$/, 'CNPJ inválido (formato: XX.XXX.XXX/0001-XX)'),
+      telefone: Yup.string()
+        .required('Obrigatório')
+        .test('telefone-valido', 'Telefone inválido (ex: (11) 98765-4321)', (value) => {
+          if (!value) return false;
+          const numeros = value.replace(/\D/g, '');
+          return numeros.length === 10 || numeros.length === 11;
+        }),
+      cpf: Yup.string()
+        .required('Obrigatório')
+        .test('cpf-valido', 'CPF inválido', (value) => {
+          if (!value) return false;
+          return cpf.isValid(value);
+        }),
+      cnpj: Yup.string()
+        .test('cnpj-valido', 'CNPJ inválido', (value) => {
+          if (!value || value.trim() === '') return true; // CNPJ é opcional
+          return cnpj.isValid(value);
+        }),
       profissao: Yup.string().required('Obrigatório'),
       curso: Yup.string().required('Obrigatório'),
       instituicao: Yup.string().required('Obrigatório'),

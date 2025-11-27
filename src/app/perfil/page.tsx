@@ -19,7 +19,7 @@ export default function Perfil() {
           <div className="flex flex-col md:flex-row items-center gap-8">
 
             <div className="w-32 h-32 bg-white-700 rounded-full flex items-center justify-center text-white text-5xl shadow-xl">
-              <img src="/images/easter.jpg" alt="Nome Icon" className="w-40 h-40" />
+              <FontAwesomeIcon icon={faUser} className="text-green-700 text-6xl" />
             </div>
 
             <div className="flex-1 text-center md:text-left">

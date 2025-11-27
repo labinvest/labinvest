@@ -19,6 +19,7 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import PublishIcon from '@mui/icons-material/Publish';
 import ClearIcon from '@mui/icons-material/Clear';
 
+
 const defaultPostagens = [
   {
     id: 1,
@@ -91,7 +92,6 @@ export default function PerfilVoluntario() {
     const updated = [novo, ...postagens];
     setPostagens(updated);
     saveToStorage(updated);
-    // limpar
     setTitle("");
     setCategoria("");
     setConteudo("");

@@ -1,7 +1,8 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "next/navigation";
 import SidebarMiniaturas from "@/componentes/SideBarNoticias";
+import SuccessModal from "@/componentes/Modal";
 
 const postagens = [
     {
@@ -44,6 +45,8 @@ const postagens = [
 
 export default function PaginaPostagem() {
     const { id } = useParams();
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalConfig, setModalConfig] = useState({ title: '', message: '' });
     const post = postagens.find((p) => p.id === Number(id));
     const outros = postagens.filter((p) => p.id !== Number(id));
 
@@ -81,7 +84,10 @@ export default function PaginaPostagem() {
                     <div className="flex items-center justify-between">
                         <button
                             className="flex items-center gap-2 text-sm text-green-700 hover:text-green-900 font-medium"
-                            onClick={() => alert("Você curtiu esta postagem!")}
+                            onClick={() => {
+                                setModalConfig({ title: 'Sucesso!', message: 'Você curtiu esta postagem!' });
+                                setModalOpen(true);
+                            }}
                         >
                             Curtir
                         </button>
@@ -93,7 +99,8 @@ export default function PaginaPostagem() {
                         <form
                             onSubmit={(e) => {
                                 e.preventDefault();
-                                alert("Comentário enviado!");
+                                setModalConfig({ title: 'Sucesso!', message: 'Comentário enviado!' });
+                                setModalOpen(true);
                             }}
                             className="space-y-4"
                         >
@@ -111,11 +118,19 @@ export default function PaginaPostagem() {
                         </form>
                     </div>
                 </div>
+                
+                <SuccessModal
+                    open={modalOpen}
+                    onClose={() => setModalOpen(false)}
+                    title={modalConfig.title}
+                    message={modalConfig.message}
+                />
             </section>
         );
     }
 
     return (
+        <>
         <section className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-4 gap-12">
             <div className="lg:col-span-3 space-y-8">
                 <img
@@ -134,7 +149,14 @@ export default function PaginaPostagem() {
             <div className="lg:col-span-1">
                 <SidebarMiniaturas posts={outros} />
             </div>
-
         </section>
+        
+        <SuccessModal
+            open={modalOpen}
+            onClose={() => setModalOpen(false)}
+            title={modalConfig.title}
+            message={modalConfig.message}
+        />
+        </>
     );
 }
