@@ -52,10 +52,6 @@ export default function EditarPerfil() {
         "Dificuldade em manter constância no controle financeiro",
     ]);
 
-   
-
-
-
     const [mensagemSalva, setMensagemSalva] = useState(false);
 
     const salvarAlteracoes = () => {
@@ -69,8 +65,6 @@ export default function EditarPerfil() {
 
         setTimeout(() => setMensagemSalva(false), 3000);
     };
-
-
 
     return (
         <div className="min-h-screen bg-gray-50 py-8">

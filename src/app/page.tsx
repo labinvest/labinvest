@@ -47,8 +47,6 @@ export default function LoginPage() {
         setStep("finished");
       }
     },
-
-
   });
 
    const { handleSubmit, values, handleChange, errors, touched, handleBlur } = formik;
@@ -70,8 +68,11 @@ export default function LoginPage() {
               <p className="text-xs sm:text-sm text-black mt-2 font-sans">
                 Bem-vindo ao Lab Invest
               </p>
-              <h1 className="text-xs sm:text-sm text-pink-600 font-semibold mt-4 font-sans">
+              <h1 className="text-xs sm:text-sm text-gray-300 font-semibold mt-4 font-sans">
                 Usuário: admin | Senha: admin123
+              </h1>
+              <h1 className="text-xs sm:text-sm text-gray-300 font-semibold mt-1 font-sans">
+                Usuário: user | Senha: user123
               </h1>
               <button
                 onClick={() => {
@@ -106,7 +107,9 @@ export default function LoginPage() {
                   <TextField label="Senha" id='password'  onBlur={handleBlur} onChange={handleChange}  variant="outlined" type="password" size='small' margin='normal' fullWidth error={touched.password && !!errors.password} helperText={touched.password && errors.password} />
 
                   {loginError && (
-                    <p role="alert" aria-live="assertive" className="text-red-600 text-sm mb-2 font-semibold font-sans">
+                    <p role="alert" 
+                    aria-live="assertive" 
+                    className="text-red-600 text-sm mb-2 font-semibold font-sans">
                       {loginError}
                     </p>
                   )}
