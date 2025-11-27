@@ -83,7 +83,7 @@ export default function PostagensVoluntarios() {
 
           {outros.map((post) => (
             <Link key={post.id} href={`/postagens/${post.id}`}>
-              <article className="flex flex-col md:flex-row gap-6 items-center bg-white rounded-xl shadow-md hover:shadow-lg transition duration-300 p-4 cursor-pointer">
+              <article className="flex flex-col md:flex-row gap-6 items-center hover:shadow-lg transition duration-300 p-4 cursor-pointer">
                 <img src={post.imagem} alt={`Imagem de ${post.autor}`} className="w-full md:w-1/3 h-64 object-cover rounded-lg" />
                 <div className="md:w-2/3 space-y-2 text-left">
                   <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">{post.categoria}</span>

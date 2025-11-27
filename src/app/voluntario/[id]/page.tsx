@@ -19,6 +19,7 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import PublishIcon from '@mui/icons-material/Publish';
 import ClearIcon from '@mui/icons-material/Clear';
 
+
 const defaultPostagens = [
   {
     id: 1,
@@ -91,7 +92,6 @@ export default function PerfilVoluntario() {
     const updated = [novo, ...postagens];
     setPostagens(updated);
     saveToStorage(updated);
-    // limpar
     setTitle("");
     setCategoria("");
     setConteudo("");
@@ -183,7 +183,6 @@ export default function PerfilVoluntario() {
 
         <div className="rounded-2xl p-8 bg-white shadow-lg mt-8">
           <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">Crie uma postagem</h2>
-
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <TextField

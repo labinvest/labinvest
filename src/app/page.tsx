@@ -43,18 +43,14 @@ export default function LoginPage() {
           setLoginError("Usuário ou senha incorretos!");
         }
       } else {
-        // registro: marcar como cliente por padrão
+        
         try { setPerfil('cliente'); localStorage.setItem('perfil', 'cliente'); } catch (e) {}
         setStep("finished");
       }
     },
-
-
   });
 
    const { handleSubmit, values, handleChange, errors} = formik;
-
-
 
   return (
     <main className="bg-gray-100 min-h-screen font-[Montserrat]">
@@ -71,8 +67,11 @@ export default function LoginPage() {
               <p className="text-xs sm:text-sm text-black mt-2 font-sans">
                 Bem-vindo ao Lab Invest
               </p>
-              <h1 className="text-xs sm:text-sm text-pink-600 font-semibold mt-4 font-sans">
+              <h1 className="text-xs sm:text-sm text-gray-300 font-semibold mt-4 font-sans">
                 Usuário: admin | Senha: admin123
+              </h1>
+              <h1 className="text-xs sm:text-sm text-gray-300 font-semibold mt-1 font-sans">
+                Usuário: user | Senha: user123
               </h1>
               <button
                 onClick={() => {
@@ -103,11 +102,33 @@ export default function LoginPage() {
                   onSubmit={handleSubmit}
                   className="mt-8 sm:mt-12 w-full max-w-[400px] space-y-4 font-sans px-4 sm:px-0"
                 >
-                  <TextField label="Nome de usuário"  onBlur={formik.handleBlur} onChange={handleChange}  id='username' variant="outlined" size='small' margin='normal' fullWidth error={formik.touched.username && !!errors.username} helperText={formik.touched.username && errors.username} />
-                  <TextField label="Senha" id='password'  onBlur={formik.handleBlur} onChange={handleChange}  variant="outlined" type="password" size='small' margin='normal' fullWidth error={ formik.touched.password && !!errors.password } helperText={ formik.touched.password && errors.password} />
+                  <TextField 
+                  label="Nome de usuário"  
+                  onBlur={formik.handleBlur} 
+                  onChange={handleChange}  
+                  id='username' 
+                  variant="outlined" 
+                  size='small' 
+                  margin='normal' 
+                  fullWidth error={formik.touched.username && !!errors.username} 
+                  helperText={formik.touched.username && errors.username} />
+
+                  <TextField 
+                  label="Senha" 
+                  id='password'  
+                  onBlur={formik.handleBlur} 
+                  onChange={handleChange}  
+                  variant="outlined" 
+                  type="password" 
+                  size='small' 
+                  margin='normal' 
+                  fullWidth error={ formik.touched.password && !!errors.password } 
+                  helperText={ formik.touched.password && errors.password} />
 
                   {loginError && (
-                    <p role="alert" aria-live="assertive" className="text-red-600 text-sm mb-2 font-semibold font-sans">
+                    <p role="alert" 
+                    aria-live="assertive" 
+                    className="text-red-600 text-sm mb-2 font-semibold font-sans">
                       {loginError}
                     </p>
                   )}
@@ -141,9 +162,38 @@ export default function LoginPage() {
                   className="mt-12 w-[400px] space-y-4 font-sans"
                   aria-label="Formulário de registro"
                 >
-                  <TextField label="Nome completo" id="nome" name="nome" variant="outlined" size='small' margin='normal' fullWidth error={formik.touched.nome && !!errors.nome} helperText={formik.touched.nome && errors.nome} />
-                  <TextField label="Email" id="email" name="email" type="email" variant="outlined" size='small' margin='normal' fullWidth error={formik.touched.email && !!errors.email} helperText={formik.touched.email && errors.email} />
-                  <TextField label="Senha" id="senha" name="senha" variant="outlined" type="password" size='small' margin='normal' fullWidth error={formik.touched.senha && !!errors.senha} helperText={formik.touched.senha && errors.senha} />
+                  <TextField 
+                  label="Nome completo" 
+                  id="nome" 
+                  name="nome" 
+                  variant="outlined" 
+                  size='small' 
+                  margin='normal' 
+                  fullWidth error={formik.touched.nome && !!errors.nome} 
+                  helperText={formik.touched.nome && errors.nome} />
+
+                  <TextField 
+                  label="Email" 
+                  id="email" 
+                  name="email" 
+                  type="email" 
+                  variant="outlined" 
+                  size='small' 
+                  margin='normal' 
+                  fullWidth error={formik.touched.email && !!errors.email} 
+                  helperText={formik.touched.email && errors.email} />
+
+                  <TextField 
+                  label="Senha" 
+                  id="senha" 
+                  name="senha" 
+                  variant="outlined" 
+                  type="password" 
+                  size='small' 
+                  margin='normal' 
+                  fullWidth error={formik.touched.senha && !!errors.senha} 
+                  helperText={formik.touched.senha && errors.senha} />
+                  
                   <TextField
                     label="Confirmar senha"
                     id="confirmarSenha"

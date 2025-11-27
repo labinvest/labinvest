@@ -48,7 +48,7 @@ export function TestimonialCarousel() {
         1024: { slidesPerView: 3 },
       }}
       loop={true}
-      autoplay={{ delay: 3000 }}
+      autoplay={{ delay: 2000 }}
     >
       {testimonials.map((testimonial, index) => (
         <SwiperSlide key={index}>
