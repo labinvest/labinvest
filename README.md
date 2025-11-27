@@ -15,7 +15,6 @@ Através de um ambiente virtual seguro, o Lab Invest promove a interação entre
 - **React 19.1.0** - Biblioteca JavaScript
 - **TypeScript 5** - Tipagem estática
 - **Tailwind CSS 4** - Framework CSS
-- **Chakra UI 3.28.1** - Biblioteca de componentes
 - **Material-UI** - Componentes React
 - **Formik + Yup** - Gerenciamento e validação de formulários
 - **FontAwesome** - Ícones
