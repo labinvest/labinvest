@@ -7,6 +7,7 @@ import { Button, TextField, MenuItem, Select, FormControl, InputLabel } from "@m
 import { useFormik } from "formik";
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
+import SuccessModal from "@/componentes/Modal";
 
 interface Cliente {
     id: string;
@@ -37,6 +38,8 @@ export default function FormClienteTemplate({ cliente: clienteProp }: FormClient
     const params = useParams();
     const [imagemPreview, setImagemPreview] = useState<string | null>(null);
     const [cliente, setCliente] = useState<Cliente | undefined>(clienteProp);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalConfig, setModalConfig] = useState({ title: '', message: '' });
 
     useEffect(() => {
         const id = params?.id as string;
@@ -100,12 +103,13 @@ export default function FormClienteTemplate({ cliente: clienteProp }: FormClient
                     if (response.status === 200) {
                         const data = await response.json();
                         console.log(data);
-                        alert('Cliente atualizado com sucesso!');
-                        router.push('/home');
+                        setModalConfig({ title: 'Sucesso!', message: 'Cliente atualizado com sucesso!' });
+                        setModalOpen(true);
                     } else {
                         const err = await response.json().catch(() => ({}));
                         const msg = err?.error || err?.message || 'Erro ao tentar atualizar cliente';
-                        alert(msg);
+                        setModalConfig({ title: 'Erro', message: msg });
+                        setModalOpen(true);
                     }
                 } else {
                     const response = await fetch('/api/cliente', {
@@ -123,17 +127,19 @@ export default function FormClienteTemplate({ cliente: clienteProp }: FormClient
                         const data = await response.json();
                         console.log(data);
                         localStorage.setItem('cadastroCliente', JSON.stringify(data.cliente));
-                        alert('Cliente cadastrado com sucesso!');
-                        router.push('/home');
+                        setModalConfig({ title: 'Sucesso!', message: 'Cliente cadastrado com sucesso!' });
+                        setModalOpen(true);
                     } else {
                         const err = await response.json().catch(() => ({}));
                         const msg = err?.error || err?.message || 'Erro ao tentar cadastrar cliente';
-                        alert(msg);
+                        setModalConfig({ title: 'Erro', message: msg });
+                        setModalOpen(true);
                     }
                 }
             } catch (error) {
                 console.error(error);
-                alert('Erro ao processar requisição');
+                setModalConfig({ title: 'Erro', message: 'Erro ao processar requisição' });
+                setModalOpen(true);
             }
         },
     });
@@ -420,6 +426,18 @@ export default function FormClienteTemplate({ cliente: clienteProp }: FormClient
                     Salvar
                 </Button>
             </form>
+            
+            <SuccessModal
+                open={modalOpen}
+                onClose={() => {
+                    setModalOpen(false);
+                    if (modalConfig.title === 'Sucesso!') {
+                        router.push('/home');
+                    }
+                }}
+                title={modalConfig.title}
+                message={modalConfig.message}
+            />
         </div>
     )
 }

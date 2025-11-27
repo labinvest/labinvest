@@ -7,6 +7,7 @@ import { Button, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
+import SuccessModal from "@/componentes/Modal";
 
 interface Postagem {
     id: string;
@@ -25,6 +26,8 @@ export default function FormPostagemTemplate({ postagem: postagemProp }: FormPos
     const params = useParams();
     const [imagemPreview, setImagemPreview] = useState<string | null>(null);
     const [postagem, setPostagem] = useState<Postagem | undefined>(postagemProp);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalConfig, setModalConfig] = useState({ title: '', message: '' });
 
     useEffect(() => {
         const id = params?.id as string;
@@ -74,12 +77,13 @@ export default function FormPostagemTemplate({ postagem: postagemProp }: FormPos
                     if (response.ok) {
                         const data = await response.json();
                         console.log(data);
-                        alert('Postagem atualizada com sucesso!');
-                        router.push('/postagens');
+                        setModalConfig({ title: 'Sucesso!', message: 'Postagem atualizada com sucesso!' });
+                        setModalOpen(true);
                     } else {
                         const err = await response.json().catch(() => ({}));
                         const msg = err?.error || err?.message || 'Erro ao tentar atualizar postagem';
-                        alert(msg);
+                        setModalConfig({ title: 'Erro', message: msg });
+                        setModalOpen(true);
                     }
                 } else {
                     const response = await fetch('/api/postagens', {
@@ -97,17 +101,19 @@ export default function FormPostagemTemplate({ postagem: postagemProp }: FormPos
                     if (response.status === 201 || response.ok) {
                         const data = await response.json();
                         console.log(data);
-                        alert('Postagem criada com sucesso!');
-                        router.push('/postagens');
+                        setModalConfig({ title: 'Sucesso!', message: 'Postagem criada com sucesso!' });
+                        setModalOpen(true);
                     } else {
                         const err = await response.json().catch(() => ({}));
                         const msg = err?.error || err?.message || 'Erro ao tentar criar postagem';
-                        alert(msg);
+                        setModalConfig({ title: 'Erro', message: msg });
+                        setModalOpen(true);
                     }
                 }
             } catch (error) {
                 console.error(error);
-                alert('Erro ao processar requisição');
+                setModalConfig({ title: 'Erro', message: 'Erro ao processar requisição' });
+                setModalOpen(true);
             }
         },
     });
@@ -215,6 +221,18 @@ export default function FormPostagemTemplate({ postagem: postagemProp }: FormPos
                     </Button>
                 </div>
             </form>
+            
+            <SuccessModal
+                open={modalOpen}
+                onClose={() => {
+                    setModalOpen(false);
+                    if (modalConfig.title === 'Sucesso!') {
+                        router.push('/postagens');
+                    }
+                }}
+                title={modalConfig.title}
+                message={modalConfig.message}
+            />
         </div>
     );
 }

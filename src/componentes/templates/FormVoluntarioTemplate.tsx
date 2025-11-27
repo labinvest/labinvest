@@ -6,7 +6,7 @@ import { TextField, Button, Typography, Box, Divider } from '@mui/material';
 import CheckboxCertificado from '../CheckboxCertificado';
 import UploadImagem from '../UploadImagem';
 import ProfissoesFinanceiras from '../ProfissioesVoluntarios';
-import SuccessModal from '../SuccessModal';
+import SuccessModal from '../Modal';
 import { validationSchema } from '@/schemas/validationSchema';
 
 export default function FormVoluntarioTemplate() {
