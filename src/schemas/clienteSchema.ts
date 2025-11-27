@@ -1,4 +1,5 @@
 import * as yup from "yup";
+import { cpf } from 'cpf-cnpj-validator';
 
 export const clienteSchema = yup.object().shape({
     nome: yup.string().required("Nome é obrigatório").min(2, "Mínimo 2 caracteres").max(50, "Máximo 50 caracteres"),
@@ -9,18 +10,15 @@ export const clienteSchema = yup.object().shape({
         .required("Telefone é obrigatório")
         .test("telefone-valido", "Telefone deve ter 10 ou 11 dígitos (XX) 9XXXX-XXXX", (value) => {
             if (!value) return false;
-            return true;
+            const numeros = value.replace(/\D/g, '');
+            return numeros.length === 10 || numeros.length === 11;
         }),
     
     cpf: yup.string()
         .required("CPF é obrigatório")
-        .test("cpf-format", "CPF deve estar formatado como XXX.XXX.XXX-XX", (value) => {
-            if (!value) return false;
-            return /^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(value);
-        })
         .test("cpf-valido", "CPF inválido", (value) => {
             if (!value) return false;
-            return true;
+            return cpf.isValid(value);
         }),
     
     dataNascimento: yup.string()

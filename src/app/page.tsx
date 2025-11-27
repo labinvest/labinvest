@@ -2,7 +2,6 @@
 import { registerSchema } from '@/schemas/authSchemas';
 import { loginSchema } from '@/schemas/LoginSchemas';
 import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -52,7 +51,7 @@ export default function LoginPage() {
 
   });
 
-   const { handleSubmit, values, handleChange, errors} = formik;
+   const { handleSubmit, values, handleChange, errors, touched, handleBlur } = formik;
 
 
 
@@ -103,8 +102,8 @@ export default function LoginPage() {
                   onSubmit={handleSubmit}
                   className="mt-8 sm:mt-12 w-full max-w-[400px] space-y-4 font-sans px-4 sm:px-0"
                 >
-                  <TextField label="Nome de usuário"  onBlur={formik.handleBlur} onChange={handleChange}  id='username' variant="outlined" size='small' margin='normal' fullWidth error={formik.touched.username && !!errors.username} helperText={formik.touched.username && errors.username} />
-                  <TextField label="Senha" id='password'  onBlur={formik.handleBlur} onChange={handleChange}  variant="outlined" type="password" size='small' margin='normal' fullWidth error={ formik.touched.password && !!errors.password } helperText={ formik.touched.password && errors.password} />
+                  <TextField label="Nome de usuário"  onBlur={handleBlur} onChange={handleChange}  id='username' variant="outlined" size='small' margin='normal' fullWidth error={touched.username && !!errors.username} helperText={touched.username && errors.username} />
+                  <TextField label="Senha" id='password'  onBlur={handleBlur} onChange={handleChange}  variant="outlined" type="password" size='small' margin='normal' fullWidth error={touched.password && !!errors.password} helperText={touched.password && errors.password} />
 
                   {loginError && (
                     <p role="alert" aria-live="assertive" className="text-red-600 text-sm mb-2 font-semibold font-sans">
@@ -141,9 +140,9 @@ export default function LoginPage() {
                   className="mt-12 w-[400px] space-y-4 font-sans"
                   aria-label="Formulário de registro"
                 >
-                  <TextField label="Nome completo" id="nome" name="nome" variant="outlined" size='small' margin='normal' fullWidth error={formik.touched.nome && !!errors.nome} helperText={formik.touched.nome && errors.nome} />
-                  <TextField label="Email" id="email" name="email" type="email" variant="outlined" size='small' margin='normal' fullWidth error={formik.touched.email && !!errors.email} helperText={formik.touched.email && errors.email} />
-                  <TextField label="Senha" id="senha" name="senha" variant="outlined" type="password" size='small' margin='normal' fullWidth error={formik.touched.senha && !!errors.senha} helperText={formik.touched.senha && errors.senha} />
+                  <TextField label="Nome completo" id="nome" name="nome" variant="outlined" size='small' margin='normal' fullWidth error={touched.nome && !!errors.nome} helperText={touched.nome && errors.nome} />
+                  <TextField label="Email" id="email" name="email" type="email" variant="outlined" size='small' margin='normal' fullWidth error={touched.email && !!errors.email} helperText={touched.email && errors.email} />
+                  <TextField label="Senha" id="senha" name="senha" variant="outlined" type="password" size='small' margin='normal' fullWidth error={touched.senha && !!errors.senha} helperText={touched.senha && errors.senha} />
                   <TextField
                     label="Confirmar senha"
                     id="confirmarSenha"
@@ -153,8 +152,8 @@ export default function LoginPage() {
                     size='small'
                     margin='normal'
                     fullWidth
-                    error={formik.touched.confirmarSenha && !!errors.confirmarSenha}
-                    helperText={formik.touched.confirmarSenha && errors.confirmarSenha}
+                    error={touched.confirmarSenha && !!errors.confirmarSenha}
+                    helperText={touched.confirmarSenha && errors.confirmarSenha}
                   />
                   <Button
                     type="submit"

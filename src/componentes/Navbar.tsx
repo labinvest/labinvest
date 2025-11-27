@@ -5,8 +5,6 @@ import { useRouter, usePathname } from "next/navigation";
 import {
     IconButton,
     Menu,
-    MenuItem,
-    ListItemIcon,
     Avatar,
     Divider,
     Typography,
@@ -25,8 +23,6 @@ import SwitchAccountIcon from "@mui/icons-material/SwitchAccount";
 import ChatIcon from "@mui/icons-material/Chat";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import SettingsIcon from "@mui/icons-material/Settings";
-import ArticleIcon from "@mui/icons-material/Article";
 import EditIcon from "@mui/icons-material/Edit";
 
 export default function NavBar() {
@@ -71,8 +67,8 @@ export default function NavBar() {
                     aria-label="Ir para página inicial do LabInvest"
                     className="flex space-x-2 text-2xl md:text-4xl lg:text-6xl font-extrabold select-none transition duration-300 hover:scale-105"
                 >
-                    <span className="text-gray-500">Lab</span>
-                    <span className="text-green-700">Invest</span>
+                    <span className="text-gray-500" style={{ cursor: 'pointer' }}>Lab</span>
+                    <span className="text-green-700" style={{ cursor: 'pointer' }}>Invest</span>
                 </button>
             </div>
 
