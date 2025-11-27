@@ -63,8 +63,7 @@ export default function SuccessModal({
                     sx={{ 
                         minWidth: 140,
                         textTransform: 'none',
-                        fontWeight: 600,
-                        cursor: 'pointer'
+                        fontWeight: 600
                     }}
                 >
                     {buttonText}

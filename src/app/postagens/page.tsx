@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import SidebarMiniaturas from "@/componentes/SideBarNoticias";
 import Link from "next/link";
 

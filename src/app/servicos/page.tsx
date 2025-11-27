@@ -1,4 +1,3 @@
-import React from 'react';
 import VoluntarioSidebar from '@/componentes/VoluntarioSidebar';
 
 function ServicoPage() {
