@@ -5,6 +5,7 @@ export const validationSchema = Yup.object({
       nome: Yup.string().min(3, 'Mínimo 3 caracteres').required('Obrigatório'),
       sobrenome: Yup.string().min(3, 'Mínimo 3 caracteres').required('Obrigatório'),
       email: Yup.string().email('Email inválido').required('Obrigatório'),
+      senha: Yup.string().min(6, 'Mínimo 6 caracteres').required('Obrigatório'),
       telefone: Yup.string()
         .required('Obrigatório')
         .test('telefone-valido', 'Telefone inválido (ex: (11) 98765-4321)', (value) => {

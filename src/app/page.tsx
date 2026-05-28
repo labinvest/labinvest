@@ -6,6 +6,7 @@ import TextField from '@mui/material/TextField';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { fetchAPI } from '@/services/api';
 
 
 export default function LoginPage() {
@@ -26,25 +27,45 @@ export default function LoginPage() {
         ? { username: "", password: "" }
         : { nome: "", email: "", senha: "", confirmarSenha: "" },
     validationSchema: schema,
-    onSubmit: (v) => {
+    onSubmit: async (v) => {
+      try {
+        if (mode === "login") {
+          const data = await fetchAPI('/auth/login', {
+            method: 'POST',
+            body: {
+              email: v.username,
+              senha: v.password,
+            },
+          });
 
-      console.log("Valores do formulário:", v);
-      if (mode === "login") {
-        if (v.username === "admin" && v.password === "admin123") {
+          const token = data?.dados?.token;
+          const role = data?.dados?.usuario?.role;
+
+          if (token) localStorage.setItem('token', token);
+          if (role) localStorage.setItem('perfil', role.toLowerCase());
+
           setLoginError("");
-           localStorage.setItem('perfil', 'voluntario'); 
-          router.push("/home");
-        } else if (v.username === "user" && v.password === "user123") {
-          setLoginError("");
-         localStorage.setItem('perfil', 'cliente'); 
           router.push("/home");
         } else {
-          setLoginError("Usuário ou senha incorretos!");
+          const data = await fetchAPI('/auth/signup', {
+            method: 'POST',
+            body: {
+              nome: v.nome,
+              email: v.email,
+              senha: v.senha,
+              role: 'CLIENTE',
+            },
+          });
+
+          const token = data?.dados?.token;
+          if (token) localStorage.setItem('token', token);
+          localStorage.setItem('perfil', 'cliente');
+
+          setStep("finished");
         }
-      } else {
-        // registro: marcar como cliente por padrão
-       localStorage.setItem('perfil', 'cliente'); 
-        setStep("finished");
+      } catch (error: any) {
+        const msg = error?.message || 'Erro ao processar autenticação';
+        setLoginError(msg);
       }
     },
   });
@@ -103,8 +124,8 @@ export default function LoginPage() {
                   onSubmit={handleSubmit}
                   className="mt-8 sm:mt-12 w-full max-w-[400px] space-y-4 font-sans px-4 sm:px-0"
                 >
-                  <TextField label="Nome de usuário"  onBlur={handleBlur} onChange={handleChange}  id='username' variant="outlined" size='small' margin='normal' fullWidth error={touched.username && !!errors.username} helperText={touched.username && errors.username} />
-                  <TextField label="Senha" id='password'  onBlur={handleBlur} onChange={handleChange}  variant="outlined" type="password" size='small' margin='normal' fullWidth error={touched.password && !!errors.password} helperText={touched.password && errors.password} />
+                  <TextField label="Email"  onBlur={handleBlur} onChange={handleChange}  id='username' name='username' variant="outlined" size='small' margin='normal' fullWidth error={touched.username && !!errors.username} helperText={touched.username && errors.username} />
+                  <TextField label="Senha" id='password' name='password'  onBlur={handleBlur} onChange={handleChange}  variant="outlined" type="password" size='small' margin='normal' fullWidth error={touched.password && !!errors.password} helperText={touched.password && errors.password} />
 
                   {loginError && (
                     <p role="alert" 
@@ -143,13 +164,15 @@ export default function LoginPage() {
                   className="mt-12 w-[400px] space-y-4 font-sans"
                   aria-label="Formulário de registro"
                 >
-                  <TextField label="Nome completo" id="nome" name="nome" variant="outlined" size='small' margin='normal' fullWidth error={touched.nome && !!errors.nome} helperText={touched.nome && errors.nome} />
-                  <TextField label="Email" id="email" name="email" type="email" variant="outlined" size='small' margin='normal' fullWidth error={touched.email && !!errors.email} helperText={touched.email && errors.email} />
-                  <TextField label="Senha" id="senha" name="senha" variant="outlined" type="password" size='small' margin='normal' fullWidth error={touched.senha && !!errors.senha} helperText={touched.senha && errors.senha} />
+                  <TextField label="Nome completo" id="nome" name="nome" onBlur={handleBlur} onChange={handleChange} variant="outlined" size='small' margin='normal' fullWidth error={touched.nome && !!errors.nome} helperText={touched.nome && errors.nome} />
+                  <TextField label="Email" id="email" name="email" type="email" onBlur={handleBlur} onChange={handleChange} variant="outlined" size='small' margin='normal' fullWidth error={touched.email && !!errors.email} helperText={touched.email && errors.email} />
+                  <TextField label="Senha" id="senha" name="senha" onBlur={handleBlur} onChange={handleChange} variant="outlined" type="password" size='small' margin='normal' fullWidth error={touched.senha && !!errors.senha} helperText={touched.senha && errors.senha} />
                   <TextField
                     label="Confirmar senha"
                     id="confirmarSenha"
                     name="confirmarSenha"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
                     variant="outlined"
                     type="password"
                     size='small'

@@ -1,4 +1,4 @@
-import VoluntarioSidebar from '@/componentes/VoluntarioSidebar';
+import VoluntarioSidebar from '@/components/VoluntarioSidebar';
 
 function ServicoPage() {
   return (

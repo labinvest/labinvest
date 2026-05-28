@@ -7,7 +7,8 @@ import { Button, TextField, MenuItem, Select, FormControl, InputLabel } from "@m
 import { useFormik } from "formik";
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
-import SuccessModal from "@/componentes/Modal";
+import SuccessModal from "@/components/Modal";
+import { fetchAPI } from "@/services/api";
 
 interface Cliente {
     id: string;
@@ -44,21 +45,35 @@ export default function FormClienteTemplate({ cliente: clienteProp }: FormClient
     useEffect(() => {
         const id = params?.id as string;
         if (id && !clienteProp) {
-            fetch(`/api/cliente/${id}`)
-                .then(async (response) => {
-                    if (!response.ok) {
-                        const err = await response.json().catch(() => ({}));
-                        console.error('Erro ao carregar cliente:', response.status, err);
-                        return;
-                    }
-                    return response.json();
+            fetchAPI('/auth/perfil')
+                .then((data: any) => {
+                    const perfil = data?.dados?.perfil || data?.dados?.usuario?.perfil;
+                    if (!perfil) return;
+
+                    const nomeCompleto = perfil.nome || '';
+                    const [nome, ...resto] = nomeCompleto.trim().split(' ');
+                    const sobrenome = resto.join(' ');
+
+                    setCliente({
+                        id: String(perfil.id || ''),
+                        nome: nome || '',
+                        sobrenome: sobrenome || '',
+                        email: data?.dados?.email || '',
+                        telefone: perfil.telefone || '',
+                        cpf: perfil.cpf || '',
+                        dataNascimento: '',
+                        estadoCivil: '',
+                        profissao: '',
+                        rendaMensal: '',
+                        cep: '',
+                        cidade: '',
+                        estado: '',
+                        objetivoFinanceiro: '',
+                        comoConheceu: '',
+                        descricao: '',
+                    });
                 })
-                .then(data => {
-                    if (data && data.id) {
-                        setCliente(data);
-                    }
-                })
-                .catch(error => {
+                .catch((error: any) => {
                     console.error('Erro ao carregar cliente:', error);
                 });
         }
@@ -71,6 +86,7 @@ export default function FormClienteTemplate({ cliente: clienteProp }: FormClient
             email: cliente?.email || '',
             telefone: cliente?.telefone || '',
             cpf: cliente?.cpf || '',
+            senha: '',
             dataNascimento: cliente?.dataNascimento || '',
             estadoCivil: cliente?.estadoCivil || '',
             profissao: cliente?.profissao || '',
@@ -87,54 +103,38 @@ export default function FormClienteTemplate({ cliente: clienteProp }: FormClient
         onSubmit: async (values) => {
             try {
                 if (cliente?.id) {
-
-                    const response = await fetch(`/api/cliente`, {
+                    const nomeCompleto = `${values.nome} ${values.sobrenome}`.trim();
+                    await fetchAPI('/auth/perfil', {
                         method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
+                        body: {
+                            nome: nomeCompleto,
+                            telefone: values.telefone,
+                            endereco: `${values.cidade} - ${values.estado}`.trim(),
                         },
-                        body: JSON.stringify({
-                            id: cliente.id,
-                            ...values,
-                            imagemUrl: imagemPreview
-                        }),
                     });
 
-                    if (response.status === 200) {
-                        const data = await response.json();
-                        console.log(data);
-                        setModalConfig({ title: 'Sucesso!', message: 'Cliente atualizado com sucesso!' });
-                        setModalOpen(true);
-                    } else {
-                        const err = await response.json().catch(() => ({}));
-                        const msg = err?.error || err?.message || 'Erro ao tentar atualizar cliente';
-                        setModalConfig({ title: 'Erro', message: msg });
-                        setModalOpen(true);
-                    }
+                    setModalConfig({ title: 'Sucesso!', message: 'Cliente atualizado com sucesso!' });
+                    setModalOpen(true);
                 } else {
-                    const response = await fetch('/api/cliente', {
+                    const nomeCompleto = `${values.nome} ${values.sobrenome}`.trim();
+                    const data = await fetchAPI('/auth/signup', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
+                        body: {
+                            nome: nomeCompleto,
+                            email: values.email,
+                            senha: values.senha,
+                            telefone: values.telefone,
+                            endereco: `${values.cidade} - ${values.estado}`.trim(),
+                            cpf: values.cpf,
+                            role: 'CLIENTE',
                         },
-                        body: JSON.stringify({
-                            ...values,
-                            imagemUrl: imagemPreview
-                        }),
                     });
 
-                    if (response.status === 201) {
-                        const data = await response.json();
-                        console.log(data);
-                        localStorage.setItem('cadastroCliente', JSON.stringify(data.cliente));
-                        setModalConfig({ title: 'Sucesso!', message: 'Cliente cadastrado com sucesso!' });
-                        setModalOpen(true);
-                    } else {
-                        const err = await response.json().catch(() => ({}));
-                        const msg = err?.error || err?.message || 'Erro ao tentar cadastrar cliente';
-                        setModalConfig({ title: 'Erro', message: msg });
-                        setModalOpen(true);
-                    }
+                    const token = data?.dados?.token;
+                    if (token) localStorage.setItem('token', token);
+
+                    setModalConfig({ title: 'Sucesso!', message: 'Cliente cadastrado com sucesso!' });
+                    setModalOpen(true);
                 }
             } catch (error) {
                 console.error(error);
@@ -229,6 +229,18 @@ export default function FormClienteTemplate({ cliente: clienteProp }: FormClient
                             placeholder="XXX.XXX.XXX-XX"
                             error={formik.touched.cpf && !!errors.cpf}
                             helperText={formik.touched.cpf && formik.errors.cpf}
+                        />
+                        <TextField
+                            name="senha"
+                            label="Senha"
+                            type="password"
+                            size="small"
+                            fullWidth
+                            color="success"
+                            value={values.senha}
+                            onChange={handleChange}
+                            error={formik.touched.senha && !!errors.senha}
+                            helperText={formik.touched.senha && formik.errors.senha}
                         />
                         <TextField
                             name="dataNascimento"

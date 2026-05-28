@@ -15,7 +15,7 @@ Através de um ambiente virtual seguro, o Lab Invest promove a interação entre
 - **React 19.1.0** - Biblioteca JavaScript
 - **TypeScript 5** - Tipagem estática
 - **Tailwind CSS 4** - Framework CSS
-- **Material-UI** - Componentes React
+- **Material-UI** - Components React
 - **Formik + Yup** - Gerenciamento e validação de formulários
 - **FontAwesome** - Ícones
 
@@ -43,7 +43,7 @@ labinvest/
 │   │   ├── servicos/              # Página de serviços
 │   │   ├── voluntario/            # Páginas de voluntário
 │   │   └── layout.tsx             # Layout principal
-│   ├── componentes/               # Componentes reutilizáveis
+│   ├── components/               # Components reutilizáveis
 │   │   └── templates/             # Templates de formulários
 │   ├── schemas/                   # Schemas de validação
 │   └── lib/                       # Bibliotecas e configurações

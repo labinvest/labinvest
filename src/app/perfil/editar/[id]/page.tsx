@@ -8,7 +8,7 @@ import {
     faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import TextField from "@mui/material/TextField";
-import CardMetas from "@/componentes/CardMetas";
+import CardMetas from "@/components/CardMetas";
 import { useFormik } from "formik";
 
 export default function EditarPerfil() {

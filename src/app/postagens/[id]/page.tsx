@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { useParams } from "next/navigation";
-import SidebarMiniaturas from "@/componentes/SideBarNoticias";
-import SuccessModal from "@/componentes/Modal";
+import SidebarMiniaturas from "@/components/SideBarNoticias";
+import SuccessModal from "@/components/Modal";
 
 const postagens = [
     {

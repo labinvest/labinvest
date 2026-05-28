@@ -1,4 +1,4 @@
-import FormClienteTemplate from "@/componentes/templates/FormClienteTemplate";
+import FormClienteTemplate from "@/components/templates/FormClienteTemplate";
 
 export default function Cadastro() {
     return (

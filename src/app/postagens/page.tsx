@@ -1,5 +1,5 @@
 "use client";
-import SidebarMiniaturas from "@/componentes/SideBarNoticias";
+import SidebarMiniaturas from "@/components/SideBarNoticias";
 import Link from "next/link";
 
 

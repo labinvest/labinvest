@@ -1,8 +1,8 @@
 "use client";
-import { TestimonialCarousel } from "@/componentes/Carousel";
-import { Banner } from "@/componentes/Banner";
-import Card from "@/componentes/Card";
-import VoluntarioSidebar from "@/componentes/VoluntarioSidebar";
+import { TestimonialCarousel } from "@/components/Carousel";
+import { Banner } from "@/components/Banner";
+import Card from "@/components/Card";
+import VoluntarioSidebar from "@/components/VoluntarioSidebar";
 import {
   faUserTie,
   faChartLine,

@@ -1,4 +1,4 @@
-import FormVoluntarioTemplate from '../../../componentes/templates/FormVoluntarioTemplate';
+import FormVoluntarioTemplate from '../../../components/templates/FormVoluntarioTemplate';
 
 
 export default function CadastroPage() {

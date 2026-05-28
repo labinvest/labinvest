@@ -7,7 +7,7 @@ import { Button, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
-import SuccessModal from "@/componentes/Modal";
+import SuccessModal from "@/components/Modal";
 
 interface Postagem {
     id: string;

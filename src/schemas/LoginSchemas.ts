@@ -3,8 +3,9 @@ import * as yup from "yup";
 export const loginSchema = yup.object().shape({
   username: yup
     .string()
-    .required("username é obrigatório")
-    .max(20, "username deve ter no máximo 20 caracteres"),
+    .email("Email inválido")
+    .required("Email é obrigatório")
+    .max(254, "Email deve ter no máximo 254 caracteres"),
   password: yup
     .string()
     .required("senha é obrigatória")

@@ -5,6 +5,10 @@ export const clienteSchema = yup.object().shape({
     nome: yup.string().required("Nome é obrigatório").min(2, "Mínimo 2 caracteres").max(50, "Máximo 50 caracteres"),
     sobrenome: yup.string().required("Sobrenome é obrigatório").min(2, "Mínimo 2 caracteres").max(50, "Máximo 50 caracteres"),
     email: yup.string().required("Email é obrigatório").email("Email inválido"),
+
+    senha: yup.string()
+        .required("Senha é obrigatória")
+        .min(6, "Senha deve ter no mínimo 6 caracteres"),
     
     telefone: yup.string()
         .required("Telefone é obrigatório")

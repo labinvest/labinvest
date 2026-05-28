@@ -1,5 +1,5 @@
 // Base API configuration and utilities
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
 /**
  * Generic fetch wrapper for API calls
@@ -8,22 +8,42 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
  * @returns {Promise<any>}
  */
 export const fetchAPI = async (endpoint, options = {}) => {
-  const url = `${API_URL}${endpoint}`;
-  
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
+  // build url: allow passing absolute URLs or relative endpoints
+  const url = endpoint && (typeof endpoint === 'string') && (endpoint.startsWith('http://') || endpoint.startsWith('https://'))
+    ? endpoint
+    : `${API_URL}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+
+  // prepare headers
+  const headers = { ...(options.headers || {}) };
+
+  // if body is FormData, let browser set Content-Type (including boundary)
+  const isFormData = options.body instanceof FormData;
+  if (!isFormData) headers['Content-Type'] = headers['Content-Type'] || 'application/json';
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const opts = { ...options, headers };
+
+  // stringify JSON body when needed
+  if (opts.body && !isFormData && typeof opts.body !== 'string') {
+    opts.body = JSON.stringify(opts.body);
+  }
+
   try {
-    const response = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      ...options,
-    });
+    const response = await fetch(url, opts);
 
     if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
+      let errBody = null;
+      try { errBody = await response.json(); } catch (e) { errBody = await response.text().catch(() => null); }
+      const message = errBody && (errBody.erro || errBody.message) ? (errBody.erro || errBody.message) : `API error: ${response.status}`;
+      throw new Error(message);
     }
 
-    return await response.json();
+    const contentType = response.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) return response.json();
+    if (response.status === 204) return null;
+    return response.text();
   } catch (error) {
     console.error(`API call failed for ${endpoint}:`, error);
     throw error;

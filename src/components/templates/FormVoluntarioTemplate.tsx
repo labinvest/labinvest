@@ -8,15 +8,18 @@ import UploadImagem from '../UploadImagem';
 import ProfissoesFinanceiras from '../ProfissioesVoluntarios';
 import SuccessModal from '../Modal';
 import { validationSchema } from '@/schemas/validationSchema';
+import { fetchAPI } from '@/services/api';
 
 export default function FormVoluntarioTemplate() {
     const [openDialog, setOpenDialog] = useState(false);
+    const [modalConfig, setModalConfig] = useState({ title: 'Sucesso!', message: 'Cadastro realizado com sucesso.' });
 
     const formik = useFormik({
         initialValues: {
             nome: '',
             sobrenome: '',
             email: '',
+            senha: '',
             telefone: '',
             cpf: '',
             cnpj: '',
@@ -30,9 +33,39 @@ export default function FormVoluntarioTemplate() {
         validationSchema,
         validateOnChange: true,
         validateOnBlur: true,
-        onSubmit: (values) => {
-            console.log('Formulário enviado:', values);
-            setOpenDialog(true);
+        onSubmit: async (values) => {
+            try {
+                const nomeCompleto = `${values.nome} ${values.sobrenome}`.trim();
+                const data = await fetchAPI('/auth/signup', {
+                    method: 'POST',
+                    body: {
+                        nome: nomeCompleto,
+                        email: values.email,
+                        senha: values.senha,
+                        telefone: values.telefone,
+                        cpf: values.cpf,
+                        role: 'VOLUNTARIO',
+                    },
+                });
+
+                const token = data?.dados?.token;
+                const perfilId = data?.dados?.usuario?.perfil?.id;
+                if (token) localStorage.setItem('token', token);
+
+                if (perfilId) {
+                    await fetchAPI('/voluntarios', {
+                        method: 'POST',
+                        body: { perfilId },
+                    });
+                }
+
+                setModalConfig({ title: 'Sucesso!', message: 'Cadastro de voluntário realizado com sucesso.' });
+                setOpenDialog(true);
+            } catch (error) {
+                console.error('Erro ao cadastrar voluntário:', error);
+                setModalConfig({ title: 'Erro', message: 'Erro ao cadastrar voluntário.' });
+                setOpenDialog(true);
+            }
         },
     });
 
@@ -88,6 +121,17 @@ export default function FormVoluntarioTemplate() {
                             {...formik.getFieldProps('email')}
                             error={formik.touched.email && !!formik.errors.email}
                             helperText={formik.touched.email && formik.errors.email}
+                            size="small"
+                            fullWidth
+                            color="success"
+                            required
+                        />
+                        <TextField
+                            label="Senha"
+                            type="password"
+                            {...formik.getFieldProps('senha')}
+                            error={formik.touched.senha && !!formik.errors.senha}
+                            helperText={formik.touched.senha && formik.errors.senha}
                             size="small"
                             fullWidth
                             color="success"
@@ -251,8 +295,8 @@ export default function FormVoluntarioTemplate() {
             <SuccessModal
                 open={openDialog}
                 onClose={handleCloseDialog}
-                title="Cadastro Realizado!"
-                message="Seus dados foram salvos com sucesso. Obrigado por se tornar um voluntário!"
+                title={modalConfig.title}
+                message={modalConfig.message}
                 buttonText="Fechar"
             />
         </Box>

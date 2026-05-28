@@ -1,4 +1,4 @@
-import FormPostagemTemplate from "@/componentes/templates/FormPostagemTemplate";
+import FormPostagemTemplate from "@/components/templates/FormPostagemTemplate";
 import { Form } from "formik";
 
 export default function CriarPostagemPage() {

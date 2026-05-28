@@ -6,7 +6,7 @@ import { faArrowLeft, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
-import SuccessModal from "@/componentes/Modal";
+import SuccessModal from "@/components/Modal";
 
 interface Mensagem {
     id: number;

@@ -12,7 +12,7 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "@mui/material/Button";
-import SuccessModal from "@/componentes/Modal";
+import SuccessModal from "@/components/Modal";
 
 
 

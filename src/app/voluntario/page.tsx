@@ -1,6 +1,6 @@
 "use client"
-import CardVoluntario from "@/componentes/CardVoluntario";
-import FiltroVoluntario from "@/componentes/FiltroVoluntario"
+import CardVoluntario from "@/components/CardVoluntario";
+import FiltroVoluntario from "@/components/FiltroVoluntario"
 import { Pagination } from "@mui/material";
 import { useEffect, useState } from "react";
 
