@@ -20,10 +20,11 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SwitchAccountIcon from "@mui/icons-material/SwitchAccount";
-import ChatIcon from "@mui/icons-material/Chat";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import EditIcon from "@mui/icons-material/Edit";
+import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
+import { fetchAPI } from "@/services/api";
 
 export default function NavBar() {
     const pathname = usePathname();
@@ -31,14 +32,45 @@ export default function NavBar() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [perfil, setPerfil] = useState<string | null>(null);
+    const [hasSession, setHasSession] = useState(false);
     const iconColor = 'success.main';
+    const isCliente = perfil === 'cliente';
+    const isVoluntario = perfil === 'voluntario';
+    const isAdmin = perfil === 'admin';
+    const profileLabel = isAdmin ? 'Admin' : isCliente ? 'Cliente' : isVoluntario ? 'Voluntário' : 'Convidado';
+    const profileIcon = isVoluntario ? <VolunteerActivismIcon fontSize="small" sx={{ color: '#fff' }} /> : <PersonIcon fontSize="small" sx={{ color: '#fff' }} />;
     
     
     useEffect(() => {
         setMenuOpen(false);
         setAnchorEl(null);
-        
-        setPerfil(localStorage.getItem("perfil"));
+
+        const syncPerfilFromApi = async () => {
+            const token = localStorage.getItem('token');
+            setHasSession(Boolean(token));
+
+            if (!token) {
+                setPerfil(localStorage.getItem("perfil"));
+                return;
+            }
+
+            try {
+                const res = await fetchAPI('/auth/perfil');
+                const role = String(res?.dados?.role || '').toLowerCase();
+
+                if (role) {
+                    localStorage.setItem('perfil', role);
+                    setPerfil(role);
+                    return;
+                }
+            } catch {
+                // fallback to cached value when API is unavailable
+            }
+
+            setPerfil(localStorage.getItem("perfil"));
+        };
+
+        syncPerfilFromApi();
     }, [pathname]);
 
 
@@ -87,7 +119,7 @@ export default function NavBar() {
             <div className="relative items-center ml-4 hidden md:flex">
                 <div>
                     <div className="flex items-center space-x-3">
-                        <div className="text-sm text-gray-600">{perfil ? (perfil === "cliente" ? "Cliente" : "Voluntário") : "Convidado"}</div>
+                        <div className="text-sm text-gray-600">{profileLabel}</div>
                         <IconButton
                             onClick={(e) => setAnchorEl(e.currentTarget)}
                             size="small"
@@ -97,7 +129,7 @@ export default function NavBar() {
                             sx={{ p: 0, bgcolor: 'transparent' }}
                         >
                             <Avatar sx={{ width: 36, height: 36, bgcolor: 'success.main' }}>
-                                {perfil === "voluntario" ? <VolunteerActivismIcon fontSize="small" sx={{ color: '#fff' }} /> : <PersonIcon fontSize="small" sx={{ color: '#fff' }} />}
+                                {profileIcon}
                             </Avatar>
                         </IconButton>
                     </div>
@@ -113,10 +145,10 @@ export default function NavBar() {
                     >
                         <Box sx={{ p: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
                             <Avatar sx={{ width: 56, height: 56, bgcolor: 'success.main' }}>
-                                {perfil === 'voluntario' ? <VolunteerActivismIcon sx={{ color: '#fff' }} /> : <PersonIcon sx={{ color: '#fff' }} />}
+                                {profileIcon}
                             </Avatar>
                             <Box>
-                                <Typography variant="subtitle1">{perfil ? (perfil === 'cliente' ? 'Cliente' : 'Voluntário') : 'Convidado'}</Typography>
+                                <Typography variant="subtitle1">{profileLabel}</Typography>
                             </Box>
                         </Box>
 
@@ -124,7 +156,7 @@ export default function NavBar() {
 
                         <List dense disablePadding>
                                 {/* Cliente menu */}
-                                {perfil === 'cliente' && (
+                                {(isCliente || isAdmin) && (
                                     <>
                                         <ListItemButton onClick={() => { router.push('/perfil'); setAnchorEl(null); }}>
                                             <ListItemAvatar>
@@ -144,32 +176,36 @@ export default function NavBar() {
                                             <ListItemText primary="Alterar Perfil" secondary="Alterar Dados no Sistema" />
                                         </ListItemButton>
 
-                                        <ListItemButton onClick={() => { router.push('/agendamento'); setAnchorEl(null); }}>
-                                            <ListItemAvatar>
-                                                <Avatar sx={{ bgcolor: 'transparent' }}>
-                                                    <EventAvailableIcon sx={{ color: iconColor }} />
-                                                </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText primary="Agendamentos" secondary="Ver compromissos" />
-                                        </ListItemButton>
+                                        {!isAdmin && (
+                                            <ListItemButton onClick={() => { router.push('/voluntario/solicitar'); setAnchorEl(null); }}>
+                                                <ListItemAvatar>
+                                                    <Avatar sx={{ bgcolor: 'transparent' }}>
+                                                        <VerifiedUserIcon sx={{ color: iconColor }} />
+                                                    </Avatar>
+                                                </ListItemAvatar>
+                                                <ListItemText primary="Quero ser voluntário" secondary="Enviar solicitação para aprovação" />
+                                            </ListItemButton>
+                                        )}
 
-                                        <ListItemButton onClick={() => { router.push('/chat'); setAnchorEl(null); }}>
-                                            <ListItemAvatar>
-                                                <Avatar sx={{ bgcolor: 'transparent' }}>
-                                                    <ChatIcon sx={{ color: iconColor }} />
-                                                </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText primary="Mensagens" secondary="Converse com usuários" />
-                                        </ListItemButton>
+                                        {isAdmin && (
+                                            <ListItemButton onClick={() => { router.push('/admin'); setAnchorEl(null); }}>
+                                                <ListItemAvatar>
+                                                    <Avatar sx={{ bgcolor: 'transparent' }}>
+                                                        <ManageAccountsIcon sx={{ color: iconColor }} />
+                                                    </Avatar>
+                                                </ListItemAvatar>
+                                                <ListItemText primary="Painel Admin" secondary="Gerenciar o sistema" />
+                                            </ListItemButton>
+                                        )}
 
         
                                     </>
                                 )}
 
                                
-                                {perfil === 'voluntario' && (
+                                {(isVoluntario || isAdmin) && (
                                     <>
-                                        <ListItemButton onClick={() => { router.push('/voluntario'); setAnchorEl(null); }}>
+                                        <ListItemButton onClick={() => { router.push('/voluntario/painel'); setAnchorEl(null); }}>
                                             <ListItemAvatar>
                                                 <Avatar sx={{ bgcolor: 'transparent' }}>
                                                     <VolunteerActivismIcon sx={{ color: iconColor }} />
@@ -205,14 +241,6 @@ export default function NavBar() {
                                             <ListItemText primary="Atendimentos" secondary="Ver agendamentos recebidos" />
                                         </ListItemButton>
 
-                                        <ListItemButton onClick={() => { router.push('/chat'); setAnchorEl(null); }}>
-                                            <ListItemAvatar>
-                                                <Avatar sx={{ bgcolor: 'transparent' }}>
-                                                    <ChatIcon sx={{ color: iconColor }} />
-                                                </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText primary="Mensagens" secondary="Converse com usuários" />
-                                        </ListItemButton>
                                         <ListItemButton onClick={() => { router.push('/postagens/criar'); setAnchorEl(null); }}>
                                             <ListItemAvatar>
                                                 <Avatar sx={{ bgcolor: 'transparent' }}>
@@ -228,18 +256,16 @@ export default function NavBar() {
                         <Divider />
 
                         <Box sx={{ p: 1, display: 'flex', gap: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
-                            {perfil ? (
+                            {hasSession ? (
                                 <>
                                     <Button
                                         variant="outlined"
                                         startIcon={<SwitchAccountIcon sx={{ color: 'success.main' }} />}
                                         onClick={() => {
-                                            const next = perfil === 'cliente' ? 'voluntario' : 'cliente';
-                                            setPerfil(next);
-                                            
-                                            if (next === 'voluntario') router.push('/voluntario');
-                                            else router.push('/perfil');
                                             setAnchorEl(null);
+                                            setPerfil(null);
+                                            localStorage.removeItem('perfil');
+                                            router.push('/');
                                         }}
                                         size="small"
                                         sx={{ minWidth: 140, textTransform: 'none' }}
@@ -251,7 +277,13 @@ export default function NavBar() {
                                         variant="contained"
                                         color="error"
                                         startIcon={<LogoutIcon sx={{ color: '#fff' }} />}
-                                        onClick={() => { setPerfil(null); router.push('/'); setAnchorEl(null); }}
+                                        onClick={() => {
+                                            setAnchorEl(null);
+                                            setPerfil(null);
+                                            localStorage.removeItem('perfil');
+                                            localStorage.removeItem('token');
+                                            router.push('/');
+                                        }}
                                         size="small"
                                         sx={{ minWidth: 90, textTransform: 'none' }}
                                     >
@@ -283,23 +315,25 @@ export default function NavBar() {
                         <button onClick={() => router.push("/voluntario")} aria-label="Ir para Voluntários" className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Voluntários</button>
                         <button onClick={() => router.push("/postagens")} aria-label="Ir para Notícias" className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Notícias</button>
                         <hr className="my-2" />
-                        {perfil === 'cliente' && (
+                        {(isCliente || isAdmin) && (
                             <>
                                 <button onClick={() => router.push('/perfil')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Meu Perfil</button>
                                 <button onClick={() => router.push(`/cliente/1/alterar`)} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Editar Dados</button>
+                                {!isAdmin && <button onClick={() => router.push('/voluntario/solicitar')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Quero ser voluntário</button>}
                                 <button onClick={() => router.push('/agendamento')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Meus Agendamentos</button>
                                 <button onClick={() => router.push('/agendamento/solicitar')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Solicitar Atendimento</button>
-                                <button onClick={() => router.push('/chat')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Mensagens</button>
                                 <button onClick={() => router.push('/postagens')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Notícias</button>
+                                {isAdmin && (
+                                    <button onClick={() => router.push('/admin')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Painel Admin</button>
+                                )}
                             </>
                         )}
 
-                        {perfil === 'voluntario' && (
+                        {(isVoluntario || isAdmin) && (
                             <>
                                 <button onClick={() => router.push('/voluntario')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Painel Voluntário</button>
                                 <button onClick={() => router.push(`/voluntario/editar/1`)} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Editar Perfil</button>
                                 <button onClick={() => router.push('/agendamento')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Atendimentos</button>
-                                <button onClick={() => router.push('/chat')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Mensagens</button>
                                 <button onClick={() => router.push('/postagens')} className="text-left px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Notícias</button>
                             </>
                         )}

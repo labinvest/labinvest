@@ -133,16 +133,6 @@ export default function PerfilVoluntario() {
               variant="contained"
               color="success"
               size="small"
-              sx={{ borderRadius: '999px', textTransform: 'none', fontWeight: 600 }}
-              onClick={() => router.push("/chat/1")}
-            >
-              Mensagem
-            </Button>
-
-            <Button
-              variant="contained"
-              color="success"
-              size="small"
               onClick={() => router.push("/agendamento/solicitar")}
               sx={{ borderRadius: '999px', textTransform: 'none', fontWeight: 600 }}
             >

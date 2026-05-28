@@ -1,182 +1,275 @@
 "use client";
-import { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faBriefcase,
-    faBullseye,
-    faLightbulb,
-    faExclamationTriangle,
-} from "@fortawesome/free-solid-svg-icons";
-import TextField from "@mui/material/TextField";
-import CardMetas from "@/components/CardMetas";
+
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useFormik } from "formik";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import { fetchAPI } from "@/services/api";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser, faEnvelope, faPhone, faBriefcase } from "@fortawesome/free-solid-svg-icons";
+
+type PerfilResponse = {
+  id: number;
+  email: string;
+  role: string;
+  perfil?: {
+    id: number;
+    nome?: string | null;
+    telefone?: string | null;
+    endereco?: string | null;
+    cpf?: string | null;
+  } | null;
+};
+
+type VoluntarioResponse = {
+  id: number;
+  bio?: string | null;
+  formacao?: string | null;
+  categoria?: { id: number; nome?: string | null } | null;
+};
+
+type FormValues = {
+  nome: string;
+  telefone: string;
+  endereco: string;
+  cpf: string;
+  bio: string;
+};
 
 export default function EditarPerfil() {
+  const router = useRouter();
+  const [perfil, setPerfil] = useState<PerfilResponse | null>(null);
+  const [voluntario, setVoluntario] = useState<VoluntarioResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-    const formik = useFormik({
-        initialValues: {
-            nome: "Admin",
-            email: "admin@labinvest.com",
-            telefone: "(11) 11111-1111",
-            profissao: "Microempreendedora",
-            celular: "(11) 91111-1111",
-            linkedin: "https://www.linkedin.com/in/admin",
-            descricao:
-                "Trabalho o mês todo, mas o dinheiro sempre sumia — e eu nem sabia pra onde. Gosto de curtir um som, sair no fim de semana, pedir um lanche assistindo série... mas também quero ter paz no fim do mês.",
-        },
-        onSubmit: (values) => {
-            
-        },
-    });
+  const formik = useFormik<FormValues>({
+    initialValues: {
+      nome: "",
+      telefone: "",
+      endereco: "",
+      cpf: "",
+      bio: "",
+    },
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      setSaving(true);
+      setMessage(null);
+      setError(null);
 
+      try {
+        const response = await fetchAPI('/perfil/meu', {
+          method: 'PUT',
+          body: values,
+        });
 
+        if (voluntario || perfil?.role?.toLowerCase() === 'voluntario') {
+          await fetchAPI('/voluntarios/me', {
+            method: 'PUT',
+            body: {
+              bio: values.bio,
+            },
+          });
+        }
 
-    const [objetivos] = useState([
-        "Organizar os gastos mensais",
-        "Quitar dívidas pequenas e equilibrar o fluxo de caixa",
-        "Aprender a controlar as finanças do negócio",
-        "Criar uma reserva de emergência",
-        "Começar a investir com segurança",
-    ]);
+        const atualizado = response?.dados || response;
+        setPerfil((prev) =>
+          prev
+            ? {
+                ...prev,
+                perfil: prev.perfil
+                  ? {
+                      ...prev.perfil,
+                      nome: atualizado?.nome ?? values.nome,
+                      telefone: atualizado?.telefone ?? values.telefone,
+                      endereco: atualizado?.endereco ?? values.endereco,
+                      cpf: atualizado?.cpf ?? values.cpf,
+                    }
+                  : prev.perfil,
+              }
+            : prev,
+        );
+        setMessage('Perfil atualizado com sucesso.');
+        router.push('/perfil');
+      } catch (e: unknown) {
+        setError(e instanceof Error ? e.message : 'Erro ao salvar perfil');
+      } finally {
+        setSaving(false);
+      }
+    },
+  });
 
-    const [motivacoes] = useState([
-        "Ter mais tranquilidade e segurança",
-        "Parar de depender do limite do banco",
-        "Fazer o dinheiro render melhor",
-        "Crescer o negócio de forma mais planejada",
-    ]);
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
+      setError(null);
+      try {
+        const perfilRes = await fetchAPI('/auth/perfil');
+        const perfilData = perfilRes?.dados || null;
 
-    const [desafios] = useState([
-        "Falta de tempo e rotina corrida",
-        "Medo de termos técnicos",
-        "Dificuldade em manter constância no controle financeiro",
-    ]);
+        if (!perfilData?.perfil) {
+          throw new Error('Perfil não encontrado');
+        }
 
-    const [mensagemSalva, setMensagemSalva] = useState(false);
+        setPerfil(perfilData);
+        try {
+          const voluntarioRes = await fetchAPI('/voluntarios/me');
+          const voluntarioData = voluntarioRes?.dados || null;
+          setVoluntario(voluntarioData);
+          formik.setValues({
+            nome: perfilData.perfil.nome || '',
+            telefone: perfilData.perfil.telefone || '',
+            endereco: perfilData.perfil.endereco || '',
+            cpf: perfilData.perfil.cpf || '',
+            bio: voluntarioData?.bio || '',
+          });
+        } catch {
+          setVoluntario(null);
+          formik.setValues({
+            nome: perfilData.perfil.nome || '',
+            telefone: perfilData.perfil.telefone || '',
+            endereco: perfilData.perfil.endereco || '',
+            cpf: perfilData.perfil.cpf || '',
+            bio: '',
+          });
+        }
+      } catch (e: unknown) {
+        setError(e instanceof Error ? e.message : 'Erro ao carregar perfil');
+      } finally {
+        setLoading(false);
+      }
+    }
 
-    const salvarAlteracoes = () => {
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center text-slate-600">Carregando edição de perfil...</div>;
+  }
 
-        localStorage.setItem("objetivos", JSON.stringify(objetivos));
-        localStorage.setItem("motivacoes", JSON.stringify(motivacoes));
-        localStorage.setItem("desafios", JSON.stringify(desafios));
-
-        setMensagemSalva(true);
-
-        setTimeout(() => setMensagemSalva(false), 3000);
-    };
-
-    return (
-        <div className="min-h-screen bg-gray-50 py-8">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-                <div className="rounded-2xl shadow-lg p-8">
-                    <div className="flex flex-col md:flex-row items-center gap-8">
-                        <div className="w-32 h-32 rounded-full overflow-hidden shadow-xl">
-                            <img src="/images/easter.jpg" alt="Foto de perfil" className="w-40 h-40 object-cover" />
-                        </div>
-                        <div className="flex-1 text-center md:text-left space-y-4">
-                            <TextField
-                                type="text"
-                                label="Nome"
-                                name="nome"
-                                value={formik.values.nome}
-                                size="small"
-                                margin="normal"
-                                onChange={formik.handleChange}
-                                className="text-3xl font-bold text-gray-800 bg-transparent border-b border-gray-300 w-full"
-                        
-                            />
-                            <div className="flex items-center justify-center md:justify-start gap-2">
-                                <FontAwesomeIcon icon={faBriefcase} className="text-green-700" />
-                                <TextField
-                                    label="Profissão"
-                                    type="text"
-                                    size="small"
-                                    name="profissao"
-                                    margin="normal"
-                                    value={formik.values.profissao}
-                                    onChange={formik.handleChange}
-                                    className="text-gray-600 bg-transparent border-b border-gray-300 w-full"
-                                />
-                            </div>
-                            <TextField
-                                label="Descrição"
-                                type="text"
-                                multiline
-                                name="descricao"
-                                value={formik.values.descricao}
-                                onChange={formik.handleChange}
-                                rows={4}
-                                className="text-gray-700 bg-transparent border border-gray-300 rounded-md p-2 w-full"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-white rounded-2xl shadow-lg p-8">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-6">Informações de Contato</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <TextField 
-                            label="Link do LinkedIn"
-                            type="text"
-                            name="linkedin"
-                            value={formik.values.linkedin}
-                            onChange={formik.handleChange}
-                            size="small"
-                            margin="normal"
-                        />
-                        <TextField 
-                            label="Telefone"
-                            type="text"
-                            name="telefone"
-                            value={formik.values.telefone}
-                            onChange={formik.handleChange}
-                            size="small"
-                            margin="normal"
-                        />
-                        <TextField 
-                            label="Celular"
-                            type="text"
-                            name="celular"
-                            value={formik.values.celular}
-                            onChange={formik.handleChange}
-                            size="small"
-                            margin="normal"
-                        />
-                        <TextField 
-                            label="Email"
-                            type="email"
-                            name="email"
-                            value={formik.values.email}
-                            onChange={formik.handleChange}
-                            size="small"
-                            margin="normal"
-                        />
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <CardMetas titulo="Objetivos" lista={objetivos} cor="green" icon={faBullseye} />
-                    <CardMetas titulo="Motivações" lista={motivacoes} cor="blue" icon={faLightbulb} />
-                    <CardMetas titulo="Desafios" lista={desafios} cor="red" icon={faExclamationTriangle} />
-
-                </div>
-
-                {mensagemSalva && (
-                    <div className="mt-4 text-green-700 font-medium text-sm text-right">
-                        Alterações salvas com sucesso!
-                    </div>
-                )}
-
-                <div className="flex justify-end">
-                    <button
-                        onClick={salvarAlteracoes}
-                        className="bg-green-700 text-white px-6 py-2 rounded-lg hover:bg-green-800 transition"
-                    >
-                        Salvar alterações
-                    </button>
-                </div>
+  return (
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="rounded-2xl bg-white p-8 shadow-lg">
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">Editar perfil</p>
+              <h1 className="mt-2 text-3xl font-bold text-gray-800">{perfil?.perfil?.nome || 'Seu perfil'}</h1>
             </div>
+
+            <Button variant="outlined" onClick={() => router.push('/perfil')} sx={{ textTransform: 'none' }}>
+              Voltar
+            </Button>
+          </div>
         </div>
-    );
+
+        {error && (
+          <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+            {error}
+          </div>
+        )}
+
+        {message && (
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+            {message}
+          </div>
+        )}
+
+        <form onSubmit={formik.handleSubmit} className="space-y-8">
+          <div className="rounded-2xl bg-white p-8 shadow-lg">
+            <div className="mb-6 flex items-center gap-3">
+              <div className="rounded-full bg-emerald-100 p-3 text-emerald-700">
+                <FontAwesomeIcon icon={faUser} />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-800">Informações básicas</h2>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <TextField
+                fullWidth
+                label="Nome"
+                name="nome"
+                value={formik.values.nome}
+                onChange={formik.handleChange}
+              />
+              <TextField
+                fullWidth
+                label="Email"
+                value={perfil?.email || ''}
+                InputProps={{ readOnly: true }}
+              />
+              <TextField
+                fullWidth
+                label="Telefone"
+                name="telefone"
+                value={formik.values.telefone}
+                onChange={formik.handleChange}
+              />
+              <TextField
+                fullWidth
+                label="CPF"
+                name="cpf"
+                value={formik.values.cpf}
+                onChange={formik.handleChange}
+              />
+              <TextField
+                fullWidth
+                label="Bio"
+                name="bio"
+                value={formik.values.bio}
+                onChange={formik.handleChange}
+                multiline
+                minRows={3}
+              />
+            </div>
+          </div>
+
+          <div className="rounded-2xl bg-white p-8 shadow-lg">
+            <div className="mb-6 flex items-center gap-3">
+              <div className="rounded-full bg-emerald-100 p-3 text-emerald-700">
+                <FontAwesomeIcon icon={faBriefcase} />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-800">Endereço e contato</h2>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <TextField
+                fullWidth
+                label="Endereço"
+                name="endereco"
+                value={formik.values.endereco}
+                onChange={formik.handleChange}
+                multiline
+                minRows={3}
+              />
+              <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-600">
+                <div className="mb-3 flex items-center gap-2 text-slate-800">
+                  <FontAwesomeIcon icon={faEnvelope} />
+                  <span>{perfil?.email || '—'}</span>
+                </div>
+                <div className="mb-3 flex items-center gap-2 text-slate-800">
+                  <FontAwesomeIcon icon={faPhone} />
+                  <span>{formik.values.telefone || '—'}</span>
+                </div>
+                <p>Bio do voluntário: {voluntario?.bio || formik.values.bio || '—'}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3">
+            <Button type="button" variant="outlined" onClick={() => router.push('/perfil')} sx={{ textTransform: 'none' }}>
+              Cancelar
+            </Button>
+            <Button type="submit" variant="contained" disabled={saving} sx={{ textTransform: 'none', bgcolor: 'rgb(22 101 52)' }}>
+              {saving ? 'Salvando...' : 'Salvar alterações'}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }

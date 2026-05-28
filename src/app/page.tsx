@@ -89,12 +89,6 @@ export default function LoginPage() {
               <p className="text-xs sm:text-sm text-black mt-2 font-sans">
                 Bem-vindo ao Lab Invest
               </p>
-              <h1 className="text-xs sm:text-sm text-gray-300 font-semibold mt-4 font-sans">
-                Usuário: admin | Senha: admin123
-              </h1>
-              <h1 className="text-xs sm:text-sm text-gray-300 font-semibold mt-1 font-sans">
-                Usuário: user | Senha: user123
-              </h1>
               <button
                 onClick={() => {
                   setMode(mode === "login" ? "register" : "login");

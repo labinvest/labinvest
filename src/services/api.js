@@ -1,5 +1,5 @@
 // Base API configuration and utilities
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
 /**
  * Generic fetch wrapper for API calls
@@ -35,7 +35,7 @@ export const fetchAPI = async (endpoint, options = {}) => {
 
     if (!response.ok) {
       let errBody = null;
-      try { errBody = await response.json(); } catch (e) { errBody = await response.text().catch(() => null); }
+      try { errBody = await response.json(); } catch { errBody = await response.text().catch(() => null); }
       const message = errBody && (errBody.erro || errBody.message) ? (errBody.erro || errBody.message) : `API error: ${response.status}`;
       throw new Error(message);
     }
@@ -50,4 +50,6 @@ export const fetchAPI = async (endpoint, options = {}) => {
   }
 };
 
-export default { fetchAPI, API_URL };
+const api = { fetchAPI, API_URL };
+
+export default api;
