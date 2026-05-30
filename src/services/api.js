@@ -1,5 +1,5 @@
 // Base API configuration and utilities
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://back-end-lab-invest.vercel.app/api';
 
 /**
  * Generic fetch wrapper for API calls
