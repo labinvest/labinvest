@@ -36,7 +36,6 @@ interface FormClienteTemplateProps {
 
 export default function FormClienteTemplate({ cliente: clienteProp }: FormClienteTemplateProps) {
     const router = useRouter();
-    const params = useParams();
     const [imagemPreview, setImagemPreview] = useState<string | null>(null);
     const [cliente, setCliente] = useState<Cliente | undefined>(clienteProp);
     const [modalOpen, setModalOpen] = useState(false);

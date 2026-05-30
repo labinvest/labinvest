@@ -1,5 +1,4 @@
-export const dynamic = 'force-dynamic';
-
+'use client';
 import FormPostagemTemplate from "@/components/templates/FormPostagemTemplate";
 
 export default function CriarPostagemPage() {

@@ -1,6 +1,5 @@
-export const dynamic = 'force-dynamic';
-
-import FormVoluntarioTemplate from '../../../components/templates/FormVoluntarioTemplate';
+'use client';
+import FormVoluntarioTemplate from "@/components/templates/FormVoluntarioTemplate";
 
 export default function CadastroPage() {
     return (
