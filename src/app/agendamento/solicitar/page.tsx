@@ -2,16 +2,6 @@
 import TextField from '@mui/material/TextField';
 import Button from "@mui/material/Button";
 
-interface SolicitarAgendamento {
-    nome: string;
-    sobrenome: string;
-    email: string;
-    cpf: string;
-    telefone: number;
-    profissao: string;
-    dataPreferida: string;
-    shrink: true;
-}
 
 export default function SolicitarAgendamentoForm() {
     const handleSubmit = (e: React.FormEvent) => {

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import SidebarMiniaturas from "@/components/SideBarNoticias";
 import Link from "next/link";
 import postagemService from "@/services/postagemService";
+import { resolveImageUrl } from "@/services/api";
 
 const PLACEHOLDER_IMAGE = "/images/Image6.png";
 
@@ -32,7 +33,7 @@ function mapPost(p: any, index: number): Postagem {
     titulo: p.titulo ?? "",
     data: p.createdAt ? formatarData(p.createdAt) : "",
     conteudo: p.conteudo ?? "",
-    imagem: PLACEHOLDER_IMAGE,
+    imagem: resolveImageUrl(p.imagemUrl) || PLACEHOLDER_IMAGE,
     destaque: index === 0,
   };
 }

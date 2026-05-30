@@ -63,18 +63,27 @@ export default function PerfilVoluntario() {
   const [snackbar, setSnackbar] = useState(false);
 
   useEffect(() => {
-    if (!id) return;
+    const numId = Number(id);
+    const isValidId = id && !isNaN(numId) && numId > 0;
 
-    Promise.all([
-      voluntarioService.getById(id as string),
-      postagemService.getAll({ voluntarioId: id, limit: 4 }),
-    ])
-      .then(([volData, postsData]) => {
-        const vol = volData?.dados ?? volData;
-        if (!vol?.id) { setNotFound(true); return; }
-        setVoluntario(vol);
+    // Se o ID não for numérico válido, busca o voluntário do usuário logado
+    const fetchVoluntario = isValidId
+      ? voluntarioService.getById(String(numId))
+      : voluntarioService.getMe();
+
+    fetchVoluntario
+      .then((volData: unknown) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        setPostagens((postsData?.postagens ?? []) as any[]);
+        const vol = (volData as any)?.dados ?? volData;
+        if (!vol?.id) { setNotFound(true); setLoading(false); return; }
+        setVoluntario(vol);
+
+        return postagemService.getAll({ voluntarioId: vol.id, limit: 4 });
+      })
+      .then((postsData: unknown) => {
+        if (!postsData) return;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        setPostagens(((postsData as any)?.postagens ?? []) as Postagem[]);
       })
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false));
