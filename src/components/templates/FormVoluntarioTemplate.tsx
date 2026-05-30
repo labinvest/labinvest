@@ -1,304 +1,434 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useFormik } from 'formik';
-import { useState } from 'react';
-import { TextField, Button, Typography, Box, Divider } from '@mui/material';
-import CheckboxCertificado from '../CheckboxCertificado';
-import UploadImagem from '../UploadImagem';
-import ProfissoesFinanceiras from '../ProfissioesVoluntarios';
+import { Button, TextField, Typography, Box, Divider, Select, MenuItem, FormControl, InputLabel, OutlinedInput, Checkbox, ListItemText } from '@mui/material';
 import SuccessModal from '../Modal';
-import { validationSchema } from '@/schemas/validationSchema';
 import { fetchAPI } from '@/services/api';
+import uploadService from '@/services/uploadService';
+import * as Yup from 'yup';
+import { cpf as cpfValidator } from 'cpf-cnpj-validator';
+
+type Categoria = {
+  id: number;
+  nome: string;
+};
+
+type TipoDocumento = {
+  id: number;
+  nome: string;
+  obrigatorio?: boolean;
+};
+
+const formacoes = [
+  { value: 'ENSINO_MEDIO', label: 'Ensino Médio' },
+  { value: 'TECNICO', label: 'Técnico' },
+  { value: 'GRADUACAO_EM_ANDAMENTO', label: 'Graduação em andamento' },
+  { value: 'GRADUACAO_CONCLUIDA', label: 'Graduação concluída' },
+  { value: 'POS_GRADUACAO', label: 'Pós-graduação' },
+  { value: 'MESTRADO', label: 'Mestrado' },
+  { value: 'DOUTORADO', label: 'Doutorado' },
+];
+
+const volunteerSchema = Yup.object({
+  nome: Yup.string().min(3, 'Mínimo 3 caracteres').required('Obrigatório'),
+  email: Yup.string().email('Email inválido').required('Obrigatório'),
+  senha: Yup.string().min(6, 'Mínimo 6 caracteres').required('Obrigatório'),
+  telefone: Yup.string()
+    .required('Obrigatório')
+    .test('telefone-valido', 'Telefone inválido (ex: (11) 98765-4321)', (value) => {
+      if (!value) return false;
+      const numeros = value.replace(/\D/g, '');
+      return numeros.length === 10 || numeros.length === 11;
+    }),
+  cpf: Yup.string()
+    .required('Obrigatório')
+    .test('cpf-valido', 'CPF inválido', (value) => {
+      if (!value) return false;
+      return cpfValidator.isValid(value);
+    }),
+  categoriaId: Yup.string().required('Obrigatório'),
+  formacao: Yup.string().required('Obrigatório'),
+  experiencia: Yup.number()
+    .typeError('Informe um número')
+    .min(0, 'Não pode ser negativo')
+    .required('Obrigatório'),
+  bio: Yup.string().min(10, 'Descreva melhor sua experiência').required('Obrigatório'),
+  documentos: Yup.array().of(Yup.string()).min(1, 'Selecione pelo menos um documento'),
+});
 
 export default function FormVoluntarioTemplate() {
-    const [openDialog, setOpenDialog] = useState(false);
-    const [modalConfig, setModalConfig] = useState({ title: 'Sucesso!', message: 'Cadastro realizado com sucesso.' });
+  const router = useRouter();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [modalConfig, setModalConfig] = useState({ title: 'Sucesso!', message: 'Cadastro realizado com sucesso.' });
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [tiposDocumento, setTiposDocumento] = useState<TipoDocumento[]>([]);
+  const [anexos, setAnexos] = useState<Record<string, { url: string; nomeArquivo: string }>>({});
+  const [carregandoCategorias, setCarregandoCategorias] = useState(true);
+  const [carregandoDocumentos, setCarregandoDocumentos] = useState(true);
 
-    const formik = useFormik({
-        initialValues: {
-            nome: '',
-            sobrenome: '',
-            email: '',
-            senha: '',
-            telefone: '',
-            cpf: '',
-            cnpj: '',
-            profissao: '',
-            curso: '',
-            instituicao: '',
-            anoConclusao: new Date().getFullYear(),
-            areaInteresse: '',
-            certificados: [],
-        },
-        validationSchema,
-        validateOnChange: true,
-        validateOnBlur: true,
-        onSubmit: async (values) => {
-            try {
-                const nomeCompleto = `${values.nome} ${values.sobrenome}`.trim();
-                const data = await fetchAPI('/auth/signup', {
-                    method: 'POST',
-                    body: {
-                        nome: nomeCompleto,
-                        email: values.email,
-                        senha: values.senha,
-                        telefone: values.telefone,
-                        cpf: values.cpf,
-                        role: 'VOLUNTARIO',
-                    },
-                });
-
-                const token = data?.dados?.token;
-                const perfilId = data?.dados?.usuario?.perfil?.id;
-                if (token) localStorage.setItem('token', token);
-
-                if (perfilId) {
-                    await fetchAPI('/voluntarios', {
-                        method: 'POST',
-                        body: { perfilId },
-                    });
-                }
-
-                setModalConfig({ title: 'Sucesso!', message: 'Cadastro de voluntário realizado com sucesso.' });
-                setOpenDialog(true);
-            } catch (error) {
-                console.error('Erro ao cadastrar voluntário:', error);
-                setModalConfig({ title: 'Erro', message: 'Erro ao cadastrar voluntário.' });
-                setOpenDialog(true);
-            }
-        },
-    });
-
-    const handleCloseDialog = () => {
-        setOpenDialog(false);
-        formik.resetForm();
+  useEffect(() => {
+    const loadCategorias = async () => {
+      try {
+        const response = await fetchAPI('/categorias?ativo=true&limit=100');
+        const lista = response?.categorias || response?.dados?.categorias || response?.dados || [];
+        setCategorias(Array.isArray(lista) ? lista : []);
+      } catch (error) {
+        console.error('Erro ao carregar categorias:', error);
+        setCategorias([]);
+      } finally {
+        setCarregandoCategorias(false);
+      }
     };
 
-    return (
-        <Box sx={{ minHeight: '100vh', bgcolor: 'grey.50', py: 4 }}>
-            <form
-                onSubmit={formik.handleSubmit}
-                className="w-full max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg space-y-8"
-            >
-                <Typography variant="h4" align="center" sx={{ fontWeight: 600, color: 'grey.800', mb: 2 }}>
-                    Cadastro de Voluntário
-                </Typography>
-                <Typography variant="body2" align="center" sx={{ color: 'grey.600', mb: 4 }}>
-                    Preencha seus dados para se tornar um voluntário
-                </Typography>
+    loadCategorias();
+  }, []);
 
-                <Divider sx={{ my: 3 }} />
+  useEffect(() => {
+    const loadTiposDocumento = async () => {
+      try {
+        const response = await fetchAPI('/tipos-documento?ativo=true');
+        const lista = response?.dados || response || [];
+        setTiposDocumento(Array.isArray(lista) ? lista : []);
+      } catch (error) {
+        console.error('Erro ao carregar tipos de documento:', error);
+        setTiposDocumento([]);
+      } finally {
+        setCarregandoDocumentos(false);
+      }
+    };
 
-                {/* Dados Pessoais */}
-                <Box>
-                    <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: 'grey.700' }}>
-                        Dados Pessoais
-                    </Typography>
-                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3 }}>
-                        <TextField
-                            label="Nome"
-                            {...formik.getFieldProps('nome')}
-                            error={formik.touched.nome && !!formik.errors.nome}
-                            helperText={formik.touched.nome && formik.errors.nome}
-                            size="small"
-                            fullWidth
-                            color="success"
-                            required
-                        />
-                        <TextField
-                            label="Sobrenome"
-                            {...formik.getFieldProps('sobrenome')}
-                            error={formik.touched.sobrenome && !!formik.errors.sobrenome}
-                            helperText={formik.touched.sobrenome && formik.errors.sobrenome}
-                            size="small"
-                            fullWidth
-                            color="success"
-                            required
-                        />
-                        <TextField
-                            label="Email"
-                            type="email"
-                            {...formik.getFieldProps('email')}
-                            error={formik.touched.email && !!formik.errors.email}
-                            helperText={formik.touched.email && formik.errors.email}
-                            size="small"
-                            fullWidth
-                            color="success"
-                            required
-                        />
-                        <TextField
-                            label="Senha"
-                            type="password"
-                            {...formik.getFieldProps('senha')}
-                            error={formik.touched.senha && !!formik.errors.senha}
-                            helperText={formik.touched.senha && formik.errors.senha}
-                            size="small"
-                            fullWidth
-                            color="success"
-                            required
-                        />
-                        <TextField
-                            label="Telefone"
-                            type="tel"
-                            {...formik.getFieldProps('telefone')}
-                            error={formik.touched.telefone && !!formik.errors.telefone}
-                            helperText={formik.touched.telefone && formik.errors.telefone}
-                            size="small"
-                            fullWidth
-                            color="success"
-                            placeholder="(11) 98765-4321"
-                            required
-                        />
-                        <TextField
-                            label="CPF"
-                            {...formik.getFieldProps('cpf')}
-                            error={formik.touched.cpf && !!formik.errors.cpf}
-                            helperText={formik.touched.cpf && formik.errors.cpf}
-                            size="small"
-                            fullWidth
-                            color="success"
-                            placeholder="123.456.789-00"
-                            required
-                        />
-                        <TextField
-                            label="CNPJ (opcional)"
-                            {...formik.getFieldProps('cnpj')}
-                            error={formik.touched.cnpj && !!formik.errors.cnpj}
-                            helperText={formik.touched.cnpj && formik.errors.cnpj}
-                            size="small"
-                            fullWidth
-                            color="success"
-                            placeholder="12.345.678/0001-00"
-                        />
-                    </Box>
-                </Box>
+    loadTiposDocumento();
+  }, []);
 
-                <Divider sx={{ my: 3 }} />
+  const formik = useFormik({
+    initialValues: {
+      nome: '',
+      email: '',
+      senha: '',
+      telefone: '',
+      cpf: '',
+      categoriaId: '',
+      formacao: '',
+      experiencia: '',
+      bio: '',
+      documentos: [] as string[],
+    },
+    validationSchema: volunteerSchema,
+    validateOnChange: true,
+    validateOnBlur: true,
+    onSubmit: async (values) => {
+      try {
+        const documentosSemAnexo = values.documentos.filter((tipoDocumentoId) => !anexos[tipoDocumentoId]);
+        if (documentosSemAnexo.length > 0) {
+          throw new Error('Anexe um PDF para cada documento selecionado.');
+        }
 
-                {/* Formação e Profissão */}
-                <Box>
-                    <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: 'grey.700' }}>
-                        Formação e Profissão
-                    </Typography>
-                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3 }}>
-                        <Box>
-                            <ProfissoesFinanceiras
-                                value={formik.values.profissao}
-                                onChange={(profissao) => formik.setFieldValue('profissao', profissao)}
-                            />
-                            {formik.touched.profissao && formik.errors.profissao && (
-                                <Typography variant="caption" color="error" sx={{ display: 'block', mt: 0.5, ml: 1.5 }}>
-                                    {formik.errors.profissao}
-                                </Typography>
-                            )}
-                        </Box>
-                        <TextField
-                            label="Curso"
-                            {...formik.getFieldProps('curso')}
-                            error={formik.touched.curso && !!formik.errors.curso}
-                            helperText={formik.touched.curso && formik.errors.curso}
-                            size="small"
-                            fullWidth
-                            color="success"
-                            required
-                        />
-                        <TextField
-                            label="Instituição"
-                            {...formik.getFieldProps('instituicao')}
-                            error={formik.touched.instituicao && !!formik.errors.instituicao}
-                            helperText={formik.touched.instituicao && formik.errors.instituicao}
-                            size="small"
-                            fullWidth
-                            color="success"
-                            required
-                        />
-                        <TextField
-                            label="Ano de Conclusão"
-                            type="number"
-                            {...formik.getFieldProps('anoConclusao')}
-                            error={formik.touched.anoConclusao && !!formik.errors.anoConclusao}
-                            helperText={formik.touched.anoConclusao && formik.errors.anoConclusao}
-                            size="small"
-                            fullWidth
-                            color="success"
-                            required
-                        />
-                    </Box>
-                </Box>
+        const data = await fetchAPI('/auth/signup', {
+          method: 'POST',
+          body: {
+            nome: values.nome,
+            email: values.email,
+            senha: values.senha,
+            telefone: values.telefone,
+            cpf: values.cpf,
+            role: 'CLIENTE',
+          },
+        });
 
-                <Divider sx={{ my: 3 }} />
+        const token = data?.dados?.token;
+        if (token) localStorage.setItem('token', token);
 
-                {/* Interesses e Certificações */}
-                <Box>
-                    <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: 'grey.700' }}>
-                        Interesses e Certificações
-                    </Typography>
-                    <TextField
-                        label="Área de Interesse"
-                        {...formik.getFieldProps('areaInteresse')}
-                        error={formik.touched.areaInteresse && !!formik.errors.areaInteresse}
-                        helperText={formik.touched.areaInteresse && formik.errors.areaInteresse}
-                        size="small"
-                        fullWidth
-                        color="success"
-                        sx={{ mb: 3 }}
-                        required
-                    />
-                    <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 500 }}>
-                        Certificados *
-                    </Typography>
-                    <CheckboxCertificado
-                        selected={formik.values.certificados}
-                        onChange={(certificados) => formik.setFieldValue('certificados', certificados)}
-                    />
-                    {formik.touched.certificados && formik.errors.certificados && (
-                        <Typography variant="caption" color="error" sx={{ display: 'block', mt: 1, ml: 1.5 }}>
-                            {formik.errors.certificados}
-                        </Typography>
-                    )}
-                </Box>
+        await fetchAPI('/solicitacoes-voluntario', {
+          method: 'POST',
+          body: {
+            categoriaId: values.categoriaId,
+            formacao: values.formacao,
+            bio: values.bio,
+            experiencia: values.experiencia,
+            documentos: values.documentos.map((tipoDocumentoId) => {
+              const tipoDocumento = tiposDocumento.find((item) => String(item.id) === tipoDocumentoId);
+              const anexo = anexos[tipoDocumentoId];
 
-                <Divider sx={{ my: 3 }} />
+              return {
+                tipoDocumentoId: Number(tipoDocumentoId),
+                nome: tipoDocumento?.nome || '',
+                caminhoArquivo: anexo.url,
+                nomeArquivo: anexo.nomeArquivo,
+              };
+            }),
+          },
+        });
 
-                {/* Imagem */}
-                <Box>
-                    <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: 'grey.700' }}>
-                        Foto de Perfil
-                    </Typography>
-                    <UploadImagem />
-                </Box>
+        setModalConfig({ title: 'Sucesso!', message: 'Seu cadastro de voluntário foi enviado para análise.' });
+        setOpenDialog(true);
+      } catch (error) {
+        console.error('Erro ao cadastrar voluntário:', error);
+        setModalConfig({ title: 'Erro', message: 'Erro ao cadastrar voluntário.' });
+        setOpenDialog(true);
+      }
+    },
+  });
 
-                {/* Botão de Envio */}
-                <Box sx={{ display: 'flex', justifyContent: 'center', pt: 3 }}>
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="success"
-                        size="large"
-                        sx={{
-                            minWidth: 200,
-                            py: 1.5,
-                            fontSize: '1rem',
-                            fontWeight: 600,
-                            textTransform: 'none',
-                            boxShadow: 2,
-                            '&:hover': {
-                                boxShadow: 4
-                            }
-                        }}
-                    >
-                        Cadastrar Voluntário
-                    </Button>
-                </Box>
-            </form>
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    formik.resetForm();
+    router.push('/voluntario/solicitar');
+  };
 
-            <SuccessModal
-                open={openDialog}
-                onClose={handleCloseDialog}
-                title={modalConfig.title}
-                message={modalConfig.message}
-                buttonText="Fechar"
-            />
+  const handleDocumentoUpload = async (tipoDocumentoId: string, file: File) => {
+    const response = await uploadService.uploadImagem(file);
+    const url = response?.url;
+
+    if (!url) {
+      throw new Error('Não foi possível enviar o arquivo');
+    }
+
+    setAnexos((current) => ({
+      ...current,
+      [tipoDocumentoId]: {
+        url,
+        nomeArquivo: file.name,
+      },
+    }));
+  };
+
+  return (
+    <Box sx={{ minHeight: '100vh', bgcolor: 'grey.50', py: 4, px: 2 }}>
+      <form
+        onSubmit={formik.handleSubmit}
+        className="w-full max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg space-y-8"
+      >
+        <Box>
+          <Typography variant="h4" align="center" sx={{ fontWeight: 700, color: 'grey.800', mb: 1 }}>
+            Cadastro de Voluntário
+          </Typography>
+          <Typography variant="body2" align="center" sx={{ color: 'grey.600' }}>
+            Preencha seus dados e envie sua solicitação. Depois do cadastro, a equipe vai analisar o seu perfil.
+          </Typography>
         </Box>
-    );
+
+        <Divider />
+
+        <Box>
+          <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: 'grey.700' }}>
+            Dados de acesso
+          </Typography>
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3 }}>
+            <TextField
+              label="Nome completo"
+              {...formik.getFieldProps('nome')}
+              error={formik.touched.nome && !!formik.errors.nome}
+              helperText={formik.touched.nome && formik.errors.nome}
+              size="small"
+              fullWidth
+              color="success"
+              required
+            />
+            <TextField
+              label="Email"
+              type="email"
+              {...formik.getFieldProps('email')}
+              error={formik.touched.email && !!formik.errors.email}
+              helperText={formik.touched.email && formik.errors.email}
+              size="small"
+              fullWidth
+              color="success"
+              required
+            />
+            <TextField
+              label="Senha"
+              type="password"
+              {...formik.getFieldProps('senha')}
+              error={formik.touched.senha && !!formik.errors.senha}
+              helperText={formik.touched.senha && formik.errors.senha}
+              size="small"
+              fullWidth
+              color="success"
+              required
+            />
+            <TextField
+              label="Telefone"
+              type="tel"
+              {...formik.getFieldProps('telefone')}
+              error={formik.touched.telefone && !!formik.errors.telefone}
+              helperText={formik.touched.telefone && formik.errors.telefone}
+              size="small"
+              fullWidth
+              color="success"
+              placeholder="(11) 98765-4321"
+              required
+            />
+            <TextField
+              label="CPF"
+              {...formik.getFieldProps('cpf')}
+              error={formik.touched.cpf && !!formik.errors.cpf}
+              helperText={formik.touched.cpf && formik.errors.cpf}
+              size="small"
+              fullWidth
+              color="success"
+              placeholder="123.456.789-00"
+              required
+            />
+          </Box>
+        </Box>
+
+        <Divider />
+
+        <Box>
+          <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: 'grey.700' }}>
+            Informações de voluntariado
+          </Typography>
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3 }}>
+            <FormControl size="small" fullWidth color="success" error={formik.touched.categoriaId && !!formik.errors.categoriaId}>
+              <InputLabel>Categoria</InputLabel>
+              <Select
+                label="Categoria"
+                {...formik.getFieldProps('categoriaId')}
+                value={formik.values.categoriaId}
+                disabled={carregandoCategorias}
+              >
+                <MenuItem value="">{carregandoCategorias ? 'Carregando...' : 'Selecione uma categoria'}</MenuItem>
+                {categorias.map((categoria) => (
+                  <MenuItem key={categoria.id} value={String(categoria.id)}>
+                    {categoria.nome}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <TextField
+              label="Experiência (anos)"
+              type="number"
+              {...formik.getFieldProps('experiencia')}
+              error={formik.touched.experiencia && !!formik.errors.experiencia}
+              helperText={formik.touched.experiencia && formik.errors.experiencia}
+              size="small"
+              fullWidth
+              color="success"
+              required
+            />
+            <FormControl size="small" fullWidth color="success" error={formik.touched.documentos && !!formik.errors.documentos}>
+              <InputLabel>Documentos</InputLabel>
+              <Select
+                multiple
+                label="Documentos"
+                value={formik.values.documentos}
+                input={<OutlinedInput label="Documentos" />}
+                renderValue={(selected) =>
+                  (selected as string[])
+                    .map((tipoDocumentoId) => tiposDocumento.find((item) => String(item.id) === tipoDocumentoId)?.nome || tipoDocumentoId)
+                    .join(', ')
+                }
+                disabled={carregandoDocumentos}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  formik.setFieldValue('documentos', typeof value === 'string' ? value.split(',') : value);
+                }}
+              >
+                <MenuItem value="" disabled>
+                  {carregandoDocumentos ? 'Carregando...' : 'Selecione os documentos'}
+                </MenuItem>
+                {tiposDocumento.map((documento) => (
+                  <MenuItem key={documento.id} value={documento.nome}>
+                    <Checkbox checked={formik.values.documentos.indexOf(documento.nome) > -1} />
+                    <ListItemText primary={documento.nome} secondary={documento.obrigatorio ? 'Obrigatório' : undefined} />
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+          <Box sx={{ mt: 3 }}>
+            <Typography variant="caption" sx={{ display: 'block', mb: 1, color: 'grey.700', fontWeight: 600 }}>
+              Escolha uma formação
+            </Typography>
+            <FormControl size="small" fullWidth color="success" error={formik.touched.formacao && !!formik.errors.formacao}>
+              <InputLabel>Formação</InputLabel>
+              <Select label="Formação" {...formik.getFieldProps('formacao')} value={formik.values.formacao}>
+                <MenuItem value="">Selecione uma formação</MenuItem>
+                {formacoes.map((formacao) => (
+                  <MenuItem key={formacao.value} value={formacao.value}>
+                    {formacao.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+          <Box sx={{ mt: 4 }}>
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: 'grey.700' }}>
+              Anexar PDFs
+            </Typography>
+            {formik.values.documentos.length === 0 ? (
+              <Typography variant="body2" sx={{ color: 'grey.500' }}>
+                Selecione pelo menos um documento acima para liberar o anexo do PDF.
+              </Typography>
+            ) : (
+              <Box sx={{ display: 'grid', gap: 2 }}>
+                {formik.values.documentos.map((tipoDocumentoId) => {
+                  const tipoDocumento = tiposDocumento.find((item) => String(item.id) === tipoDocumentoId);
+                  const anexo = anexos[tipoDocumentoId];
+
+                  return (
+                    <Box key={tipoDocumentoId} className="rounded-xl border border-slate-200 p-4 bg-slate-50 flex flex-col gap-2">
+                      <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'grey.800' }}>
+                        {tipoDocumento?.nome || 'Documento'}
+                      </Typography>
+                      <div className="flex flex-wrap items-center gap-3">
+                        <Button variant="outlined" color="success" component="label" size="small">
+                          {anexo ? 'Trocar PDF' : 'Anexar PDF'}
+                          <input
+                            type="file"
+                            hidden
+                            accept="application/pdf"
+                            onChange={async (event) => {
+                              const file = event.target.files?.[0];
+                              if (!file) return;
+                              try {
+                                await handleDocumentoUpload(tipoDocumentoId, file);
+                              } catch (error) {
+                                console.error('Erro ao anexar PDF:', error);
+                                setModalConfig({ title: 'Erro', message: 'Não foi possível anexar o PDF selecionado.' });
+                                setOpenDialog(true);
+                              }
+                            }}
+                          />
+                        </Button>
+                        <Typography variant="body2" sx={{ color: anexo ? 'success.main' : 'grey.500' }}>
+                          {anexo ? anexo.nomeArquivo : 'Nenhum PDF enviado ainda'}
+                        </Typography>
+                      </div>
+                    </Box>
+                  );
+                })}
+              </Box>
+            )}
+          </Box>
+          <TextField
+            label="Bio / apresentação"
+            {...formik.getFieldProps('bio')}
+            error={formik.touched.bio && !!formik.errors.bio}
+            helperText={formik.touched.bio && formik.errors.bio}
+            multiline
+            rows={4}
+            size="small"
+            fullWidth
+            color="success"
+            sx={{ mt: 3 }}
+            required
+          />
+        </Box>
+
+        <Button variant="contained" color="success" type="submit" fullWidth>
+          Enviar solicitação de voluntário
+        </Button>
+      </form>
+
+      <SuccessModal
+        open={openDialog}
+        onClose={handleCloseDialog}
+        title={modalConfig.title}
+        message={modalConfig.message}
+      />
+    </Box>
+  );
 }

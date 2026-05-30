@@ -75,7 +75,7 @@ export default function NavBar() {
 
 
 
-    if (['/'].includes(pathname)) return null;
+    if (['/', '/cliente/cadastro', '/voluntario/cadastro'].includes(pathname)) return null;
 
     return (
         <header className="relative flex items-center justify-between py-4 md:py-6 px-4 md:px-8 lg:px-16 max-w-full">
