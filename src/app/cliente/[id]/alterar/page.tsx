@@ -1,9 +1,7 @@
+export const dynamic = 'force-dynamic';
+
 import FormClienteTemplate from "@/components/templates/FormClienteTemplate";
 
 export default function AlterarUsuarioPage() {
-    return (<>
-        
-    <FormClienteTemplate/>
-
-    </>);
+    return <FormClienteTemplate />;
 }
