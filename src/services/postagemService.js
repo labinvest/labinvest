@@ -1,48 +1,25 @@
-// Postagem service for managing postagens API calls
 import { fetchAPI } from './api';
 
 export const postagemService = {
-  /**
-   * Get all postagens
-   */
-  async getAll() {
-    return fetchAPI('/postagens');
+  async getAll(params = {}) {
+    const qs = new URLSearchParams(params).toString();
+    return fetchAPI(`/posts${qs ? `?${qs}` : ''}`);
   },
 
-  /**
-   * Get postagem by ID
-   */
   async getById(id) {
-    return fetchAPI(`/postagens/${id}`);
+    return fetchAPI(`/posts/${id}`);
   },
 
-  /**
-   * Create new postagem
-   */
   async create(data) {
-    return fetchAPI('/postagens', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    return fetchAPI('/posts', { method: 'POST', body: data });
   },
 
-  /**
-   * Update postagem
-   */
   async update(id, data) {
-    return fetchAPI(`/postagens/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
+    return fetchAPI(`/posts/${id}`, { method: 'PUT', body: data });
   },
 
-  /**
-   * Delete postagem
-   */
   async delete(id) {
-    return fetchAPI(`/postagens/${id}`, {
-      method: 'DELETE',
-    });
+    return fetchAPI(`/posts/${id}`, { method: 'DELETE' });
   },
 };
 

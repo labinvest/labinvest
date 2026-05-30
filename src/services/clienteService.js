@@ -1,48 +1,30 @@
-// Cliente service for managing cliente API calls
 import { fetchAPI } from './api';
 
+// Clientes são perfis com role CLIENTE — mapeados para /perfis no backend
 export const clienteService = {
-  /**
-   * Get all clientes
-   */
-  async getAll() {
-    return fetchAPI('/cliente');
+  async getAll(params = {}) {
+    const qs = new URLSearchParams(params).toString();
+    return fetchAPI(`/perfis${qs ? `?${qs}` : ''}`);
   },
 
-  /**
-   * Get cliente by ID
-   */
   async getById(id) {
-    return fetchAPI(`/cliente/${id}`);
+    return fetchAPI(`/perfis/${id}`);
   },
 
-  /**
-   * Create new cliente
-   */
-  async create(data) {
-    return fetchAPI('/cliente', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+  async getMe() {
+    return fetchAPI('/perfil/meu');
   },
 
-  /**
-   * Update cliente
-   */
+  async updateMe(data) {
+    return fetchAPI('/perfil/meu', { method: 'PUT', body: data });
+  },
+
   async update(id, data) {
-    return fetchAPI(`/cliente/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
+    return fetchAPI(`/perfis/${id}`, { method: 'PUT', body: data });
   },
 
-  /**
-   * Delete cliente
-   */
   async delete(id) {
-    return fetchAPI(`/cliente/${id}`, {
-      method: 'DELETE',
-    });
+    return fetchAPI(`/perfis/${id}`, { method: 'DELETE' });
   },
 };
 

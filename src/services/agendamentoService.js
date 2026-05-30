@@ -1,48 +1,29 @@
-// Agendamento service for managing agendamento API calls
 import { fetchAPI } from './api';
 
 export const agendamentoService = {
-  /**
-   * Get all agendamentos
-   */
-  async getAll() {
-    return fetchAPI('/agendamento');
+  async getAll(params = {}) {
+    const qs = new URLSearchParams(params).toString();
+    return fetchAPI(`/agendamentos${qs ? `?${qs}` : ''}`);
   },
 
-  /**
-   * Get agendamento by ID
-   */
   async getById(id) {
-    return fetchAPI(`/agendamento/${id}`);
+    return fetchAPI(`/agendamentos/${id}`);
   },
 
-  /**
-   * Create new agendamento
-   */
   async create(data) {
-    return fetchAPI('/agendamento', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    return fetchAPI('/agendamentos', { method: 'POST', body: data });
   },
 
-  /**
-   * Update agendamento
-   */
   async update(id, data) {
-    return fetchAPI(`/agendamento/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
+    return fetchAPI(`/agendamentos/${id}`, { method: 'PUT', body: data });
   },
 
-  /**
-   * Delete agendamento
-   */
+  async updateStatus(id, status) {
+    return fetchAPI(`/agendamentos/${id}/status`, { method: 'PATCH', body: { status } });
+  },
+
   async delete(id) {
-    return fetchAPI(`/agendamento/${id}`, {
-      method: 'DELETE',
-    });
+    return fetchAPI(`/agendamentos/${id}`, { method: 'DELETE' });
   },
 };
 

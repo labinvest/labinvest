@@ -1,48 +1,37 @@
-// Voluntario service for managing voluntario API calls
 import { fetchAPI } from './api';
 
 export const voluntarioService = {
-  /**
-   * Get all voluntarios
-   */
-  async getAll() {
-    return fetchAPI('/voluntario');
+  async getAll(params = {}) {
+    const qs = new URLSearchParams(params).toString();
+    return fetchAPI(`/voluntarios${qs ? `?${qs}` : ''}`);
   },
 
-  /**
-   * Get voluntario by ID
-   */
   async getById(id) {
-    return fetchAPI(`/voluntario/${id}`);
+    return fetchAPI(`/voluntarios/${id}`);
   },
 
-  /**
-   * Create new voluntario
-   */
+  async getMe() {
+    return fetchAPI('/voluntarios/me');
+  },
+
+  async createMe(data) {
+    return fetchAPI('/voluntarios/me', { method: 'POST', body: data });
+  },
+
+  async updateMe(data) {
+    return fetchAPI('/voluntarios/me', { method: 'PUT', body: data });
+  },
+
   async create(data) {
-    return fetchAPI('/voluntario', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    return fetchAPI('/voluntarios', { method: 'POST', body: data });
   },
 
-  /**
-   * Update voluntario
-   */
   async update(id, data) {
-    return fetchAPI(`/voluntario/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
+    return fetchAPI(`/voluntarios/${id}`, { method: 'PUT', body: data });
   },
 
-  /**
-   * Delete voluntario
-   */
   async delete(id) {
-    return fetchAPI(`/voluntario/${id}`, {
-      method: 'DELETE',
-    });
+    return fetchAPI(`/voluntarios/${id}`, { method: 'DELETE' });
   },
 };
 

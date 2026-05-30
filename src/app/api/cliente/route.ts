@@ -1,62 +1,40 @@
-/**
- * /api/cliente
- * 
- * Métodos HTTP
- * - GET: consulta todos os clientes
- * - POST: inserção de novo cliente
- * 
- * HTTP status code:
- * - 200 sucesso
- * - 201 created
- * - 400 bad request
- */
+import { NextResponse, type NextRequest } from "next/server";
 
-import { NextResponse } from "next/server";
+// Clientes são perfis com role CLIENTE — backend expõe /perfis (requer autenticação de admin)
+const BACKEND = process.env.BACKEND_URL ?? "http://localhost:3001/api";
 
-export function GET() {
-  return NextResponse.json([
-    {
-      id: "1",
-      nome: "João",
-      sobrenome: "Silva",
-      email: "joao.silva@email.com",
-      telefone: "11987654321",
-      cpf: "12345678901",
-      dataNascimento: "1985-05-15",
-      estadoCivil: "casado",
-      profissao: "Engenheiro",
-      rendaMensal: "5000_10000",
-      cep: "01310100",
-      cidade: "São Paulo",
-      estado: "SP",
-      objetivoFinanceiro: "investimento",
-      comoConheceu: "google",
-      descricao: "Quero começar a investir para o futuro da minha família"
-    },
-    {
-      id: "2",
-      nome: "Maria",
-      sobrenome: "Santos",
-      email: "maria.santos@email.com",
-      telefone: "11912345678",
-      cpf: "98765432109",
-      dataNascimento: "1990-08-22",
-      estadoCivil: "solteiro",
-      profissao: "Professora",
-      rendaMensal: "2000_5000",
-      cep: "04567000",
-      cidade: "São Paulo",
-      estado: "SP",
-      objetivoFinanceiro: "economia",
-      comoConheceu: "indicacao",
-      descricao: "Preciso de ajuda para organizar minhas finanças e economizar"
-    }
-  ], { status: 200 });
+function forwardAuth(req: NextRequest): HeadersInit {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const auth = req.headers.get("Authorization");
+  if (auth) headers["Authorization"] = auth;
+  return headers;
 }
 
-export function POST(request: any) {
-  return NextResponse.json({
-    id: "3",
-    message: "Cliente cadastrado com sucesso"
-  }, { status: 201 });
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const qs = searchParams.toString();
+    const res = await fetch(`${BACKEND}/perfis${qs ? `?${qs}` : ""}`, {
+      headers: forwardAuth(request),
+    });
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch {
+    return NextResponse.json({ erro: "Backend indisponível" }, { status: 503 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const res = await fetch(`${BACKEND}/auth/signup`, {
+      method: "POST",
+      headers: forwardAuth(request),
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch {
+    return NextResponse.json({ erro: "Backend indisponível" }, { status: 503 });
+  }
 }

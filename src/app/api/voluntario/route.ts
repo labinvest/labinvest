@@ -1,50 +1,39 @@
-/**
- * /api/voluntario
- * 
- * Métodos HTTP
- * - GET: consulta todos os voluntários
- * - POST: inserção de novo voluntário
- * 
- * HTTP status code:
- * - 200 sucesso
- * - 201 created
- * - 400 bad request
- */
+import { NextResponse, type NextRequest } from "next/server";
 
-import { NextResponse } from "next/server";
+const BACKEND = process.env.BACKEND_URL ?? "http://localhost:3001/api";
 
-export function GET() {
-  return NextResponse.json([
-    { 
-      id: 1, 
-      nome: "Ana Beatriz", 
-      titulo: "Consultora Financeira", 
-      especializacoes: ["Planejamento Financeiro", "Investimentos"], 
-      categoria: "Finanças", 
-      imagem_perfil: "" 
-    },
-    { 
-      id: 2, 
-      nome: "Carlos Silva", 
-      titulo: "Coach Financeiro", 
-      especializacoes: ["Orçamento Pessoal", "Dívidas"], 
-      categoria: "Finanças", 
-      imagem_perfil: ""
-    },
-    { 
-      id: 3, 
-      nome: "Mariana Souza", 
-      titulo: "Contadora", 
-      especializacoes: ["Impostos", "Auditoria"], 
-      categoria: "Finanças", 
-      imagem_perfil: ""
-    }
-  ], { status: 200 });
+function forwardAuth(req: NextRequest): HeadersInit {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const auth = req.headers.get("Authorization");
+  if (auth) headers["Authorization"] = auth;
+  return headers;
 }
 
-export function POST(request: any) {
-  return NextResponse.json({
-    id: 7,
-    message: "Voluntário cadastrado com sucesso"
-  }, { status: 201 });
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const qs = searchParams.toString();
+    const res = await fetch(`${BACKEND}/voluntarios${qs ? `?${qs}` : ""}`, {
+      headers: forwardAuth(request),
+    });
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch {
+    return NextResponse.json({ erro: "Backend indisponível" }, { status: 503 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const res = await fetch(`${BACKEND}/voluntarios`, {
+      method: "POST",
+      headers: forwardAuth(request),
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch {
+    return NextResponse.json({ erro: "Backend indisponível" }, { status: 503 });
+  }
 }

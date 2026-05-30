@@ -22,12 +22,22 @@ export default function Voluntario() {
   const [voluntarios, setVoluntarios] = useState<Voluntario[]>([]);
 
   useEffect(() => {
-    fetch("/api/voluntario", {
-      method: "GET"
-    }).then((async (response) => {
+    fetch("/api/voluntario", { method: "GET" }).then(async (response) => {
       const data = await response.json();
-      setVoluntarios(data);
-    }));
+      // Backend retorna { sucesso, voluntarios: [...], paginacao: {...} }
+      // Mapeamos para o formato esperado pelo CardVoluntario
+      const lista = data.voluntarios ?? data.dados ?? (Array.isArray(data) ? data : []);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mapped = lista.map((v: any) => ({
+        id: v.id,
+        nome: v.perfil?.nome ?? v.nome ?? "",
+        titulo: v.formacao ?? v.categoria?.nome ?? "",
+        especializacoes: v.servicos?.map((s: any) => s.servico?.nome).filter(Boolean) ??
+          (v.categoria?.nome ? [v.categoria.nome] : []),
+        imagem_perfil: v.imagem_perfil ?? "",
+      }));
+      setVoluntarios(mapped);
+    });
   }, []);
 
   return (

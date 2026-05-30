@@ -1,47 +1,54 @@
-/**
- * /api/cliente/[id]
- * 
- * Métodos HTTP
- * - GET: consulta por id
- * - PUT: alteração
- * - DELETE: exclusão
- * 
- * HTTP status code:
- * - 200 sucesso
- * - 204 no content
- * - 404 not found
- */
+import { NextResponse, type NextRequest } from "next/server";
 
-import { NextResponse } from "next/server";
+const BACKEND = process.env.BACKEND_URL ?? "http://localhost:3001/api";
 
-export function GET(request: any, { params }: any) {
-  return NextResponse.json({
-    id: params.id,
-    nome: "João",
-    sobrenome: "Silva",
-    email: "joao.silva@email.com",
-    telefone: "11987654321",
-    cpf: "12345678901",
-    dataNascimento: "1985-05-15",
-    estadoCivil: "casado",
-    profissao: "Engenheiro",
-    rendaMensal: "5000_10000",
-    cep: "01310100",
-    cidade: "São Paulo",
-    estado: "SP",
-    objetivoFinanceiro: "investimento",
-    comoConheceu: "google",
-    descricao: "Quero começar a investir para o futuro da minha família"
-  }, { status: 200 });
+function forwardAuth(req: NextRequest): HeadersInit {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const auth = req.headers.get("Authorization");
+  if (auth) headers["Authorization"] = auth;
+  return headers;
 }
 
-export function PUT(request: any, { params }: any) {
-  return NextResponse.json({
-    id: params.id,
-    message: "Cliente atualizado com sucesso"
-  }, { status: 200 });
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await params;
+    const res = await fetch(`${BACKEND}/perfis/${id}`, {
+      headers: forwardAuth(request),
+    });
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch {
+    return NextResponse.json({ erro: "Backend indisponível" }, { status: 503 });
+  }
 }
 
-export function DELETE(request: any, { params }: any) {
-  return new NextResponse(null, { status: 204 });
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await params;
+    const body = await request.json();
+    const res = await fetch(`${BACKEND}/perfis/${id}`, {
+      method: "PUT",
+      headers: forwardAuth(request),
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch {
+    return NextResponse.json({ erro: "Backend indisponível" }, { status: 503 });
+  }
+}
+
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await params;
+    const res = await fetch(`${BACKEND}/perfis/${id}`, {
+      method: "DELETE",
+      headers: forwardAuth(request),
+    });
+    if (res.status === 204) return new NextResponse(null, { status: 204 });
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch {
+    return NextResponse.json({ erro: "Backend indisponível" }, { status: 503 });
+  }
 }

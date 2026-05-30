@@ -1,38 +1,54 @@
-/**
- * /api/postagens/[id]
- * 
- * Métodos HTTP
- * - GET: consulta por id
- * - PUT: alteração
- * - DELETE: exclusão
- * 
- * HTTP status code:
- * - 200 sucesso
- * - 204 no content
- * - 404 not found
- */
+import { NextResponse, type NextRequest } from "next/server";
 
-import { NextResponse } from "next/server";
+const BACKEND = process.env.BACKEND_URL ?? "http://localhost:3001/api";
 
-export function GET(request: any, { params }: any) {
-  return NextResponse.json({
-    id: Number(params.id),
-    titulo: "Como Começar a Investir com Pouco Dinheiro",
-    conteudo: "Investir não é privilégio apenas de quem tem muito dinheiro. Com planejamento e conhecimento, é possível começar a construir seu patrimônio mesmo com valores pequenos.",
-    imagemUrl: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800",
-    dataPublicacao: "2025-11-15T10:00:00Z",
-    autor: "Carlos Alberto Mendes",
-    categoria: "Investimentos"
-  }, { status: 200 });
+function forwardAuth(req: NextRequest): HeadersInit {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const auth = req.headers.get("Authorization");
+  if (auth) headers["Authorization"] = auth;
+  return headers;
 }
 
-export function PUT(request: any, { params }: any) {
-  return NextResponse.json({
-    id: Number(params.id),
-    message: "Postagem atualizada com sucesso"
-  }, { status: 200 });
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await params;
+    const res = await fetch(`${BACKEND}/posts/${id}`, {
+      headers: forwardAuth(request),
+    });
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch {
+    return NextResponse.json({ erro: "Backend indisponível" }, { status: 503 });
+  }
 }
 
-export function DELETE(request: any, { params }: any) {
-  return new NextResponse(null, { status: 204 });
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await params;
+    const body = await request.json();
+    const res = await fetch(`${BACKEND}/posts/${id}`, {
+      method: "PUT",
+      headers: forwardAuth(request),
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch {
+    return NextResponse.json({ erro: "Backend indisponível" }, { status: 503 });
+  }
+}
+
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await params;
+    const res = await fetch(`${BACKEND}/posts/${id}`, {
+      method: "DELETE",
+      headers: forwardAuth(request),
+    });
+    if (res.status === 204) return new NextResponse(null, { status: 204 });
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch {
+    return NextResponse.json({ erro: "Backend indisponível" }, { status: 503 });
+  }
 }

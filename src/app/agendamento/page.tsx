@@ -28,11 +28,15 @@ export default function TelaAgendamentos() {
 
     useEffect(() => {
     fetch("/api/agendamento", {
-      method: "GET"
-    }).then((async (response) => {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token") ?? ""}`,
+      },
+    }).then(async (response) => {
       const data = await response.json();
-      setAgendamentosFixos(data);
-        }));
+      // Backend retorna { sucesso, agendamentos: [...], paginacao: {...} }
+      setAgendamentosFixos(data.agendamentos ?? data.dados ?? (Array.isArray(data) ? data : []));
+    });
     }, []);
 
     const [perfil, setPerfil] = useState<string | null>(null);
