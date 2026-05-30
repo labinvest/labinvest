@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, TextField, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
 import { useFormik } from "formik";
 import { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import SuccessModal from "@/components/Modal";
 import { fetchAPI } from "@/services/api";
 
@@ -43,41 +43,40 @@ export default function FormClienteTemplate({ cliente: clienteProp }: FormClient
     const [modalConfig, setModalConfig] = useState({ title: '', message: '' });
 
     useEffect(() => {
-        const id = params?.id as string;
-        if (id && !clienteProp) {
-            fetchAPI('/auth/perfil')
-                .then((data: any) => {
-                    const perfil = data?.dados?.perfil || data?.dados?.usuario?.perfil;
-                    if (!perfil) return;
+        if (clienteProp) return;
 
-                    const nomeCompleto = perfil.nome || '';
-                    const [nome, ...resto] = nomeCompleto.trim().split(' ');
-                    const sobrenome = resto.join(' ');
+        fetchAPI('/auth/perfil')
+            .then((data: any) => {
+                const perfil = data?.dados?.perfil || data?.dados?.usuario?.perfil;
+                if (!perfil) return;
 
-                    setCliente({
-                        id: String(perfil.id || ''),
-                        nome: nome || '',
-                        sobrenome: sobrenome || '',
-                        email: data?.dados?.email || '',
-                        telefone: perfil.telefone || '',
-                        cpf: perfil.cpf || '',
-                        dataNascimento: '',
-                        estadoCivil: '',
-                        profissao: '',
-                        rendaMensal: '',
-                        cep: '',
-                        cidade: '',
-                        estado: '',
-                        objetivoFinanceiro: '',
-                        comoConheceu: '',
-                        descricao: '',
-                    });
-                })
-                .catch((error: any) => {
-                    console.error('Erro ao carregar cliente:', error);
+                const nomeCompleto = perfil.nome || '';
+                const [nome, ...resto] = nomeCompleto.trim().split(' ');
+                const sobrenome = resto.join(' ');
+
+                setCliente({
+                    id: String(perfil.id || ''),
+                    nome: nome || '',
+                    sobrenome: sobrenome || '',
+                    email: data?.dados?.email || '',
+                    telefone: perfil.telefone || '',
+                    cpf: perfil.cpf || '',
+                    dataNascimento: '',
+                    estadoCivil: '',
+                    profissao: '',
+                    rendaMensal: '',
+                    cep: '',
+                    cidade: '',
+                    estado: '',
+                    objetivoFinanceiro: '',
+                    comoConheceu: '',
+                    descricao: '',
                 });
-        }
-    }, [params?.id, clienteProp]);
+            })
+            .catch(() => {
+                // usuário não autenticado — mantém formulário vazio para cadastro
+            });
+    }, [clienteProp]);
 
     const formik = useFormik({
         initialValues: {

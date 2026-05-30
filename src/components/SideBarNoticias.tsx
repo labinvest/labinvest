@@ -3,6 +3,7 @@ import Link from "next/link";
 
 interface Postagem {
     id: number;
+    titulo?: string;
     autor: string;
     data: string;
     conteudo: string;
@@ -25,12 +26,12 @@ export default function SidebarMiniaturas({ posts }: SidebarMiniaturasProps) {
                 >
                     <img
                         src={post.imagem}
-                        alt={`Miniatura de ${post.autor}`}
+                        alt={`Miniatura de ${post.titulo ?? post.autor}`}
                         className="w-20 h-20 object-cover rounded-lg shadow-sm"
                     />
                     <div className="flex-1">
-                        <p className="text-sm font-semibold text-gray-800">{post.autor}</p>
-                        <p className="text-xs text-gray-500">{post.data}</p>
+                        <p className="text-sm font-semibold text-gray-800">{post.titulo ?? post.autor}</p>
+                        <p className="text-xs text-gray-500">por {post.autor} · {post.data}</p>
                         <p className="text-xs text-gray-600 mt-1 line-clamp-2">
                             {post.conteudo.length > 80
                                 ? post.conteudo.slice(0, 80) + "..."
@@ -40,6 +41,5 @@ export default function SidebarMiniaturas({ posts }: SidebarMiniaturasProps) {
                 </Link>
             ))}
         </aside>
-
     );
 }

@@ -111,6 +111,30 @@ const nextConfig: NextConfig = {
         source: "/api/health",
         destination: `${BACKEND_URL}/api/health`,
       },
+      {
+        source: "/api/upload",
+        destination: `${BACKEND_URL}/api/upload`,
+      },
+      {
+        source: "/uploads/:path*",
+        destination: `${BACKEND_URL}/uploads/:path*`,
+      },
+      {
+        source: "/api/faqs/:path*",
+        destination: `${BACKEND_URL}/api/faqs/:path*`,
+      },
+      {
+        source: "/api/faqs",
+        destination: `${BACKEND_URL}/api/faqs`,
+      },
+      {
+        source: "/api/contato/:path*",
+        destination: `${BACKEND_URL}/api/contato/:path*`,
+      },
+      {
+        source: "/api/contato",
+        destination: `${BACKEND_URL}/api/contato`,
+      },
     ];
   },
 };
