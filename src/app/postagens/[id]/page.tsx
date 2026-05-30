@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import SidebarMiniaturas from "@/components/SideBarNoticias";
 import SuccessModal from "@/components/Modal";
 import postagemService from "@/services/postagemService";
+import { resolveImageUrl } from "@/services/api";
 
 const PLACEHOLDER_IMAGE = "/images/Image6.png";
 
@@ -32,7 +33,7 @@ function mapPost(p: any): Postagem {
         autor: p.voluntario?.perfil?.nome ?? "Voluntário",
         data: p.createdAt ? formatarData(p.createdAt) : "",
         conteudo: p.conteudo ?? "",
-        imagem: PLACEHOLDER_IMAGE,
+        imagem: resolveImageUrl(p.imagemUrl) || PLACEHOLDER_IMAGE,
     };
 }
 

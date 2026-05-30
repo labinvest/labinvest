@@ -1,3 +1,4 @@
+'use client';
 import VoluntarioSidebar from '@/components/VoluntarioSidebar';
 
 function ServicoPage() {

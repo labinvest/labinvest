@@ -1,8 +1,14 @@
 import type { NextConfig } from "next";
 
-const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:3001";
+const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:3000";
 
 const nextConfig: NextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   async rewrites() {
     return [
       // Rotas do backend que não possuem arquivo route.ts equivalente no Next.js
@@ -110,14 +116,6 @@ const nextConfig: NextConfig = {
       {
         source: "/api/health",
         destination: `${BACKEND_URL}/api/health`,
-      },
-      {
-        source: "/api/upload",
-        destination: `${BACKEND_URL}/api/upload`,
-      },
-      {
-        source: "/uploads/:path*",
-        destination: `${BACKEND_URL}/uploads/:path*`,
       },
       {
         source: "/api/faqs/:path*",

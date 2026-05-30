@@ -32,6 +32,7 @@ export default function NavBar() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [perfil, setPerfil] = useState<string | null>(null);
+    const [volId, setVolId] = useState<number | null>(null);
     const [hasSession, setHasSession] = useState(false);
     const iconColor = 'success.main';
     const isCliente = perfil === 'cliente';
@@ -51,6 +52,7 @@ export default function NavBar() {
 
             if (!token) {
                 setPerfil(localStorage.getItem("perfil"));
+                setVolId(null);
                 return;
             }
 
@@ -61,6 +63,17 @@ export default function NavBar() {
                 if (role) {
                     localStorage.setItem('perfil', role);
                     setPerfil(role);
+
+                    // Se for voluntário, buscar o ID do registro de voluntário
+                    if (role === 'voluntario') {
+                        try {
+                            const volRes = await fetchAPI('/voluntarios/me');
+                            const vol = volRes?.dados ?? volRes;
+                            if (vol?.id) setVolId(vol.id);
+                        } catch {
+                            setVolId(null);
+                        }
+                    }
                     return;
                 }
             } catch {
@@ -214,7 +227,7 @@ export default function NavBar() {
                                             <ListItemText primary="Painel Voluntário" secondary="Acessar área do voluntário" />
                                         </ListItemButton>
 
-                                        <ListItemButton onClick={() => { router.push(`/voluntario/[id]`); setAnchorEl(null); }}>
+                                        <ListItemButton onClick={() => { router.push(volId ? `/voluntario/${volId}` : '/voluntario'); setAnchorEl(null); }}>
                                             <ListItemAvatar>
                                                 <Avatar sx={{ bgcolor: 'transparent' }}>
                                                     <ManageAccountsIcon sx={{ color: iconColor }} />

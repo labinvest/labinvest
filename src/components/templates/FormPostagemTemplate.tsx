@@ -1,7 +1,7 @@
 'use client';
 
 import { postagemSchema } from "@/schemas/postagemSchema";
-import { faCamera, faImage } from "@fortawesome/free-solid-svg-icons";
+import { faImage, faLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, TextField } from "@mui/material";
 import { useFormik } from "formik";
@@ -10,7 +10,6 @@ import { useRouter, useParams } from "next/navigation";
 import SuccessModal from "@/components/Modal";
 import postagemService from "@/services/postagemService";
 import voluntarioService from "@/services/voluntarioService";
-import uploadService from "@/services/uploadService";
 
 interface Postagem {
     id: string;
@@ -26,9 +25,6 @@ interface FormPostagemTemplateProps {
 export default function FormPostagemTemplate({ postagem: postagemProp }: FormPostagemTemplateProps) {
     const router = useRouter();
     const params = useParams();
-    const [imagemPreview, setImagemPreview] = useState<string | null>(null);
-    const [imagemUrl, setImagemUrl] = useState<string | null>(null);
-    const [uploadingImg, setUploadingImg] = useState(false);
     const [postagem, setPostagem] = useState<Postagem | undefined>(postagemProp);
     const [voluntarioId, setVoluntarioId] = useState<number | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
@@ -42,9 +38,7 @@ export default function FormPostagemTemplate({ postagem: postagemProp }: FormPos
                 const vol = data?.dados ?? data;
                 if (vol?.id) setVoluntarioId(vol.id);
             })
-            .catch(() => {
-                // usuário não é voluntário — o submit mostrará o erro adequado
-            });
+            .catch(() => {});
     }, []);
 
     // Busca postagem para edição quando há [id] na URL
@@ -65,6 +59,7 @@ export default function FormPostagemTemplate({ postagem: postagemProp }: FormPos
         initialValues: {
             titulo: postagem?.titulo || '',
             conteudo: postagem?.conteudo || '',
+            imagemUrl: postagem?.imagemUrl || '',
         },
         enableReinitialize: true,
         validationSchema: postagemSchema,
@@ -76,11 +71,22 @@ export default function FormPostagemTemplate({ postagem: postagemProp }: FormPos
                     return;
                 }
 
+                const imagemUrl = values.imagemUrl.trim() || null;
+
                 if (postagem?.id) {
-                    await postagemService.update(postagem.id, { titulo: values.titulo, conteudo: values.conteudo, imagemUrl });
+                    await postagemService.update(postagem.id, {
+                        titulo: values.titulo,
+                        conteudo: values.conteudo,
+                        imagemUrl,
+                    });
                     setModalConfig({ title: 'Sucesso!', message: 'Postagem atualizada com sucesso!' });
                 } else {
-                    await postagemService.create({ voluntarioId, titulo: values.titulo, conteudo: values.conteudo, imagemUrl });
+                    await postagemService.create({
+                        voluntarioId,
+                        titulo: values.titulo,
+                        conteudo: values.conteudo,
+                        imagemUrl,
+                    });
                     setModalConfig({ title: 'Sucesso!', message: 'Postagem criada com sucesso!' });
                 }
 
@@ -93,33 +99,8 @@ export default function FormPostagemTemplate({ postagem: postagemProp }: FormPos
         },
     });
 
-    const handleImagemChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
-
-        // Preview local imediato
-        const reader = new FileReader();
-        reader.onloadend = () => setImagemPreview(reader.result as string);
-        reader.readAsDataURL(file);
-
-        // Upload para o servidor
-        setUploadingImg(true);
-        try {
-            const res = await uploadService.uploadImagem(file) as { url?: string };
-            if (res?.url) setImagemUrl(res.url);
-        } catch {
-            setModalConfig({ title: 'Aviso', message: 'Não foi possível enviar a imagem. A postagem será salva sem ela.' });
-            setModalOpen(true);
-        } finally {
-            setUploadingImg(false);
-        }
-    };
-
-    useEffect(() => {
-        if (postagem?.imagemUrl) setImagemPreview(postagem.imagemUrl);
-    }, [postagem]);
-
     const { handleSubmit, handleChange, values, errors, touched } = formik;
+    const urlValida = values.imagemUrl.startsWith('http://') || values.imagemUrl.startsWith('https://');
 
     return (
         <div className="flex flex-col space-y-4 w-[50%] max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
@@ -128,34 +109,42 @@ export default function FormPostagemTemplate({ postagem: postagemProp }: FormPos
                     {postagem?.id ? 'Editar Postagem' : 'Nova Postagem'}
                 </h1>
 
-                <div className="flex flex-col items-center mb-6">
-                    <div className="w-full h-64 rounded-lg bg-gray-200 flex items-center justify-center overflow-hidden mb-3 border-4 border-green-600">
-                        {imagemPreview ? (
-                            <img src={imagemPreview} alt="Preview" className="w-full h-full object-cover" />
-                        ) : (
-                            <div className="flex flex-col items-center gap-2 text-gray-400">
-                                <FontAwesomeIcon icon={faImage} className="text-6xl" />
-                                <span className="text-sm">Imagem ilustrativa</span>
-                            </div>
-                        )}
-                    </div>
-                    <Button
-                        variant="outlined"
-                        color="success"
-                        component="label"
-                        size="small"
-                        disabled={uploadingImg}
-                        startIcon={<FontAwesomeIcon icon={faCamera} />}
-                    >
-                        {uploadingImg ? 'Enviando...' : 'Selecionar Imagem'}
-                        <input type="file" hidden accept="image/*" onChange={handleImagemChange} />
-                    </Button>
-                    <p className="text-xs text-gray-500 mt-2">
-                        {imagemUrl ? '✓ Imagem enviada' : 'Formatos aceitos: JPG, PNG, GIF (máx. 5MB)'}
-                    </p>
+                {/* Preview da imagem */}
+                <div className="w-full h-56 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-200">
+                    {urlValida ? (
+                        <img
+                            src={values.imagemUrl}
+                            alt="Preview"
+                            className="w-full h-full object-cover"
+                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                        />
+                    ) : (
+                        <div className="flex flex-col items-center gap-2 text-gray-300">
+                            <FontAwesomeIcon icon={faImage} className="text-5xl" />
+                            <span className="text-sm">Prévia da imagem</span>
+                        </div>
+                    )}
                 </div>
 
-                <div className="space-y-4 gap-2">
+                {/* Campo URL da imagem */}
+                <TextField
+                    name="imagemUrl"
+                    label="URL da Imagem"
+                    size="small"
+                    fullWidth
+                    color="success"
+                    value={values.imagemUrl}
+                    onChange={handleChange}
+                    placeholder="https://exemplo.com/imagem.jpg"
+                    InputProps={{
+                        startAdornment: (
+                            <FontAwesomeIcon icon={faLink} className="text-gray-400 mr-2 text-sm" />
+                        ),
+                    }}
+                    helperText="Cole o link de uma imagem da internet (opcional)"
+                />
+
+                <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">Informações da Postagem</h3>
 
                     <TextField
