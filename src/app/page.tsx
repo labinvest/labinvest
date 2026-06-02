@@ -47,21 +47,7 @@ export default function LoginPage() {
           setLoginError("");
           router.push("/home");
         } else {
-          const data = await fetchAPI('/auth/signup', {
-            method: 'POST',
-            body: {
-              nome: v.nome,
-              email: v.email,
-              senha: v.senha,
-              role: 'CLIENTE',
-            },
-          });
-
-          const token = data?.dados?.token;
-          if (token) localStorage.setItem('token', token);
-          localStorage.setItem('perfil', 'cliente');
-
-          setStep("finished");
+          router.push('/cliente/cadastro');
         }
       } catch (error: any) {
         const msg = error?.message || 'Erro ao processar autenticação';
@@ -153,38 +139,41 @@ export default function LoginPage() {
               )}
 
               {mode === "register" && step === "first" && (
-                <form
-                  onSubmit={formik.handleSubmit}
-                  className="mt-12 w-[400px] space-y-4 font-sans"
-                  aria-label="Formulário de registro"
-                >
-                  <TextField label="Nome completo" id="nome" name="nome" onBlur={handleBlur} onChange={handleChange} variant="outlined" size='small' margin='normal' fullWidth error={touched.nome && !!errors.nome} helperText={touched.nome && errors.nome} />
-                  <TextField label="Email" id="email" name="email" type="email" onBlur={handleBlur} onChange={handleChange} variant="outlined" size='small' margin='normal' fullWidth error={touched.email && !!errors.email} helperText={touched.email && errors.email} />
-                  <TextField label="Senha" id="senha" name="senha" onBlur={handleBlur} onChange={handleChange} variant="outlined" type="password" size='small' margin='normal' fullWidth error={touched.senha && !!errors.senha} helperText={touched.senha && errors.senha} />
-                  <TextField
-                    label="Confirmar senha"
-                    id="confirmarSenha"
-                    name="confirmarSenha"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    variant="outlined"
-                    type="password"
-                    size='small'
-                    margin='normal'
-                    fullWidth
-                    error={touched.confirmarSenha && !!errors.confirmarSenha}
-                    helperText={touched.confirmarSenha && errors.confirmarSenha}
-                  />
-                  <Button
-                    type="submit"
-                    color='success'
-                    variant='contained'
-                    fullWidth
-                    aria-label="Criar nova conta"
-                  >
-                    Registrar
-                  </Button>
-                </form>
+                <div className="mt-10 w-full max-w-[430px] space-y-4 font-sans px-4 sm:px-0">
+                  <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-5 text-left">
+                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">Cadastro de cliente</p>
+                    <p className="mt-2 text-sm text-slate-600">
+                      Crie sua conta com poucos dados e depois complete seu perfil financeiro.
+                    </p>
+                    <Button
+                      type="button"
+                      onClick={() => router.push('/cliente/cadastro')}
+                      color='success'
+                      variant='contained'
+                      fullWidth
+                      sx={{ mt: 2 }}
+                    >
+                      Quero me cadastrar como cliente
+                    </Button>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm">
+                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-700">Cadastro de voluntário</p>
+                    <p className="mt-2 text-sm text-slate-600">
+                      Informações extras de formação, experiência e documentos vão para a solicitação para um ADM aprovar.
+                    </p>
+                    <Button
+                      type="button"
+                      onClick={() => router.push('/voluntario/cadastro')}
+                      color='success'
+                      variant='outlined'
+                      fullWidth
+                      sx={{ mt: 2 }}
+                    >
+                      Quero me cadastrar como voluntário
+                    </Button>
+                  </div>
+                </div>
               )}
 
               {mode === "register" && step === "finished" && (

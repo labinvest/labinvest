@@ -1,100 +1,100 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import SidebarMiniaturas from "@/components/SideBarNoticias";
 import SuccessModal from "@/components/Modal";
+import postagemService from "@/services/postagemService";
+import { resolveImageUrl } from "@/services/api";
 
-const postagens = [
-    {
-        id: 1,
-        autor: "Carlos Lima",
-        data: "28 de Outubro de 2025",
-        conteudo:
-            "Participei da ação no bairro Jardim Europa. A receptividade das pessoas foi maravilhosa. Conversamos com moradores sobre educação financeira e distribuímos materiais informativos. Foi uma experiência transformadora.",
-        imagem: "/images/Image6.png",
-        categoria: "Ação Comunitária",
-    },
-    {
-        id: 2,
-        autor: "Juliana Ribeiro",
-        data: "25 de Outubro de 2025",
-        conteudo:
-            "Organizamos uma roda de conversa sobre educação financeira para jovens. Foi um sucesso! Os participantes trouxeram dúvidas e compartilharam histórias inspiradoras.",
-        imagem: "/images/post3.jpg",
-        categoria: "Educação Financeira",
-    },
-    {
-        id: 3,
-        autor: "Marcos Silva",
-        data: "22 de Outubro de 2025",
-        conteudo:
-            "Distribuímos kits de higiene e conversamos com moradores sobre planejamento financeiro. A ação foi realizada em parceria com comerciantes locais.",
-        imagem: "/images/post4.jpg",
-        categoria: "Saúde e Bem-estar",
-    },
-    {
-        id: 4,
-        autor: "Ana Souza",
-        data: "20 de Outubro de 2025",
-        conteudo:
-            "Ajudamos famílias com orientações sobre orçamento doméstico e planejamento de gastos. A atividade contou com apoio de especialistas voluntários.",
-        imagem: "/images/post5.jpg",
-        categoria: "Educação Financeira",
-    },
-];
+const PLACEHOLDER_IMAGE = "/images/Image6.png";
+
+interface Postagem {
+    id: number;
+    titulo: string;
+    autor: string;
+    data: string;
+    conteudo: string;
+    imagem: string;
+}
+
+function formatarData(iso: string): string {
+    return new Date(iso).toLocaleDateString("pt-BR", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapPost(p: any): Postagem {
+    return {
+        id: p.id,
+        titulo: p.titulo ?? "",
+        autor: p.voluntario?.perfil?.nome ?? "Voluntário",
+        data: p.createdAt ? formatarData(p.createdAt) : "",
+        conteudo: p.conteudo ?? "",
+        imagem: resolveImageUrl(p.imagemUrl) || PLACEHOLDER_IMAGE,
+    };
+}
 
 export default function PaginaPostagem() {
     const { id } = useParams();
+    const [post, setPost] = useState<Postagem | null>(null);
+    const [outros, setOutros] = useState<Postagem[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [notFound, setNotFound] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [modalConfig, setModalConfig] = useState({ title: '', message: '' });
-    const post = postagens.find((p) => p.id === Number(id));
-    const outros = postagens.filter((p) => p.id !== Number(id));
 
-    if (!post) {
+    useEffect(() => {
+        if (!id) return;
+
+        Promise.all([
+            postagemService.getById(id as string),
+            postagemService.getAll({ limit: 5 }),
+        ])
+            .then(([postData, listData]) => {
+                if (postData?.dados) {
+                    setPost(mapPost(postData.dados));
+                }
+                const lista = listData?.postagens ?? [];
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                setOutros((lista as any[]).map(mapPost).filter((p: Postagem) => p.id !== Number(id)));
+            })
+            .catch(() => setNotFound(true))
+            .finally(() => setLoading(false));
+    }, [id]);
+
+    if (loading) {
         return (
-            <section className="max-w-4xl mx-auto px-6 py-16 space-y-8">
-                <img
-                    src="/images/Image6.png"
-                    alt="Ação no Jardim Europa"
-                    className="w-full h-[400px] object-cover rounded-xl shadow-md"
-                />
-                <span className="inline-block bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">
-                    Ação Comunitária
-                </span>
-                <h1 className="text-4xl font-bold text-gray-900">Carlos Lima</h1>
-                <p className="text-sm text-gray-500">28 de Outubro de 2025</p>
-                <div className="text-lg text-gray-700 leading-relaxed space-y-4">
-                    <p>
-                        No último sábado, o bairro Jardim Europa foi palco de uma emocionante ação comunitária promovida por voluntários locais. A iniciativa teve como objetivo principal levar informações sobre educação financeira, saúde e cidadania para os moradores da região.
-                    </p>
-                    <p>
-                        Durante a manhã, foram montadas tendas com atividades educativas, distribuição de kits de higiene e rodas de conversa com especialistas. Crianças participaram de oficinas lúdicas sobre economia doméstica, enquanto adultos puderam tirar dúvidas sobre orçamento familiar e planejamento de dívidas.
-                    </p>
-                    <p>
-                        Carlos Lima, um dos voluntários, destacou a receptividade da comunidade: “Foi incrível ver como as pessoas estavam abertas para aprender e compartilhar suas experiências. A troca foi muito rica.”
-                    </p>
-                    <p>
-                        Além das atividades práticas, a ação contou com apoio de comerciantes locais, que doaram materiais e alimentos para os participantes. Ao final do dia, todos saíram com mais conhecimento, esperança e vontade de continuar transformando a realidade ao seu redor.
-                    </p>
-                    <p>
-                        Essa foi apenas uma das muitas ações previstas para os próximos meses. A equipe de voluntários segue mobilizada e já planeja novas edições em outros bairros da cidade.
-                    </p>
-                </div>
-                <div className="mt-12 space-y-8">
-                    <div className="flex items-center justify-between">
-                        <button
-                            className="flex items-center gap-2 text-sm text-green-700 hover:text-green-900 font-medium"
-                            onClick={() => {
-                                setModalConfig({ title: 'Sucesso!', message: 'Você curtiu esta postagem!' });
-                                setModalOpen(true);
-                            }}
-                        >
-                            Curtir
-                        </button>
-                        <p className="text-sm text-gray-500">84 visualizações</p>
-                    </div>
+            <section className="max-w-4xl mx-auto px-6 py-16 text-center text-gray-500">
+                Carregando postagem...
+            </section>
+        );
+    }
 
-                    <div className="space-y-4 mt-8">
+    if (notFound || !post) {
+        return (
+            <section className="max-w-4xl mx-auto px-6 py-16 text-center text-gray-500">
+                Postagem não encontrada.
+            </section>
+        );
+    }
+
+    return (
+        <>
+            <section className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-4 gap-12">
+                <div className="lg:col-span-3 space-y-8">
+                    <img
+                        src={post.imagem}
+                        alt={`Imagem de ${post.titulo}`}
+                        className="w-full h-[400px] object-cover rounded-xl shadow-md"
+                    />
+                    <h1 className="text-4xl font-bold text-gray-900">{post.titulo}</h1>
+                    <p className="text-sm text-gray-500">por {post.autor} · {post.data}</p>
+                    <p className="text-lg text-gray-700 leading-relaxed">{post.conteudo}</p>
+
+                    <div className="mt-8 space-y-4">
                         <h3 className="text-lg font-semibold text-gray-800">Deixe um comentário</h3>
                         <form
                             onSubmit={(e) => {
@@ -118,45 +118,18 @@ export default function PaginaPostagem() {
                         </form>
                     </div>
                 </div>
-                
-                <SuccessModal
-                    open={modalOpen}
-                    onClose={() => setModalOpen(false)}
-                    title={modalConfig.title}
-                    message={modalConfig.message}
-                />
+
+                <div className="lg:col-span-1">
+                    <SidebarMiniaturas posts={outros} />
+                </div>
             </section>
-        );
-    }
 
-    return (
-        <>
-        <section className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-4 gap-12">
-            <div className="lg:col-span-3 space-y-8">
-                <img
-                    src={post.imagem}
-                    alt={`Imagem de ${post.autor}`}
-                    className="w-full h-[400px] object-cover rounded-xl shadow-md"
-                />
-                <span className="inline-block bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">
-                    {post.categoria}
-                </span>
-                <h1 className="text-4xl font-bold text-gray-900">{post.autor}</h1>
-                <p className="text-sm text-gray-500">{post.data}</p>
-                <p className="text-lg text-gray-700 leading-relaxed">{post.conteudo}</p>
-            </div>
-
-            <div className="lg:col-span-1">
-                <SidebarMiniaturas posts={outros} />
-            </div>
-        </section>
-        
-        <SuccessModal
-            open={modalOpen}
-            onClose={() => setModalOpen(false)}
-            title={modalConfig.title}
-            message={modalConfig.message}
-        />
+            <SuccessModal
+                open={modalOpen}
+                onClose={() => setModalOpen(false)}
+                title={modalConfig.title}
+                message={modalConfig.message}
+            />
         </>
     );
 }

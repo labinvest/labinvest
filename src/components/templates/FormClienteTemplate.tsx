@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, TextField, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
 import { useFormik } from "formik";
 import { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import SuccessModal from "@/components/Modal";
 import { fetchAPI } from "@/services/api";
 
@@ -36,48 +36,53 @@ interface FormClienteTemplateProps {
 
 export default function FormClienteTemplate({ cliente: clienteProp }: FormClienteTemplateProps) {
     const router = useRouter();
-    const params = useParams();
     const [imagemPreview, setImagemPreview] = useState<string | null>(null);
     const [cliente, setCliente] = useState<Cliente | undefined>(clienteProp);
     const [modalOpen, setModalOpen] = useState(false);
     const [modalConfig, setModalConfig] = useState({ title: '', message: '' });
 
+    const formatDateForInput = (value?: string | null) => {
+        if (!value) return '';
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return '';
+        return date.toISOString().split('T')[0];
+    };
+
     useEffect(() => {
-        const id = params?.id as string;
-        if (id && !clienteProp) {
-            fetchAPI('/auth/perfil')
-                .then((data: any) => {
-                    const perfil = data?.dados?.perfil || data?.dados?.usuario?.perfil;
-                    if (!perfil) return;
+        if (clienteProp) return;
 
-                    const nomeCompleto = perfil.nome || '';
-                    const [nome, ...resto] = nomeCompleto.trim().split(' ');
-                    const sobrenome = resto.join(' ');
+        fetchAPI('/auth/perfil')
+            .then((data: any) => {
+                const perfil = data?.dados?.perfil || data?.dados?.usuario?.perfil;
+                if (!perfil) return;
 
-                    setCliente({
-                        id: String(perfil.id || ''),
-                        nome: nome || '',
-                        sobrenome: sobrenome || '',
-                        email: data?.dados?.email || '',
-                        telefone: perfil.telefone || '',
-                        cpf: perfil.cpf || '',
-                        dataNascimento: '',
-                        estadoCivil: '',
-                        profissao: '',
-                        rendaMensal: '',
-                        cep: '',
-                        cidade: '',
-                        estado: '',
-                        objetivoFinanceiro: '',
-                        comoConheceu: '',
-                        descricao: '',
-                    });
-                })
-                .catch((error: any) => {
-                    console.error('Erro ao carregar cliente:', error);
+                const nomeCompleto = perfil.nome || '';
+                const [nome, ...resto] = nomeCompleto.trim().split(' ');
+                const sobrenome = resto.join(' ');
+
+                setCliente({
+                    id: String(perfil.id || ''),
+                    nome: nome || '',
+                    sobrenome: sobrenome || '',
+                    email: data?.dados?.email || '',
+                    telefone: perfil.telefone || '',
+                    cpf: perfil.cpf || '',
+                    dataNascimento: formatDateForInput(perfil.dataNascimento),
+                    estadoCivil: perfil.estadoCivil || '',
+                    profissao: perfil.profissao || '',
+                    rendaMensal: perfil.rendaMensal || '',
+                    cep: perfil.cep || '',
+                    cidade: perfil.cidade || '',
+                    estado: perfil.estado || '',
+                    objetivoFinanceiro: perfil.objetivoFinanceiro || '',
+                    comoConheceu: perfil.comoConheceu || '',
+                    descricao: perfil.descricao || '',
                 });
-        }
-    }, [params?.id, clienteProp]);
+            })
+            .catch(() => {
+                // usuário não autenticado — mantém formulário vazio para cadastro
+            });
+    }, [clienteProp]);
 
     const formik = useFormik({
         initialValues: {
@@ -110,6 +115,17 @@ export default function FormClienteTemplate({ cliente: clienteProp }: FormClient
                             nome: nomeCompleto,
                             telefone: values.telefone,
                             endereco: `${values.cidade} - ${values.estado}`.trim(),
+                            cpf: values.cpf,
+                            dataNascimento: values.dataNascimento,
+                            estadoCivil: values.estadoCivil,
+                            profissao: values.profissao,
+                            rendaMensal: values.rendaMensal,
+                            cep: values.cep,
+                            cidade: values.cidade,
+                            estado: values.estado,
+                            objetivoFinanceiro: values.objetivoFinanceiro,
+                            comoConheceu: values.comoConheceu,
+                            descricao: values.descricao,
                         },
                     });
 
@@ -126,6 +142,16 @@ export default function FormClienteTemplate({ cliente: clienteProp }: FormClient
                             telefone: values.telefone,
                             endereco: `${values.cidade} - ${values.estado}`.trim(),
                             cpf: values.cpf,
+                            dataNascimento: values.dataNascimento,
+                            estadoCivil: values.estadoCivil,
+                            profissao: values.profissao,
+                            rendaMensal: values.rendaMensal,
+                            cep: values.cep,
+                            cidade: values.cidade,
+                            estado: values.estado,
+                            objetivoFinanceiro: values.objetivoFinanceiro,
+                            comoConheceu: values.comoConheceu,
+                            descricao: values.descricao,
                             role: 'CLIENTE',
                         },
                     });
@@ -138,7 +164,8 @@ export default function FormClienteTemplate({ cliente: clienteProp }: FormClient
                 }
             } catch (error) {
                 console.error(error);
-                setModalConfig({ title: 'Erro', message: 'Erro ao processar requisição' });
+                const message = error instanceof Error ? error.message : 'Erro ao processar requisição';
+                setModalConfig({ title: 'Erro', message });
                 setModalOpen(true);
             }
         },
@@ -367,11 +394,11 @@ export default function FormClienteTemplate({ cliente: clienteProp }: FormClient
                                 onChange={handleChange}
                                 error={formik.touched.rendaMensal && !!errors.rendaMensal}
                             >
-                                <MenuItem value="ate_2000">Até R$ 2.000</MenuItem>
-                                <MenuItem value="2000_5000">R$ 2.000 - R$ 5.000</MenuItem>
-                                <MenuItem value="5000_10000">R$ 5.000 - R$ 10.000</MenuItem>
-                                <MenuItem value="10000_20000">R$ 10.000 - R$ 20.000</MenuItem>
-                                <MenuItem value="acima_20000">Acima de R$ 20.000</MenuItem>
+                                <MenuItem value="ATE_2000">Até R$ 2.000</MenuItem>
+                                <MenuItem value="DE_2000_A_5000">R$ 2.000 - R$ 5.000</MenuItem>
+                                <MenuItem value="DE_5000_A_10000">R$ 5.000 - R$ 10.000</MenuItem>
+                                <MenuItem value="DE_10000_A_20000">R$ 10.000 - R$ 20.000</MenuItem>
+                                <MenuItem value="ACIMA_20000">Acima de R$ 20.000</MenuItem>
                             </Select>
                         </FormControl>
                         <FormControl fullWidth size="small" color="success">
@@ -383,13 +410,13 @@ export default function FormClienteTemplate({ cliente: clienteProp }: FormClient
                                 onChange={handleChange}
                                 error={formik.touched.objetivoFinanceiro && !!errors.objetivoFinanceiro}
                             >
-                                <MenuItem value="economia">Economizar dinheiro</MenuItem>
-                                <MenuItem value="investimento">Começar a investir</MenuItem>
-                                <MenuItem value="dividas">Controlar dívidas</MenuItem>
-                                <MenuItem value="aposentadoria">Planejamento de aposentadoria</MenuItem>
-                                <MenuItem value="imovel">Comprar imóvel</MenuItem>
-                                <MenuItem value="educacao">Educação financeira</MenuItem>
-                                <MenuItem value="outros">Outros</MenuItem>
+                                <MenuItem value="ECONOMIZAR_DINHEIRO">Economizar dinheiro</MenuItem>
+                                <MenuItem value="COMECAR_A_INVESTIR">Começar a investir</MenuItem>
+                                <MenuItem value="CONTROLAR_DIVIDAS">Controlar dívidas</MenuItem>
+                                <MenuItem value="PLANEJAMENTO_APOSENTADORIA">Planejamento de aposentadoria</MenuItem>
+                                <MenuItem value="COMPRAR_IMOVEL">Comprar imóvel</MenuItem>
+                                <MenuItem value="EDUCACAO_FINANCEIRA">Educação financeira</MenuItem>
+                                <MenuItem value="OUTROS">Outros</MenuItem>
                             </Select>
                         </FormControl>
                         <FormControl fullWidth size="small" color="success">
@@ -401,12 +428,12 @@ export default function FormClienteTemplate({ cliente: clienteProp }: FormClient
                                 onChange={handleChange}
                                 error={formik.touched.comoConheceu && !!errors.comoConheceu}
                             >
-                                <MenuItem value="redes_sociais">Redes Sociais</MenuItem>
-                                <MenuItem value="google">Pesquisa no Google</MenuItem>
-                                <MenuItem value="indicacao">Indicação de amigos/familiares</MenuItem>
-                                <MenuItem value="faculdade">Faculdade/Universidade</MenuItem>
-                                <MenuItem value="evento">Evento/Palestra</MenuItem>
-                                <MenuItem value="outros">Outros</MenuItem>
+                                <MenuItem value="REDES_SOCIAIS">Redes Sociais</MenuItem>
+                                <MenuItem value="PESQUISA_GOOGLE">Pesquisa no Google</MenuItem>
+                                <MenuItem value="INDICACAO">Indicação de amigos/familiares</MenuItem>
+                                <MenuItem value="FACULDADE_UNIVERSIDADE">Faculdade/Universidade</MenuItem>
+                                <MenuItem value="EVENTO_PALESTRA">Evento/Palestra</MenuItem>
+                                <MenuItem value="OUTROS">Outros</MenuItem>
                             </Select>
                         </FormControl>
                     </div>

@@ -54,7 +54,7 @@ export const clienteSchema = yup.object().shape({
     
     rendaMensal: yup.string()
         .required("Renda mensal é obrigatória")
-        .oneOf(["ate_2000", "2000_5000", "5000_10000", "10000_20000", "acima_20000"], "Renda mensal inválida"),
+        .oneOf(["ATE_2000", "DE_2000_A_5000", "DE_5000_A_10000", "DE_10000_A_20000", "ACIMA_20000"], "Renda mensal inválida"),
     
     cep: yup.string()
         .required("CEP é obrigatório")
@@ -76,11 +76,11 @@ export const clienteSchema = yup.object().shape({
     
     objetivoFinanceiro: yup.string()
         .required("Objetivo financeiro é obrigatório")
-        .oneOf(["economia", "investimento", "dividas", "aposentadoria", "imovel", "educacao", "outros"], "Objetivo financeiro inválido"),
+        .oneOf(["ECONOMIZAR_DINHEIRO", "COMECAR_A_INVESTIR", "CONTROLAR_DIVIDAS", "PLANEJAMENTO_APOSENTADORIA", "COMPRAR_IMOVEL", "EDUCACAO_FINANCEIRA", "OUTROS"], "Objetivo financeiro inválido"),
     
     comoConheceu: yup.string()
         .required("Como conheceu é obrigatório")
-        .oneOf(["redes_sociais", "google", "indicacao", "faculdade", "evento", "outros"], "Opção inválida"),
+        .oneOf(["REDES_SOCIAIS", "PESQUISA_GOOGLE", "INDICACAO", "FACULDADE_UNIVERSIDADE", "EVENTO_PALESTRA", "OUTROS"], "Opção inválida"),
     
     descricao: yup.string().required("Descrição é obrigatória").max(500, "Máximo 500 caracteres"),
 });

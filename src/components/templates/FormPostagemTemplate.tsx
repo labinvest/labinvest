@@ -1,20 +1,21 @@
 'use client';
 
 import { postagemSchema } from "@/schemas/postagemSchema";
-import { faCamera, faImage } from "@fortawesome/free-solid-svg-icons";
+import { faImage, faLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import SuccessModal from "@/components/Modal";
+import postagemService from "@/services/postagemService";
+import voluntarioService from "@/services/voluntarioService";
 
 interface Postagem {
     id: string;
     titulo: string;
     conteudo: string;
     imagemUrl?: string;
-    dataPublicacao?: string;
 }
 
 interface FormPostagemTemplateProps {
@@ -24,118 +25,82 @@ interface FormPostagemTemplateProps {
 export default function FormPostagemTemplate({ postagem: postagemProp }: FormPostagemTemplateProps) {
     const router = useRouter();
     const params = useParams();
-    const [imagemPreview, setImagemPreview] = useState<string | null>(null);
     const [postagem, setPostagem] = useState<Postagem | undefined>(postagemProp);
+    const [voluntarioId, setVoluntarioId] = useState<number | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [modalConfig, setModalConfig] = useState({ title: '', message: '' });
 
+    // Busca o ID do voluntário logado
+    useEffect(() => {
+        voluntarioService.getMe()
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .then((data: any) => {
+                const vol = data?.dados ?? data;
+                if (vol?.id) setVoluntarioId(vol.id);
+            })
+            .catch(() => {});
+    }, []);
+
+    // Busca postagem para edição quando há [id] na URL
     useEffect(() => {
         const id = params?.id as string;
-        if (id && !postagemProp) {
-            fetch(`/api/postagens/${id}`)
-                .then(async (response) => {
-                    if (!response.ok) {
-                        const err = await response.json().catch(() => ({}));
-                        console.error('Erro ao carregar postagem:', response.status, err);
-                        return;
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data && data.id) {
-                        setPostagem(data);
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro ao carregar postagem:', error);
-                });
-        }
+        if (!id || postagemProp) return;
+
+        postagemService.getById(id)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .then((data: any) => {
+                const p = data?.dados ?? data;
+                if (p?.id) setPostagem(p);
+            })
+            .catch((err: unknown) => console.error('Erro ao carregar postagem:', err));
     }, [params?.id, postagemProp]);
 
     const formik = useFormik({
         initialValues: {
             titulo: postagem?.titulo || '',
             conteudo: postagem?.conteudo || '',
+            imagemUrl: postagem?.imagemUrl || '',
         },
         enableReinitialize: true,
         validationSchema: postagemSchema,
         onSubmit: async (values) => {
             try {
-                if (postagem?.id) {
-                    const response = await fetch(`/api/postagens`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            id: postagem.id,
-                            ...values,
-                            imagemUrl: imagemPreview
-                        }),
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log(data);
-                        setModalConfig({ title: 'Sucesso!', message: 'Postagem atualizada com sucesso!' });
-                        setModalOpen(true);
-                    } else {
-                        const err = await response.json().catch(() => ({}));
-                        const msg = err?.error || err?.message || 'Erro ao tentar atualizar postagem';
-                        setModalConfig({ title: 'Erro', message: msg });
-                        setModalOpen(true);
-                    }
-                } else {
-                    const response = await fetch('/api/postagens', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            ...values,
-                            imagemUrl: imagemPreview,
-                            dataPublicacao: new Date().toISOString()
-                        }),
-                    });
-
-                    if (response.status === 201 || response.ok) {
-                        const data = await response.json();
-                        console.log(data);
-                        setModalConfig({ title: 'Sucesso!', message: 'Postagem criada com sucesso!' });
-                        setModalOpen(true);
-                    } else {
-                        const err = await response.json().catch(() => ({}));
-                        const msg = err?.error || err?.message || 'Erro ao tentar criar postagem';
-                        setModalConfig({ title: 'Erro', message: msg });
-                        setModalOpen(true);
-                    }
+                if (!voluntarioId && !postagem?.id) {
+                    setModalConfig({ title: 'Atenção', message: 'Apenas voluntários podem criar postagens.' });
+                    setModalOpen(true);
+                    return;
                 }
-            } catch (error) {
-                console.error(error);
-                setModalConfig({ title: 'Erro', message: 'Erro ao processar requisição' });
+
+                const imagemUrl = values.imagemUrl.trim() || null;
+
+                if (postagem?.id) {
+                    await postagemService.update(postagem.id, {
+                        titulo: values.titulo,
+                        conteudo: values.conteudo,
+                        imagemUrl,
+                    });
+                    setModalConfig({ title: 'Sucesso!', message: 'Postagem atualizada com sucesso!' });
+                } else {
+                    await postagemService.create({
+                        voluntarioId,
+                        titulo: values.titulo,
+                        conteudo: values.conteudo,
+                        imagemUrl,
+                    });
+                    setModalConfig({ title: 'Sucesso!', message: 'Postagem criada com sucesso!' });
+                }
+
+                setModalOpen(true);
+            } catch (error: unknown) {
+                const msg = error instanceof Error ? error.message : 'Erro ao processar requisição';
+                setModalConfig({ title: 'Erro', message: msg });
                 setModalOpen(true);
             }
         },
     });
 
-    const handleImagemChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagemPreview(reader.result as string);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    useEffect(() => {
-        if (postagem?.imagemUrl) {
-            setImagemPreview(postagem.imagemUrl);
-        }
-    }, [postagem]);
-
     const { handleSubmit, handleChange, values, errors, touched } = formik;
+    const urlValida = values.imagemUrl.startsWith('http://') || values.imagemUrl.startsWith('https://');
 
     return (
         <div className="flex flex-col space-y-4 w-[50%] max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
@@ -144,35 +109,44 @@ export default function FormPostagemTemplate({ postagem: postagemProp }: FormPos
                     {postagem?.id ? 'Editar Postagem' : 'Nova Postagem'}
                 </h1>
 
-                <div className="flex flex-col items-center mb-6">
-                    <div className="w-full h-64 rounded-lg bg-gray-200 flex items-center justify-center overflow-hidden mb-3 border-4 border-green-600">
-                        {imagemPreview ? (
-                            <img src={imagemPreview} alt="Preview" className="w-full h-full object-cover" />
-                        ) : (
-                            <FontAwesomeIcon icon={faImage} className="text-gray-400 text-6xl" />
-                        )}
-                    </div>
-                    <Button
-                        variant="outlined"
-                        color="success"
-                        component="label"
-                        size="small"
-                        startIcon={<FontAwesomeIcon icon={faCamera} />}
-                    >
-                        Selecionar Imagem
-                        <input
-                            type="file"
-                            hidden
-                            accept="image/*"
-                            onChange={handleImagemChange}
+                {/* Preview da imagem */}
+                <div className="w-full h-56 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-200">
+                    {urlValida ? (
+                        <img
+                            src={values.imagemUrl}
+                            alt="Preview"
+                            className="w-full h-full object-cover"
+                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                         />
-                    </Button>
-                    <p className="text-xs text-gray-500 mt-2">Formatos aceitos: JPG, PNG, GIF (máx. 5MB)</p>
+                    ) : (
+                        <div className="flex flex-col items-center gap-2 text-gray-300">
+                            <FontAwesomeIcon icon={faImage} className="text-5xl" />
+                            <span className="text-sm">Prévia da imagem</span>
+                        </div>
+                    )}
                 </div>
 
-                <div className="space-y-4 gap-2">
+                {/* Campo URL da imagem */}
+                <TextField
+                    name="imagemUrl"
+                    label="URL da Imagem"
+                    size="small"
+                    fullWidth
+                    color="success"
+                    value={values.imagemUrl}
+                    onChange={handleChange}
+                    placeholder="https://exemplo.com/imagem.jpg"
+                    InputProps={{
+                        startAdornment: (
+                            <FontAwesomeIcon icon={faLink} className="text-gray-400 mr-2 text-sm" />
+                        ),
+                    }}
+                    helperText="Cole o link de uma imagem da internet (opcional)"
+                />
+
+                <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">Informações da Postagem</h3>
-                    
+
                     <TextField
                         name="titulo"
                         label="Título da Postagem"
@@ -203,32 +177,20 @@ export default function FormPostagemTemplate({ postagem: postagemProp }: FormPos
                 </div>
 
                 <div className="flex gap-4">
-                    <Button
-                        variant="contained"
-                        color="success"
-                        type="submit"
-                        fullWidth
-                    >
+                    <Button variant="contained" color="success" type="submit" fullWidth>
                         {postagem?.id ? 'Atualizar Postagem' : 'Publicar Postagem'}
                     </Button>
-                    <Button
-                        variant="outlined"
-                        color="error"
-                        fullWidth
-                        onClick={() => router.push('/postagens')}
-                    >
+                    <Button variant="outlined" color="error" fullWidth onClick={() => router.push('/postagens')}>
                         Cancelar
                     </Button>
                 </div>
             </form>
-            
+
             <SuccessModal
                 open={modalOpen}
                 onClose={() => {
                     setModalOpen(false);
-                    if (modalConfig.title === 'Sucesso!') {
-                        router.push('/postagens');
-                    }
+                    if (modalConfig.title === 'Sucesso!') router.push('/postagens');
                 }}
                 title={modalConfig.title}
                 message={modalConfig.message}

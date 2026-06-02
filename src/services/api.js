@@ -1,5 +1,5 @@
 // Base API configuration and utilities
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://back-end-lab-invest.vercel.app/api';
 
 /**
  * Generic fetch wrapper for API calls
@@ -50,6 +50,15 @@ export const fetchAPI = async (endpoint, options = {}) => {
   }
 };
 
-const api = { fetchAPI, API_URL };
+// Resolve URLs de imagens: URLs absolutas passam direto;
+// URLs relativas (/uploads/...) são prefixadas com o host do backend.
+const BACKEND_BASE = API_URL.replace(/\/api$/, '');
+export const resolveImageUrl = (url) => {
+  if (!url) return null;
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  return `${BACKEND_BASE}${url.startsWith('/') ? '' : '/'}${url}`;
+};
+
+const api = { fetchAPI, API_URL, resolveImageUrl };
 
 export default api;

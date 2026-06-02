@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:3001";
+const BACKEND_URL = process.env.BACKEND_URL ?? "https://back-end-lab-invest.vercel.app";
 
 const nextConfig: NextConfig = {
   async rewrites() {
@@ -110,6 +110,22 @@ const nextConfig: NextConfig = {
       {
         source: "/api/health",
         destination: `${BACKEND_URL}/api/health`,
+      },
+      {
+        source: "/api/faqs/:path*",
+        destination: `${BACKEND_URL}/api/faqs/:path*`,
+      },
+      {
+        source: "/api/faqs",
+        destination: `${BACKEND_URL}/api/faqs`,
+      },
+      {
+        source: "/api/contato/:path*",
+        destination: `${BACKEND_URL}/api/contato/:path*`,
+      },
+      {
+        source: "/api/contato",
+        destination: `${BACKEND_URL}/api/contato`,
       },
     ];
   },
