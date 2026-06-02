@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { fetchAPI } from "@/services/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconDefinition, faBriefcase, faBullseye, faEnvelope, faExclamationTriangle, faLightbulb, faPhone, faUser } from "@fortawesome/free-solid-svg-icons";
+import { IconDefinition, faBriefcase, faBullseye, faCalendarAlt, faCalendarPlus, faCheckCircle, faEnvelope, faExclamationTriangle, faLightbulb, faPhone, faUser } from "@fortawesome/free-solid-svg-icons";
 
 type PerfilResponse = {
   id: number;
@@ -28,10 +28,24 @@ type VoluntarioResponse = {
   bio?: string | null;
 };
 
+type Agendamento = {
+  id: number;
+  titulo?: string | null;
+  descricao?: string | null;
+  dataInicio: string;
+  dataFim?: string | null;
+  status: "AGENDADO" | "CONFIRMADO" | "REALIZADO" | "CANCELADO";
+  local?: string | null;
+  voluntario?: { id: number; nome?: string | null } | null;
+  servico?: { id: number; nome?: string | null } | null;
+};
+
 export default function PerfilPage() {
   const router = useRouter();
   const [perfil, setPerfil] = useState<PerfilResponse | null>(null);
   const [voluntario, setVoluntario] = useState<VoluntarioResponse | null>(null);
+  const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
+  const [loadingAgendamentos, setLoadingAgendamentos] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -64,6 +78,22 @@ export default function PerfilPage() {
 
     load();
   }, []);
+
+  useEffect(() => {
+    const perfilId = perfil?.perfil?.id;
+    if (!perfilId) return;
+
+    setLoadingAgendamentos(true);
+    const role = String(perfil?.role || '').toLowerCase();
+    const param = role === 'voluntario' ? 'voluntarioPerfilId' : 'clientePerfilId';
+
+    fetchAPI(`/agendamentos?${param}=${perfilId}`)
+      .then((res: { sucesso: boolean; agendamentos?: Agendamento[] }) => {
+        setAgendamentos(res?.agendamentos ?? []);
+      })
+      .catch(() => setAgendamentos([]))
+      .finally(() => setLoadingAgendamentos(false));
+  }, [perfil]);
 
   const nome = perfil?.perfil?.nome || 'Usuário';
   const email = perfil?.email || '—';
@@ -146,6 +176,81 @@ export default function PerfilPage() {
           </div>
         </div>
 
+        {/* Seção de agendamentos */}
+        <div className="rounded-2xl bg-white p-8 shadow-lg">
+          <div className="mb-6 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="rounded-full bg-emerald-100 p-3 text-emerald-700">
+                <FontAwesomeIcon icon={faCalendarAlt} />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-800">Meus Agendamentos</h2>
+            </div>
+            <button
+              type="button"
+              onClick={() => router.push('/agendamento/solicitar')}
+              className="flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700"
+            >
+              <FontAwesomeIcon icon={faCalendarPlus} />
+              Novo agendamento
+            </button>
+          </div>
+
+          {loadingAgendamentos ? (
+            <p className="text-sm text-gray-500">Carregando agendamentos...</p>
+          ) : agendamentos.length === 0 ? (
+            <div className="flex flex-col items-center gap-3 py-8 text-gray-400">
+              <FontAwesomeIcon icon={faCalendarAlt} className="text-4xl" />
+              <p className="text-sm">Nenhum agendamento encontrado.</p>
+              <button
+                type="button"
+                onClick={() => router.push('/agendamento/solicitar')}
+                className="rounded-full border border-emerald-300 px-4 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-50 transition"
+              >
+                Solicitar meu primeiro agendamento
+              </button>
+            </div>
+          ) : (
+            <ul className="divide-y divide-gray-100">
+              {agendamentos.map((ag) => (
+                <li
+                  key={ag.id}
+                  className="flex cursor-pointer items-center justify-between gap-4 py-4 hover:bg-slate-50 rounded-xl px-2 transition"
+                  onClick={() => router.push(`/agendamento/${ag.id}`)}
+                >
+                  <div className="flex items-start gap-3 min-w-0">
+                    <div className="mt-1 flex-shrink-0">
+                      <FontAwesomeIcon icon={faCheckCircle} className={statusColor(ag.status)} />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-semibold text-gray-800 truncate">
+                        {ag.titulo || ag.servico?.nome || 'Agendamento'}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {formatarData(ag.dataInicio)}
+                        {ag.voluntario?.nome ? ` · ${ag.voluntario.nome}` : ''}
+                        {ag.local ? ` · ${ag.local}` : ''}
+                      </p>
+                    </div>
+                  </div>
+                  <StatusBadge status={ag.status} />
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {agendamentos.length > 0 && (
+            <div className="mt-4 text-right">
+              <button
+                type="button"
+                onClick={() => router.push('/agendamento')}
+                className="text-sm font-semibold text-emerald-700 hover:underline"
+              >
+                Ver todos os agendamentos →
+              </button>
+            </div>
+          )}
+        </div>
+
         {isVoluntario && (
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             <InfoBlock
@@ -170,6 +275,46 @@ export default function PerfilPage() {
         )}
       </div>
     </div>
+  );
+}
+
+function formatarData(iso: string) {
+  try {
+    return new Date(iso).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  } catch {
+    return iso;
+  }
+}
+
+function statusColor(status: string) {
+  const map: Record<string, string> = {
+    AGENDADO: 'text-blue-500',
+    CONFIRMADO: 'text-emerald-600',
+    REALIZADO: 'text-gray-400',
+    CANCELADO: 'text-red-500',
+  };
+  return map[status] ?? 'text-gray-400';
+}
+
+const statusLabel: Record<string, string> = {
+  AGENDADO: 'Agendado',
+  CONFIRMADO: 'Confirmado',
+  REALIZADO: 'Realizado',
+  CANCELADO: 'Cancelado',
+};
+
+const statusBg: Record<string, string> = {
+  AGENDADO: 'bg-blue-100 text-blue-700',
+  CONFIRMADO: 'bg-emerald-100 text-emerald-700',
+  REALIZADO: 'bg-gray-100 text-gray-600',
+  CANCELADO: 'bg-red-100 text-red-600',
+};
+
+function StatusBadge({ status }: { status: string }) {
+  return (
+    <span className={`flex-shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${statusBg[status] ?? 'bg-gray-100 text-gray-600'}`}>
+      {statusLabel[status] ?? status}
+    </span>
   );
 }
 

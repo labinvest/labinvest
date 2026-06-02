@@ -176,6 +176,15 @@ export default function NavBar() {
                                             <ListItemText primary="Alterar Perfil" secondary="Alterar Dados no Sistema" />
                                         </ListItemButton>
 
+                                        <ListItemButton onClick={() => { router.push('/agendamento'); setAnchorEl(null); }}>
+                                            <ListItemAvatar>
+                                                <Avatar sx={{ bgcolor: 'transparent' }}>
+                                                    <EventAvailableIcon sx={{ color: iconColor }} />
+                                                </Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText primary="Meus Agendamentos" secondary="Ver e gerenciar agendamentos" />
+                                        </ListItemButton>
+
                                         {!isAdmin && (
                                             <ListItemButton onClick={() => { router.push('/voluntario/solicitar'); setAnchorEl(null); }}>
                                                 <ListItemAvatar>
