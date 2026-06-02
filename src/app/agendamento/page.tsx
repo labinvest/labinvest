@@ -179,7 +179,7 @@ export default function TelaAgendamentos() {
               className="flex items-center gap-1.5 text-sm px-3 py-1.5 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
             >
               <WhatsAppIcon sx={{ fontSize: 16 }} />
-              WhatsApp do voluntário
+              WhatsApp
             </a>
           )}
 
@@ -193,7 +193,7 @@ export default function TelaAgendamentos() {
               className="flex items-center gap-1.5 text-sm px-3 py-1.5 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
             >
               <WhatsAppIcon sx={{ fontSize: 16 }} />
-              WhatsApp do cliente
+              WhatsApp
             </a>
           )}
 
