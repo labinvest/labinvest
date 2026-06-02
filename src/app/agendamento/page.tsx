@@ -2,6 +2,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faCheckCircle, faTimesCircle, faMapMarkerAlt, faUser } from "@fortawesome/free-solid-svg-icons";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
@@ -20,6 +21,13 @@ const STATUS_LABEL: Record<string, { label: string; color: string; border: strin
   CANCELADO:  { label: "Cancelado",   color: "bg-red-100 text-red-700",    border: "border-red-400" },
 };
 
+function whatsappLink(telefone?: string | null) {
+  if (!telefone) return null;
+  const numero = telefone.replace(/\D/g, "");
+  const com55 = numero.startsWith("55") ? numero : `55${numero}`;
+  return `https://wa.me/${com55}`;
+}
+
 function formatarData(iso: string) {
   if (!iso) return "—";
   const d = new Date(iso);
@@ -35,8 +43,8 @@ interface Agendamento {
   dataFim?: string;
   status: string;
   local?: string;
-  cliente?: { id: number; nome: string };
-  voluntario?: { id: number; nome: string };
+  cliente?: { id: number; nome: string; telefone?: string | null };
+  voluntario?: { id: number; nome: string; telefone?: string | null };
   servico?: { id: number; nome: string };
 }
 
@@ -153,13 +161,41 @@ export default function TelaAgendamentos() {
           </span>
         </div>
 
-        <div className="flex gap-2 pt-1">
+        <div className="flex gap-2 pt-1 flex-wrap">
           <button
             onClick={() => router.push(`/agendamento/${a.id}`)}
             className="text-sm px-3 py-1.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
           >
             Detalhes
           </button>
+
+          {/* WhatsApp do voluntário — visível para o cliente em agendamentos confirmados */}
+          {a.status === "CONFIRMADO" && !isVoluntario && whatsappLink(a.voluntario?.telefone) && (
+            <a
+              href={whatsappLink(a.voluntario?.telefone)!}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={`WhatsApp de ${a.voluntario?.nome ?? "voluntário"}`}
+              className="flex items-center gap-1.5 text-sm px-3 py-1.5 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+            >
+              <WhatsAppIcon sx={{ fontSize: 16 }} />
+              WhatsApp do voluntário
+            </a>
+          )}
+
+          {/* WhatsApp do cliente — visível para o voluntário em agendamentos confirmados */}
+          {a.status === "CONFIRMADO" && isVoluntario && whatsappLink(a.cliente?.telefone) && (
+            <a
+              href={whatsappLink(a.cliente?.telefone)!}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={`WhatsApp de ${a.cliente?.nome ?? "cliente"}`}
+              className="flex items-center gap-1.5 text-sm px-3 py-1.5 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+            >
+              <WhatsAppIcon sx={{ fontSize: 16 }} />
+              WhatsApp do cliente
+            </a>
+          )}
 
           {/* Botões para voluntário confirmar/cancelar */}
           {isVoluntario && a.status === "AGENDADO" && (
